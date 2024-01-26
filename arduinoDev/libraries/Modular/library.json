@@ -1,0 +1,16 @@
+{
+  "name": "Modular",
+  "keywords": "modular",
+  "description": "Allow to use the library to Modular Board for Arduino Nano",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/UlisesGordillo/Modular.git"
+  },
+  "frameworks": "arduino",
+  "platforms":
+  [
+    "atmelavr",
+    "modular"
+  ]
+}
