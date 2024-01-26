@@ -1,0 +1,17 @@
+INPUT(
+./release\main.o
+./release\mainwindow.o
+./release\settingsdialog.o
+./release\settingsstore.o
+./release\graphwidget.o
+./release\aboutdialog.o
+./release\jswebhelpers.o
+./release\qblockswebview.o
+./release\qrc_Resources.o
+./release\moc_mainwindow.o
+./release\moc_settingsdialog.o
+./release\moc_settingsstore.o
+./release\moc_graphwidget.o
+./release\moc_aboutdialog.o
+./release\moc_jswebhelpers.o
+);
