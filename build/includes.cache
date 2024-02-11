@@ -10,22 +10,22 @@
     "Includepath": "D:\\Proyectos\\modulinoDev\\arduinoDev\\hardware\\arduino\\avr\\variants\\standard"
   },
   {
-    "Sourcefile": "D:\\Proyectos\\modulinoQt\\build\\sketch\\extracted_code.ino.cpp",
+    "Sourcefile": "D:\\Proyectos\\fab2\\build\\sketch\\extracted_code.ino.cpp",
     "Include": "Modular.h",
-    "Includepath": "D:\\Programas\\OneDrive - Instituto Superior Tecnológico Tecsup\\Documentos\\Arduino\\libraries\\Modular"
+    "Includepath": "D:\\Proyectos\\modulinoDev\\arduinoDev\\libraries\\Modular"
   },
   {
-    "Sourcefile": "D:\\Proyectos\\modulinoQt\\build\\sketch\\extracted_code.ino.cpp",
+    "Sourcefile": "D:\\Proyectos\\fab2\\build\\sketch\\extracted_code.ino.cpp",
     "Include": "Servo.h",
     "Includepath": "D:\\Proyectos\\modulinoDev\\arduinoDev\\libraries\\Servo\\src"
   },
   {
-    "Sourcefile": "D:\\Proyectos\\modulinoQt\\build\\sketch\\extracted_code.ino.cpp",
+    "Sourcefile": "D:\\Proyectos\\fab2\\build\\sketch\\extracted_code.ino.cpp",
     "Include": "",
     "Includepath": null
   },
   {
-    "Sourcefile": "D:\\Programas\\OneDrive - Instituto Superior Tecnológico Tecsup\\Documentos\\Arduino\\libraries\\Modular\\Modular.cpp",
+    "Sourcefile": "D:\\Proyectos\\modulinoDev\\arduinoDev\\libraries\\Modular\\Modular.cpp",
     "Include": "",
     "Includepath": null
   },

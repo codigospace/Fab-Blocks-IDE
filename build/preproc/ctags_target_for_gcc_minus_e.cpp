@@ -1,8 +1,8 @@
-# 1 "D:\\Proyectos\\modulinoQt\\extracted_code.ino"
-# 2 "D:\\Proyectos\\modulinoQt\\extracted_code.ino" 2
+# 1 "D:\\Proyectos\\fab2\\extracted_code.ino"
+# 2 "D:\\Proyectos\\fab2\\extracted_code.ino" 2
 
 /***   Global variables   ***/
-digitalOutput name(0);
+digitalOutput name(4);
 
 /***   Function declaration   ***/
 

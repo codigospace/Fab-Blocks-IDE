@@ -400,7 +400,6 @@ class WebViewer(QMainWindow):
 
         self.progress_timer = QTimer(self)
         self.progress_timer.timeout.connect(self.update_progress)
-        self.progress_timer.start(2000)
 
         # Crear e iniciar el monitor de puertos en un hilo
         self.port_monitor = PortMonitor()
@@ -566,23 +565,26 @@ class WebViewer(QMainWindow):
             self.combo_puertos.setEnabled(False)
     
     def update_progress(self):
-        # Obtener el valor actual de la barra de progreso
-        current_value = self.progress_bar.value()
+         # Obtener el valor actual de la barra de progreso
+        current_value = 0
 
-        # Incrementar el valor actual (en este ejemplo, aumentaremos en 10 cada vez)
-        new_value = current_value + 10
+        # Aumentar gradualmente hasta el 80%
+        target_value = 80
+        step = 40  # Aumentar en pasos de 5
 
-        # Verificar si alcanzamos el valor máximo
-        if new_value > 100:
-            new_value = 0  # Reiniciar la barra de progreso si alcanzamos el máximo
-
-        # Actualizar el valor de la barra de progreso
-        self.progress_bar.setValue(new_value)
+        if current_value < target_value:
+            new_value = current_value + step
+            self.progress_bar.setValue(new_value)
+        else:
+            # Detener el temporizador cuando alcanza el 80%
+            self.timer.stop()
     
     def write_to_console(self, message):
         self.console.append(message)
     
     def runCommandCompile(self):
+        self.console.clear()
+        self.update_progress()
         
         if hasattr(self, 'runner') and self.runner.isRunning():
             self.runner.terminate()  # Detener el hilo anterior si está corriendo
@@ -591,20 +593,71 @@ class WebViewer(QMainWindow):
         # Obtener la ubicación del compilador guardada en la configuración
         arduinoDev = config_manager.get_value('compiler_location')
         arduinoDev_folder = os.path.dirname(arduinoDev)
+        folder_actual = os.getcwd()
 
         #command = f"{arduinoDev_folder}/arduino-builder -compile -logger=machine -hardware {arduinoDev_folder}/hardware -tools {arduinoDev_folder}/tools-builder -tools {arduinoDev_folder}/hardware/tools/avr -built-in-libraries {arduinoDev_folder}/libraries -libraries 'D:/Programas/OneDrive - Instituto Superior Tecnológico Tecsup/Documentos/Arduino/libraries' -fqbn arduino:avr:uno -vid-pid 1A86_7523 -ide-version=10815 -build-path D:/Proyectos/modulinoQt/build -warnings=none -build-cache {arduinoDev_folder}/Temp/arduino_cache -prefs=build.warn_data_percentage=75 -prefs=runtime.tools.arduinoOTA.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.arduinoOTA-1.3.0.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avrdude.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avrdude-6.3.0-arduino17.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avr-gcc.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avr-gcc-7.3.0-atmel3.6.1-arduino7.path={arduinoDev_folder}/hardware/tools/avr -verbose D:/Proyectos/modulinoQt/extracted_code.ino"
 
-        command = '''D:/Proyectos/modulinoDev/arduinoDev/arduino-builder -compile -logger=machine -hardware D:/Proyectos/modulinoDev/arduinoDev/hardware -tools D:/Proyectos/modulinoDev/arduinoDev/tools-builder -tools D:/Proyectos/modulinoDev/arduinoDev/hardware/tools/avr -built-in-libraries D:/Proyectos/modulinoDev/arduinoDev/libraries    -fqbn arduino:avr:uno -vid-pid 1A86_7523 -ide-version=10815 -build-path D:/Proyectos/modulinoQt/build -warnings=none -build-cache C:/Users/Leonardo/AppData/Local/Temp/arduino_cache_914083 -prefs=build.warn_data_percentage=75 -prefs=runtime.tools.arduinoOTA.path=D:/Proyectos/modulinoDev/arduinoDev/hardware/tools/avr -prefs=runtime.tools.arduinoOTA-1.3.0.path=D:/Proyectos/modulinoDev/arduinoDev/hardware/tools/avr -prefs=runtime.tools.avrdude.path=D:/Proyectos/modulinoDev/arduinoDev/hardware/tools/avr -prefs=runtime.tools.avrdude-6.3.0-arduino17.path=D:/Proyectos/modulinoDev/arduinoDev/hardware/tools/avr -prefs=runtime.tools.avr-gcc.path=D:/Proyectos/modulinoDev/arduinoDev/hardware/tools/avr -prefs=runtime.tools.avr-gcc-7.3.0-atmel3.6.1-arduino7.path=D:/Proyectos/modulinoDev/arduinoDev/hardware/tools/avr -verbose D:/Proyectos/modulinoQt/extracted_code.ino'''
+        command = f'''{arduinoDev_folder}/arduino-builder -compile -logger=machine -hardware {arduinoDev_folder}/hardware -tools {arduinoDev_folder}/tools-builder -tools {arduinoDev_folder}/hardware/tools/avr -built-in-libraries {arduinoDev_folder}/libraries -fqbn arduino:avr:uno -vid-pid 1A86_7523 -ide-version=10815 -build-path {folder_actual}/build -warnings=none -build-cache {folder_actual}/Temp/arduino_cache_914083 -prefs=build.warn_data_percentage=75 -prefs=runtime.tools.arduinoOTA.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.arduinoOTA-1.3.0.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avrdude.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avrdude-6.3.0-arduino17.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avr-gcc.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avr-gcc-7.3.0-atmel3.6.1-arduino7.path={arduinoDev_folder}/hardware/tools/avr -verbose {folder_actual}/extracted_code.ino'''
         self.runner_com = CommandRunner(command)
         self.runner_com.output_received.connect(self.updateOutput)
         self.runner_com.start()
+        # Iniciar el temporizador para llenar la barra de progreso del 80% al 100%
+        self.progress_timer_2 = QTimer(self)
+        self.progress_timer_2.timeout.connect(self.update_progress_2)
+        self.progress_timer_2.start(200)
 
     def runCommandUpload(self):
-        command = '''D:/Proyectos/modulinoDev/arduinoDev/hardware/tools/avr/bin/avrdude -CD:/Proyectos/modulinoDev/arduinoDev/hardware/tools/avr/etc/avrdude.conf -v -patmega328p -carduino -PCOM3 -b115200 -D -Uflash:w:D:/Proyectos/modulinoQt/build/extracted_code.ino.hex:i'''
+        self.update_progress()
+        arduinoDev = config_manager.get_value('compiler_location')
+        arduinoDev_folder = os.path.dirname(arduinoDev)
+        folder_actual = os.getcwd()
+        # Obtener la placa seleccionada
+        selected_board = self.combo.currentText()
+
+        # Obtener el puerto serial seleccionado
+        selected_port = self.combo_puertos.currentText()
+
+        cpu_mapping = {
+            'Arduino Uno': {'TEXT_CPU': 'atmega328p', 'PROCESSOR': 'arduino', 'BAUD': '115200'},
+            'Arduino Nano': {'TEXT_CPU': 'atmega328p', 'PROCESSOR': 'arduino', 'BAUD': '115200'},
+            'Modular V1': {'TEXT_CPU': 'atmega328p', 'PROCESSOR': 'arduino', 'BAUD': '115200'},
+            'Robot Betto': {'TEXT_CPU': 'atmega328p', 'PROCESSOR': 'arduino', 'BAUD': '115200'},
+            'Arduino Mega': {'TEXT_CPU': 'atmega2560', 'PROCESSOR': 'wiring', 'BAUD': '115200'}
+        }
+
+        board_info = cpu_mapping.get(selected_board)
+
+        TEXT_CPU = board_info['TEXT_CPU']
+        PROCESSOR = board_info['PROCESSOR']
+        BAUD = board_info['BAUD']
+
+        #command = f'''{arduinoDev_folder}/hardware/tools/avr/bin/avrdude -C{arduinoDev_folder}/hardware/tools/avr/etc/avrdude.conf -v -patmega328p -carduino -PCOM3 -b115200 -D -Uflash:w:{folder_actual}/build/extracted_code.ino.hex:i'''
+
+        command = f'''{arduinoDev_folder}/hardware/tools/avr/bin/avrdude -C{arduinoDev_folder}/hardware/tools/avr/etc/avrdude.conf -v -p{TEXT_CPU} -c{PROCESSOR} -P{selected_port} -b115200 -D -Uflash:w:{folder_actual}/build/extracted_code.ino.hex:i'''
+        
         self.runner_up = CommandRunner(command)
         self.runner_up.output_received.connect(self.updateOutput)
         self.runner_up.start()
+        # Iniciar el temporizador para llenar la barra de progreso del 80% al 100%
+        self.progress_timer_2 = QTimer(self)
+        self.progress_timer_2.timeout.connect(self.update_progress_2)
+        self.progress_timer_2.start(200)
     
+    def update_progress_2(self):
+        # Obtener el valor actual de la barra de progreso
+        current_value = self.progress_bar.value()
+
+        # Aumentar gradualmente hasta el 100%
+        target_value = 100
+        step = 20  # Aumentar en pasos de 5
+
+        if current_value < target_value:
+            new_value = current_value + step
+            self.progress_bar.setValue(new_value)
+        else:
+            # Detener el temporizador cuando alcanza el 100%
+            self.progress_timer_2.stop()
+            
     def updateOutput(self, output):
         self.console.append(output)
 

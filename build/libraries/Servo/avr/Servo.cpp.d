@@ -1,4 +1,4 @@
-D:\Proyectos\modulinoQt\build\libraries\Servo\avr\Servo.cpp.o: \
+D:\Proyectos\fab2\build\libraries\Servo\avr\Servo.cpp.o: \
  D:\Proyectos\modulinoDev\arduinoDev\libraries\Servo\src\avr\Servo.cpp \
  D:\Proyectos\modulinoDev\arduinoDev\hardware\arduino\avr\cores\arduino/Arduino.h \
  D:\Proyectos\modulinoDev\arduinoDev\hardware\arduino\avr\cores\arduino/binary.h \

@@ -1,4 +1,4 @@
-#line 1 "D:\\Proyectos\\modulinoQt\\html\\javascript\\highlight\\README.ru.md"
+#line 1 "D:\\Proyectos\\fab2\\html\\javascript\\highlight\\README.ru.md"
 # Highlight.js
 
 Highlight.js — это подсветчик синтаксиса, написанный на JavaScript. Он работает
