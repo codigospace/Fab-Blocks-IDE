@@ -1,6 +1,6 @@
-D:\Proyectos\modulinoQt\build\libraries\Modular\Modular.cpp.o: \
- D:\Programas\OneDrive\ -\ Instituto\ Superior\ Tecnológico\ Tecsup\Documentos\Arduino\libraries\Modular\Modular.cpp \
- D:\Programas\OneDrive\ -\ Instituto\ Superior\ Tecnológico\ Tecsup\Documentos\Arduino\libraries\Modular\Modular.h \
+D:\Proyectos\fab2\build\libraries\Modular\Modular.cpp.o: \
+ D:\Proyectos\modulinoDev\arduinoDev\libraries\Modular\Modular.cpp \
+ D:\Proyectos\modulinoDev\arduinoDev\libraries\Modular\Modular.h \
  D:\Proyectos\modulinoDev\arduinoDev\hardware\arduino\avr\cores\arduino/Arduino.h \
  D:\Proyectos\modulinoDev\arduinoDev\hardware\arduino\avr\cores\arduino/binary.h \
  D:\Proyectos\modulinoDev\arduinoDev\hardware\arduino\avr\cores\arduino/WCharacter.h \

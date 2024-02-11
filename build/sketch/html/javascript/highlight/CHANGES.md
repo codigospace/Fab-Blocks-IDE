@@ -1,4 +1,4 @@
-#line 1 "D:\\Proyectos\\modulinoQt\\html\\javascript\\highlight\\CHANGES.md"
+#line 1 "D:\\Proyectos\\fab2\\html\\javascript\\highlight\\CHANGES.md"
 ## Version 8.8.0
 
 New languages:

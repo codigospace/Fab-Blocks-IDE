@@ -1,7 +1,7 @@
 #include <Modular.h>
 
 /***   Global variables   ***/
-digitalOutput name(0);
+digitalOutput name(4);
 
 /***   Function declaration   ***/
 
