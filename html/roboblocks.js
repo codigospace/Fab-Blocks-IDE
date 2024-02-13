@@ -1071,7 +1071,6 @@
             },
         };
 
-
         // Set default profile to arduino standard-compatible board
         profiles['default'] = profiles.arduino;
 
@@ -2650,6 +2649,18 @@
             return __p
         };
 
+        this["JST"]["test_inout_digital_write_bool"] = function(obj) {
+            obj || (obj = {});
+            var __t, __p = '',
+                __e = _.escape;
+            with(obj) {
+                __p += ((__t = (dropdown_pin)) == null ? '' : __t) + '.write(' +
+                    ((__t = (dropdown_stat)) == null ? '' : __t) +
+                    ');\n';
+            }
+            return __p
+        };
+
         this["JST"]["test_motor_stepper"] = function(obj) {
             obj || (obj = {});
             var __t, __p = '',
@@ -3400,6 +3411,86 @@
                 //         this.last_variables=Blockly.Variables.allVariables();
                 //     }
                 // }
+                try {
+                    if (!this.exists()) {
+                        this.setWarningText(RoboBlocks.locales.getKey('LANG_VARIABLES_CALL_WITHOUT_DEFINITION'));
+                    } else {
+                        this.setWarningText(null);
+                    }
+                } catch (e) {}
+            },
+            renameVar: function(oldName, newName) {
+                if (Blockly.Names.equals(oldName, this.getFieldValue('VAR'))) {
+                    this.setTitleValue(newName, 'VAR');
+                }
+            },
+            exists: function() {
+                for (var i in Blockly.Variables.allVariables()) {
+                    if (Blockly.Variables.allVariables()[i] === this.getFieldValue('VAR')) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        };
+
+        // Copia de digital Write 1 argumento true-false 2
+        // Source: src/blocks/inout_digital_write/inout_digital_write.js
+        /* global Blockly, JST, RoboBlocks */
+        /* jshint sub:true */
+        /**
+         * inout_digital_write code generation
+         * @return {String} Code generated with block parameters
+         */
+        Blockly.Arduino.test_inout_digital_write_bool = function() {
+            var dropdown_pin = this.getFieldValue('VAR');
+            var dropdown_stat = Blockly.Arduino.valueToCode(this, 'BOOL', Blockly.Arduino.ORDER_ATOMIC);
+            var code = '';
+            var a = RoboBlocks.findPinMode(dropdown_pin);
+            code += a['code'];
+            dropdown_pin = a['pin'];
+            code += JST['test_inout_digital_write_bool']({
+                'dropdown_pin': dropdown_pin,
+                'dropdown_stat': dropdown_stat
+            });
+            return code;
+        };
+        /**
+         * inout_digital_write block definition
+         * @type {Object}
+         */
+        Blockly.Blocks.test_inout_digital_write_bool = {
+            category: RoboBlocks.locales.getKey('LANG_CATEGORY_MODULAR'),
+            helpUrl: RoboBlocks.URL_PIN_FUNC,
+            /**
+             * inout_digital_write initialization
+             */
+            init: function() {
+                this.setColour('#E5BE01');
+                this.appendDummyInput('DUMMY').appendField('Escribir en el actuador')
+                    //.appendField(new Blockly.FieldDropdown(this.getVariables()), 'VAR');
+                    .appendField(new Blockly.FieldVariable(' '), 'VAR');
+                this.appendDummyInput().appendField('el estado');
+                this.appendValueInput('BOOL', Boolean)
+                    .setCheck(Boolean);
+                this.setPreviousStatement(true, null);
+                this.setInputsInline(true);
+                this.setNextStatement(true, null);
+                this.setTooltip(RoboBlocks.locales.getKey('LANG_ADVANCED_INOUT_DIGITAL_WRITE_TOOLTIP'));
+            },
+            getVariables: function() {
+                var variables = Blockly.Variables.allVariables();
+                var dropdown = [];
+                if (variables.length > 0) {
+                    for (var i in variables) {
+                        dropdown.push([variables[i], variables[i]]);
+                    }
+                } else {
+                    dropdown.push(['', '']);
+                }
+                return dropdown;
+            },
+            onchange: function() {
                 try {
                     if (!this.exists()) {
                         this.setWarningText(RoboBlocks.locales.getKey('LANG_VARIABLES_CALL_WITHOUT_DEFINITION'));

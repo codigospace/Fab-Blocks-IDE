@@ -12,6 +12,7 @@ import time
 import subprocess
 import json
 
+from monitor_plotter import MainWindow
 iconSize = 32
 
 # Clase para manejar la configuración
@@ -274,7 +275,8 @@ class WebViewer(QMainWindow):
     
         # Conectar acciones a funciones
         action31.triggered.connect(self.action1_triggered)
-        action32.triggered.connect(self.action2_triggered)
+        action32.setVisible(False)
+        #action32.triggered.connect(self.action2_triggered)
 
         # Crear un nuevo menú
         menu4 = self.menuBar().addMenu("Ayuda")
@@ -333,6 +335,7 @@ class WebViewer(QMainWindow):
         graphic_serial.setIcon(QIcon("icons/graphic.png"))
         graphic_serial.setIconSize(QSize(iconSize, iconSize))
         graphic_serial.setFixedSize(button_width, button_height)
+        graphic_serial.setVisible(False) 
 
         monitor_serial = QPushButton("Monitor Serial")
         monitor_serial.setIcon(QIcon("icons/monitor_serial.png"))
@@ -412,6 +415,9 @@ class WebViewer(QMainWindow):
         self.console.setMaximumHeight(200)
         self.console.setReadOnly(True)
         self.centralWidget().layout().addWidget(self.console)
+                
+        monitor_serial.clicked.connect(self.show_monitor_serial)
+        action31.triggered.connect(self.show_monitor_serial)
 
     def show_preferences_dialog(self):
         self.preferences_dialog = PreferencesDialog(self)
@@ -598,6 +604,7 @@ class WebViewer(QMainWindow):
         #command = f"{arduinoDev_folder}/arduino-builder -compile -logger=machine -hardware {arduinoDev_folder}/hardware -tools {arduinoDev_folder}/tools-builder -tools {arduinoDev_folder}/hardware/tools/avr -built-in-libraries {arduinoDev_folder}/libraries -libraries 'D:/Programas/OneDrive - Instituto Superior Tecnológico Tecsup/Documentos/Arduino/libraries' -fqbn arduino:avr:uno -vid-pid 1A86_7523 -ide-version=10815 -build-path D:/Proyectos/modulinoQt/build -warnings=none -build-cache {arduinoDev_folder}/Temp/arduino_cache -prefs=build.warn_data_percentage=75 -prefs=runtime.tools.arduinoOTA.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.arduinoOTA-1.3.0.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avrdude.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avrdude-6.3.0-arduino17.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avr-gcc.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avr-gcc-7.3.0-atmel3.6.1-arduino7.path={arduinoDev_folder}/hardware/tools/avr -verbose D:/Proyectos/modulinoQt/extracted_code.ino"
 
         command = f'''{arduinoDev_folder}/arduino-builder -compile -logger=machine -hardware {arduinoDev_folder}/hardware -tools {arduinoDev_folder}/tools-builder -tools {arduinoDev_folder}/hardware/tools/avr -built-in-libraries {arduinoDev_folder}/libraries -fqbn arduino:avr:uno -vid-pid 1A86_7523 -ide-version=10815 -build-path {folder_actual}/build -warnings=none -build-cache {folder_actual}/Temp/arduino_cache_914083 -prefs=build.warn_data_percentage=75 -prefs=runtime.tools.arduinoOTA.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.arduinoOTA-1.3.0.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avrdude.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avrdude-6.3.0-arduino17.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avr-gcc.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avr-gcc-7.3.0-atmel3.6.1-arduino7.path={arduinoDev_folder}/hardware/tools/avr -verbose {folder_actual}/extracted_code.ino'''
+        print(command)
         self.runner_com = CommandRunner(command)
         self.runner_com.output_received.connect(self.updateOutput)
         self.runner_com.start()
@@ -670,7 +677,11 @@ class WebViewer(QMainWindow):
                 self.runner.terminate()
                 self.runner.wait()
         event.accept()
-        
+    
+    def show_monitor_serial(self):
+        self.monitor_window = MainWindow()
+        self.monitor_window.show()
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     config_manager = ConfigManager()
