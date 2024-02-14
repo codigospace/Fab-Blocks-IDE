@@ -3,7 +3,7 @@ import os
 import serial.tools.list_ports
 from PyQt5.QtCore import QThread, QUrl, pyqtSlot, QSize, QTimer, QObject, pyqtSignal
 from PyQt5.QtWidgets import QMainWindow, QAction, QApplication, QHBoxLayout, QPushButton, QComboBox, QVBoxLayout, QProgressBar, QMenu, QLabel, QTextEdit
-from PyQt5.QtWidgets import QDialog, QLineEdit, QFileDialog, QCheckBox
+from PyQt5.QtWidgets import QDialog, QLineEdit, QFileDialog, QCheckBox, QMessageBox
 from PyQt5.QtGui import QIcon, QTextCursor, QKeySequence
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtWidgets import QShortcut
@@ -196,6 +196,7 @@ class WebViewer(QMainWindow):
 
         
         action1.triggered.connect(self.open_new_file_window)
+        action4.triggered.connect(self.save_file_as)
         action7.triggered.connect(self.show_preferences_dialog)
         action8.triggered.connect(self.exit_application)
 
@@ -221,6 +222,8 @@ class WebViewer(QMainWindow):
         menu.addSeparator()
         menu.addAction(action8)
 
+        action5.setVisible(False)
+
         # Crear un nuevo menú
         menu2 = self.menuBar().addMenu("Programa")
 
@@ -239,6 +242,8 @@ class WebViewer(QMainWindow):
         # Conectar acciones a funciones
         action21.triggered.connect(self.compilar_clicked)
         action22.triggered.connect(self.subir_clicked)
+        action24.triggered.connect(self.show_code)
+        action25.triggered.connect(self.hide_code)
 
         # Crear un nuevo menú
         menu3 = self.menuBar().addMenu("Herramientas")
@@ -326,10 +331,10 @@ class WebViewer(QMainWindow):
         open_upload.setIconSize(QSize(iconSize, iconSize))
         open_upload.setFixedSize(button_width, button_height)
 
-        save_upload = QPushButton("Guardar")
-        save_upload.setIcon(QIcon("icons/save.png"))
-        save_upload.setIconSize(QSize(iconSize, iconSize))
-        save_upload.setFixedSize(button_width, button_height)
+        save_file_button = QPushButton("Guardar")
+        save_file_button.setIcon(QIcon("icons/save.png"))
+        save_file_button.setIconSize(QSize(iconSize, iconSize))
+        save_file_button.setFixedSize(button_width, button_height)
 
         graphic_serial = QPushButton("Grafico Serial")
         graphic_serial.setIcon(QIcon("icons/graphic.png"))
@@ -366,7 +371,7 @@ class WebViewer(QMainWindow):
         button_layout.addWidget(button_upload)
         button_layout.addWidget(new_upload)
         button_layout.addWidget(open_upload)
-        button_layout.addWidget(save_upload)
+        button_layout.addWidget(save_file_button)
         button_layout.addWidget(label_placas)
         button_layout.addWidget(self.combo)
         button_layout.addWidget(label_puertos)
@@ -386,6 +391,9 @@ class WebViewer(QMainWindow):
         new_upload.clicked.connect(self.open_new_file_window)
 
         self.ports_menu.aboutToShow.connect(self.update_ports_menu)
+
+        #Guardado de archivos
+        save_file_button.clicked.connect(self.save_file_as)
 
         # Conectar la señal currentIndexChanged del QComboBox a la función de actualización de menús
         self.combo.currentIndexChanged.connect(self.update_menus)
@@ -437,10 +445,6 @@ class WebViewer(QMainWindow):
             print("El código ha sido guardado en extracted_code.ino")
         else:
             print("La información extraída no es válida.")
-
-    @pyqtSlot(object)
-    def extract_info_from_class(self, info):
-        self.write_to_ino(info)
 
     def action1_triggered(self):
         print("Opción 1 seleccionada")
@@ -681,6 +685,56 @@ class WebViewer(QMainWindow):
     def show_monitor_serial(self):
         self.monitor_window = MainWindow()
         self.monitor_window.show()
+    
+    def save_file_as(self):
+        # Mostrar el diálogo para seleccionar la ubicación y el nombre del archivo
+        file_dialog = QFileDialog(self)
+        file_dialog.setFileMode(QFileDialog.AnyFile)
+        file_dialog.setNameFilter("Archivos INO (*.ino)")
+        file_dialog.setDefaultSuffix(".ino")
+
+        if file_dialog.exec_():
+            # Obtener la ubicación y el nombre del archivo seleccionado por el usuario
+            selected_file = file_dialog.selectedFiles()[0]
+            # Obtener el contenido del archivo .ino desde la página web y guardar
+            self.webview.page().runJavaScript('''
+                var elements = document.getElementsByClassName('hljs cpp'); // Clase para el código C++
+                var info = [];
+                for (var i = 0; i < elements.length; i++) {
+                    info.push(elements[i].innerText);
+                }
+                info;
+            ''', lambda result: self.save_to_file(result, selected_file))
+        else:
+            # El usuario canceló el diálogo
+            QMessageBox.warning(self, "Guardar Cancelado", "La operación de guardar como fue cancelada.")
+
+    def extract_info_from_class(self, result):
+        # Guardar el contenido obtenido en un archivo .ino
+        with open("extracted_code.ino", "w") as file:
+            file.write("\n".join(result))
+
+    def save_to_file(self, result, file_path):
+        # Guardar el contenido obtenido en el archivo seleccionado por el usuario
+        with open(file_path, "w") as file:
+            file.write("\n".join(result))
+        QMessageBox.information(self, "Guardado Exitoso", f"El archivo se guardó correctamente en: {file_path}")
+    
+    def show_code(self):
+        # Ejecutar JavaScript para mostrar el código
+        self.webview.page().runJavaScript('''
+            document.getElementById("code").style.display = "block";
+            document.getElementById("blockly").style.width = "66%";
+            document.getElementById("blockly").style.height = "100%";
+        ''')
+
+    def hide_code(self):
+        # Ejecutar JavaScript para ocultar el código y agrandar Blockly
+        self.webview.page().runJavaScript('''
+            document.getElementById("code").style.display = "none";
+            document.getElementById("blockly").style.width = "100%";
+            document.getElementById("blockly").style.height = "100%";
+        ''')
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
