@@ -1,7 +1,7 @@
 import sys
 import os
 import serial.tools.list_ports
-from PyQt5.QtCore import QThread, QUrl, pyqtSlot, QSize, QTimer, QObject, pyqtSignal
+from PyQt5.QtCore import QThread, QUrl, pyqtSlot, QSize, QTimer, QObject, pyqtSignal, Qt
 from PyQt5.QtWidgets import QMainWindow, QAction, QApplication, QHBoxLayout, QPushButton, QComboBox, QVBoxLayout, QProgressBar, QMenu, QLabel, QTextEdit
 from PyQt5.QtWidgets import QDialog, QLineEdit, QFileDialog, QCheckBox, QMessageBox
 from PyQt5.QtGui import QIcon, QTextCursor, QKeySequence
@@ -11,6 +11,7 @@ import threading
 import time
 import subprocess
 import json
+import webbrowser
 
 from monitor_plotter import MainWindow
 iconSize = 32
@@ -188,7 +189,6 @@ class WebViewer(QMainWindow):
         # Agregar acciones al menú
         action1 = QAction(QIcon("icons/opcion1.png"), "Nuevo", self)
         action2 = QAction(QIcon("icons/opcion2.png"), "Abrir", self)
-        action3 = QAction(QIcon("icons/opcion2.png"), "Ejemplos", self)
         action4 = QAction(QIcon("icons/opcion2.png"), "Guardar", self)
         action5 = QAction(QIcon("icons/opcion2.png"), "Guardar Como", self)
         action7 = QAction(QIcon("icons/opcion2.png"), "Preferencias", self)
@@ -196,24 +196,93 @@ class WebViewer(QMainWindow):
 
         
         action1.triggered.connect(self.open_new_file_window)
+        action2.triggered.connect(self.open_file)
         action4.triggered.connect(self.save_file_as)
         action7.triggered.connect(self.show_preferences_dialog)
         action8.triggered.connect(self.exit_application)
 
         self.menu_export = QMenu("Exportar Como", self)
+        self.menu_examples = QMenu("Ejemplos",self)
+
         
         # Agregar acciones al menú de exportación como
         self.action61 = QAction(".ino")
         self.action62 = QAction(".py")
         self.action63 = QAction(".ps")
 
+        # SubMenu
+        submenu_arduino = QMenu("Arduino", self)
+        submenu_modular_v1 = QMenu("Modular", self)
+        submenu_robot_betto = QMenu("Robot Betto", self)
+        submenu_carlitto = QMenu("Robot Carlitto", self)
+        submenu_blass = QMenu("Robot Blass", self)
+
+        # Ejemplos
+        action_arduino_example1 = QAction("Variables", self)
+        action_arduino_example2 = QAction("Variables de texto", self)
+        action_arduino_example3 = QAction("Variables Serial", self)
+        action_arduino_example4 = QAction("Parpadeo Led", self)
+        action_arduino_example5 = QAction("Parpadeo 3 Led", self)
+        action_arduino_example6 = QAction("Parpadeo Led Bucle For", self)
+        action_arduino_example7 = QAction("Jinete Led", self)
+        action_arduino_example8 = QAction("Desvanecido Led", self)
+        action_arduino_example9 = QAction("Contador Serial", self)
+        action_arduino_example10 = QAction("Interruptor Led Serial", self)
+        submenu_arduino.addAction(action_arduino_example1)
+        submenu_arduino.addAction(action_arduino_example2)
+        submenu_arduino.addAction(action_arduino_example3)
+        submenu_arduino.addAction(action_arduino_example4)
+        submenu_arduino.addAction(action_arduino_example5)
+        submenu_arduino.addAction(action_arduino_example6)
+        submenu_arduino.addAction(action_arduino_example7)
+        submenu_arduino.addAction(action_arduino_example8)
+        submenu_arduino.addAction(action_arduino_example9)
+        submenu_arduino.addAction(action_arduino_example10)
+
+        action_arduino_example1.triggered.connect(lambda: self.open_example("Arduino/01-variables.bly"))
+        action_arduino_example2.triggered.connect(lambda: self.open_example("Arduino/02-variables-text.bly"))
+        action_arduino_example3.triggered.connect(lambda: self.open_example("Arduino/03-variables-serial.bly"))
+        action_arduino_example4.triggered.connect(lambda: self.open_example("Arduino/04-led-blink.bly"))
+        action_arduino_example5.triggered.connect(lambda: self.open_example("Arduino/05-led-blink-3.bly"))
+        action_arduino_example6.triggered.connect(lambda: self.open_example("Arduino/06-led-blink-for.bly"))
+        action_arduino_example7.triggered.connect(lambda: self.open_example("Arduino/07-led-knight-rider.bly"))
+        action_arduino_example8.triggered.connect(lambda: self.open_example("Arduino/08-led-fade.bly"))
+        action_arduino_example9.triggered.connect(lambda: self.open_example("Arduino/09-serial-counter.bly"))
+        action_arduino_example10.triggered.connect(lambda: self.open_example("Arduino/10-serial-led-switch.bly"))
+
+
+        action_modular_v1_example1 = QAction("Parpadeo Led", self)
+        submenu_modular_v1.addAction(action_modular_v1_example1)
+        action_modular_v1_example1.triggered.connect(lambda: self.open_example("Modular/blink.bly"))
+
+        action_robot_betto_example1 = QAction("Por añadir", self)
+        submenu_robot_betto.addAction(action_robot_betto_example1)
+        action_robot_betto_example1.setEnabled(False)
+
+        action_carlitto_example1 = QAction("Por añadir", self)
+        submenu_carlitto.addAction(action_carlitto_example1)
+        action_carlitto_example1.setEnabled(False)
+
+        action_blass_example1 = QAction("Por añadir", self)
+        submenu_blass.addAction(action_blass_example1)
+        action_blass_example1.setEnabled(False)
+
+        self.menu_examples.addMenu(submenu_arduino)
+        self.menu_examples.addMenu(submenu_modular_v1)
+        self.menu_examples.addMenu(submenu_robot_betto)
+        self.menu_examples.addMenu(submenu_carlitto)
+        self.menu_examples.addMenu(submenu_blass)
+
         self.menu_export.addAction(self.action61)
         self.menu_export.addAction(self.action62)
         self.menu_export.addAction(self.action63)
 
+        self.action62.setEnabled(False)
+        self.action63.setEnabled(False)
+
         menu.addAction(action1)
         menu.addAction(action2)
-        menu.addAction(action3)
+        menu.addMenu(self.menu_examples)
         menu.addAction(action4)
         menu.addAction(action5)
         menu.addMenu(self.menu_export)
@@ -259,14 +328,12 @@ class WebViewer(QMainWindow):
         self.option1 = QAction("Arduino Uno", self)
         self.option2 = QAction("Arduino Nano", self)
         self.option3 = QAction("Arduino Mega", self)
-        self.option4 = QAction("Modular V1", self)
-        self.option5 = QAction("Robot Betto", self)
+        self.option4 = QAction("Modular", self)
 
         self.placas_menu.addAction(self.option1)
         self.placas_menu.addAction(self.option2)
         self.placas_menu.addAction(self.option3)
         self.placas_menu.addAction(self.option4)
-        self.placas_menu.addAction(self.option5)
 
         # Agregar el menú de puertos COM
         self.ports_menu = QMenu("Puertos COM:", self)
@@ -292,6 +359,13 @@ class WebViewer(QMainWindow):
         action43 = QAction("FAQ", self)
         action44 = QAction("Contactenos", self)
         action45 = QAction("Acerca de", self)
+
+        # Conectar las acciones a las funciones correspondientes
+        action41.triggered.connect(lambda: self.open_link("https://www.ejemplo.com/primeros_pasos"))
+        action42.triggered.connect(lambda: self.open_link("https://www.ejemplo.com/tutoriales"))
+        action43.triggered.connect(lambda: self.open_link("https://www.ejemplo.com/faq"))
+        action44.triggered.connect(lambda: self.open_link("https://wa.me/+51984425782"))
+        action45.triggered.connect(self.show_about_dialog)
         
         # Agregar el menú de herramientas al menú principal
         menu4.addAction(action41)
@@ -351,7 +425,7 @@ class WebViewer(QMainWindow):
         self.combo.addItem("Arduino Uno")
         self.combo.addItem("Arduino Nano")
         self.combo.addItem("Arduino Mega") 
-        self.combo.addItem("Modular V1")
+        self.combo.addItem("Modular")
         self.combo.addItem("Robot Betto")
         self.combo.setFixedSize(button_width, button_height)
         
@@ -388,12 +462,14 @@ class WebViewer(QMainWindow):
         # Conectar botones a funciones
         button_compile.clicked.connect(self.compilar_clicked)
         button_upload.clicked.connect(self.subir_clicked)
+        open_upload.clicked.connect(self.open_file)
         new_upload.clicked.connect(self.open_new_file_window)
 
         self.ports_menu.aboutToShow.connect(self.update_ports_menu)
 
         #Guardado de archivos
         save_file_button.clicked.connect(self.save_file_as)
+        self.action61.triggered.connect(self.export_as_ino)
 
         # Conectar la señal currentIndexChanged del QComboBox a la función de actualización de menús
         self.combo.currentIndexChanged.connect(self.update_menus)
@@ -404,7 +480,6 @@ class WebViewer(QMainWindow):
         self.option2.triggered.connect(lambda: self.combo.setCurrentIndex(1))
         self.option3.triggered.connect(lambda: self.combo.setCurrentIndex(2))
         self.option4.triggered.connect(lambda: self.combo.setCurrentIndex(3))
-        self.option5.triggered.connect(lambda: self.combo.setCurrentIndex(4))
 
         # Conectar las acciones del menú de puertos a la función de actualización del ComboBox de puertos
         self.ports_menu.triggered.connect(lambda action: self.combo_puertos.setCurrentText(action.text()))
@@ -605,14 +680,11 @@ class WebViewer(QMainWindow):
         arduinoDev_folder = os.path.dirname(arduinoDev)
         folder_actual = os.getcwd()
 
-        #command = f"{arduinoDev_folder}/arduino-builder -compile -logger=machine -hardware {arduinoDev_folder}/hardware -tools {arduinoDev_folder}/tools-builder -tools {arduinoDev_folder}/hardware/tools/avr -built-in-libraries {arduinoDev_folder}/libraries -libraries 'D:/Programas/OneDrive - Instituto Superior Tecnológico Tecsup/Documentos/Arduino/libraries' -fqbn arduino:avr:uno -vid-pid 1A86_7523 -ide-version=10815 -build-path D:/Proyectos/modulinoQt/build -warnings=none -build-cache {arduinoDev_folder}/Temp/arduino_cache -prefs=build.warn_data_percentage=75 -prefs=runtime.tools.arduinoOTA.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.arduinoOTA-1.3.0.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avrdude.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avrdude-6.3.0-arduino17.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avr-gcc.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avr-gcc-7.3.0-atmel3.6.1-arduino7.path={arduinoDev_folder}/hardware/tools/avr -verbose D:/Proyectos/modulinoQt/extracted_code.ino"
-
         command = f'''{arduinoDev_folder}/arduino-builder -compile -logger=machine -hardware {arduinoDev_folder}/hardware -tools {arduinoDev_folder}/tools-builder -tools {arduinoDev_folder}/hardware/tools/avr -built-in-libraries {arduinoDev_folder}/libraries -fqbn arduino:avr:uno -vid-pid 1A86_7523 -ide-version=10815 -build-path {folder_actual}/build -warnings=none -build-cache {folder_actual}/Temp/arduino_cache_914083 -prefs=build.warn_data_percentage=75 -prefs=runtime.tools.arduinoOTA.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.arduinoOTA-1.3.0.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avrdude.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avrdude-6.3.0-arduino17.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avr-gcc.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avr-gcc-7.3.0-atmel3.6.1-arduino7.path={arduinoDev_folder}/hardware/tools/avr -verbose {folder_actual}/extracted_code.ino'''
         print(command)
         self.runner_com = CommandRunner(command)
         self.runner_com.output_received.connect(self.updateOutput)
         self.runner_com.start()
-        # Iniciar el temporizador para llenar la barra de progreso del 80% al 100%
         self.progress_timer_2 = QTimer(self)
         self.progress_timer_2.timeout.connect(self.update_progress_2)
         self.progress_timer_2.start(200)
@@ -631,7 +703,7 @@ class WebViewer(QMainWindow):
         cpu_mapping = {
             'Arduino Uno': {'TEXT_CPU': 'atmega328p', 'PROCESSOR': 'arduino', 'BAUD': '115200'},
             'Arduino Nano': {'TEXT_CPU': 'atmega328p', 'PROCESSOR': 'arduino', 'BAUD': '115200'},
-            'Modular V1': {'TEXT_CPU': 'atmega328p', 'PROCESSOR': 'arduino', 'BAUD': '115200'},
+            'Modular': {'TEXT_CPU': 'atmega328p', 'PROCESSOR': 'arduino', 'BAUD': '115200'},
             'Robot Betto': {'TEXT_CPU': 'atmega328p', 'PROCESSOR': 'arduino', 'BAUD': '115200'},
             'Arduino Mega': {'TEXT_CPU': 'atmega2560', 'PROCESSOR': 'wiring', 'BAUD': '115200'}
         }
@@ -687,24 +759,23 @@ class WebViewer(QMainWindow):
         self.monitor_window.show()
     
     def save_file_as(self):
+        
+        initial_dir = os.path.join(os.getcwd(), "saves")
+
         # Mostrar el diálogo para seleccionar la ubicación y el nombre del archivo
         file_dialog = QFileDialog(self)
         file_dialog.setFileMode(QFileDialog.AnyFile)
-        file_dialog.setNameFilter("Archivos INO (*.ino)")
-        file_dialog.setDefaultSuffix(".ino")
+        file_dialog.setNameFilter("Archivos BLY (*.bly)")
+        file_dialog.setDefaultSuffix(".bly")
+        file_dialog.setDirectory(initial_dir)
 
         if file_dialog.exec_():
             # Obtener la ubicación y el nombre del archivo seleccionado por el usuario
             selected_file = file_dialog.selectedFiles()[0]
-            # Obtener el contenido del archivo .ino desde la página web y guardar
+            # Obtener el contenido del archivo .bly desde la página web y guardar
             self.webview.page().runJavaScript('''
-                var elements = document.getElementsByClassName('hljs cpp'); // Clase para el código C++
-                var info = [];
-                for (var i = 0; i < elements.length; i++) {
-                    info.push(elements[i].innerText);
-                }
-                info;
-            ''', lambda result: self.save_to_file(result, selected_file))
+            var xml = Blockly.Xml.domToPrettyText(Blockly.Xml.workspaceToDom(Blockly.getMainWorkspace()));
+            xml;''', lambda result: self.save_to_file(result, selected_file))
         else:
             # El usuario canceló el diálogo
             QMessageBox.warning(self, "Guardar Cancelado", "La operación de guardar como fue cancelada.")
@@ -715,9 +786,10 @@ class WebViewer(QMainWindow):
             file.write("\n".join(result))
 
     def save_to_file(self, result, file_path):
+        print(result)
         # Guardar el contenido obtenido en el archivo seleccionado por el usuario
         with open(file_path, "w") as file:
-            file.write("\n".join(result))
+            file.write(result)
         QMessageBox.information(self, "Guardado Exitoso", f"El archivo se guardó correctamente en: {file_path}")
     
     def show_code(self):
@@ -735,12 +807,131 @@ class WebViewer(QMainWindow):
             document.getElementById("blockly").style.width = "100%";
             document.getElementById("blockly").style.height = "100%";
         ''')
+    
+    def open_file(self):
+        # Mostrar un cuadro de diálogo para seleccionar el archivo
+        file_dialog = QFileDialog(self)
+        file_dialog.setNameFilter("Archivos BLY (*.bly)")  # Filtro para archivos .bly
+        file_dialog.setFileMode(QFileDialog.ExistingFile)
+        initial_dir_open = os.path.join(os.getcwd(), "examples")
+        file_dialog.setDirectory(initial_dir_open)
+
+        if file_dialog.exec_():
+            # Obtener la ruta del archivo seleccionado
+            selected_files = file_dialog.selectedFiles()
+
+            # Verificar si se seleccionó algún archivo
+            if selected_files:
+                file_path = selected_files[0]
+
+                # Leer el contenido del archivo
+                with open(file_path, "r") as file:
+                    content = file.read().replace('\n','')
+
+                self.open_new_file_window_content(content=content)
+
+    def open_new_file_window_content(self, content):
+        # Crear una nueva instancia de la ventana para el nuevo archivo
+        self.new_file_window = WebViewer()
+        self.new_file_window.loadLocalFile('index.html')
+        self.new_file_window.show()
+        self.new_file_window.webview.loadFinished.connect(lambda ok: self.run_javascript_after_load(ok, content))
+
+    def run_javascript_after_load(self, ok, content):
+        if ok:
+            self.new_file_window.webview.page().runJavaScript(f'''
+                var xml = '{content}';
+                Blockly.mainWorkspace.clear();
+                Blockly.Xml.domToWorkspace(Blockly.getMainWorkspace(), Blockly.Xml.textToDom(xml));''')
+
+    def export_as_ino(self):
+        initial_dir = os.path.join(os.getcwd(), "saves")
+
+        # Mostrar el diálogo para seleccionar la ubicación y el nombre del archivo
+        file_dialog = QFileDialog(self)
+        file_dialog.setFileMode(QFileDialog.AnyFile)
+        file_dialog.setNameFilter("Archivos INO (*.ino)")
+        file_dialog.setDefaultSuffix(".ino")
+        file_dialog.setDirectory(initial_dir)
+
+        if file_dialog.exec_():
+            # Obtener la ubicación y el nombre del archivo seleccionado por el usuario
+            selected_file = file_dialog.selectedFiles()[0]
+            # Obtener el contenido del archivo .bly desde la página web y guardar
+            self.webview.page().runJavaScript('''
+            var xml = Blockly.Xml.domToPrettyText(Blockly.Xml.workspaceToDom(Blockly.getMainWorkspace()));
+            xml;''', lambda result: self.save_to_ino(result, selected_file))
+        else:
+            # El usuario canceló el diálogo
+            QMessageBox.warning(self, "Guardar Cancelado", "La operación de guardar como INO fue cancelada.")
+
+    def save_to_ino(self, result, file_path):
+        # Guardar el contenido obtenido en el archivo seleccionado por el usuario
+        with open(file_path, "w") as file:
+            file.write(result)
+        QMessageBox.information(self, "Guardado Exitoso", f"El archivo se guardó correctamente como INO en: {file_path}")
+
+    def show_about_dialog(self):
+        # Crear el cuadro de diálogo "Acerca de"
+        about_dialog = QMessageBox()
+        about_dialog.setWindowTitle("Acerca de Fab Blocks IDE")
+        about_dialog.setWindowIcon(QIcon("icons/codigo.ico"))
+
+        # Texto con formato HTML
+        about_text = ("<p style='font-size: 14px; text-align: center;'>"
+                    "<img src='icons/codigo.ico' width='64' height='64' /><br>"
+                    "<b>Fab Blocks IDE</b><br>"
+                    "Versión: 0.2<br>"
+                    "Desarrollado por: Codigo SAC<br><br>"
+                    "Fab Blocks IDE es una aplicación para el desarrollo de proyectos "
+                    "de electrónica y programación.<br><br>"
+                    "Sitio web: <a href='https://fablab.pe/cursos'>https://fablab.pe/cursos</a><br>"
+                    "Soporte: <a href='mailto:coaquiraleonardo19@gmail.com'>coaquiraleonardo19@gmail.com</a>"
+                    "</p>")
+
+        about_dialog.setText(about_text)
+        about_dialog.setTextFormat(Qt.RichText)
+
+        # Crear un botón "OK"
+        ok_button = QPushButton("OK")
+        ok_button.setStyleSheet("background-color: #007BFF; color: white; font-weight: bold; border: none;")
+        ok_button.clicked.connect(about_dialog.accept)
+
+        # Crear un layout vertical y agregar los elementos al cuadro de diálogo
+        layout = QVBoxLayout()
+        layout.addWidget(ok_button)
+        layout.setAlignment(Qt.AlignCenter)
+
+        about_dialog.setLayout(layout)
+
+        # Mostrar el cuadro de diálogo
+        about_dialog.exec_()
+        
+    def open_link(self,url):
+        webbrowser.open(url)
+    
+    def open_example(self, example_filename):
+        # Construir la ruta completa del ejemplo dentro de la carpeta "examples/"
+        example_path = os.path.join("examples", example_filename)
+
+        # Verificar si el archivo del ejemplo existe
+        if os.path.exists(example_path):
+            # Leer el contenido del archivo del ejemplo
+            with open(example_path, "r") as file:
+                content = file.read().replace('\n','')
+
+            self.open_new_file_window_content(content=content)
+        else:
+            print(f"El archivo del ejemplo en la ruta {example_path} no existe.")
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     config_manager = ConfigManager()
     viewer = WebViewer()
     viewer.show()
-    shortcut = QShortcut(QKeySequence("Ctrl+Q"), viewer)
-    shortcut.activated.connect(viewer.exit_application)
+    about_shortcut = QShortcut(QKeySequence("Ctrl+H"), viewer)
+    about_shortcut.activated.connect(viewer.show_about_dialog)
+    exit_shortcut = QShortcut(QKeySequence("Ctrl+Q"), viewer)
+    exit_shortcut.activated.connect(viewer.exit_application)
     sys.exit(app.exec_())
