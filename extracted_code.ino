@@ -1,7 +1,7 @@
 #include <Modular.h>
 
 /***   Global variables   ***/
-digitalOutput name(2);
+digitalOutput name(3);
 
 /***   Function declaration   ***/
 
@@ -14,6 +14,8 @@ void setup()
 
 void loop()
 {
-    name.write(!name.read);
+    name.write(HIGH);
 
 }
+
+/***   Function definition   ***/
