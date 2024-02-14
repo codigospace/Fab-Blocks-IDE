@@ -1,0 +1,7 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <block type="controls_setupLoop" id="1" deletable="false" x="0" y="0"></block>
+  <block type="procedures_defnoreturn" id="28" x="78" y="76">
+    <mutation></mutation>
+    <field name="NAME">function_without_return</field>
+  </block>
+</xml>
