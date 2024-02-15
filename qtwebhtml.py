@@ -879,15 +879,17 @@ class WebViewer(QMainWindow):
 
         # Texto con formato HTML
         about_text = ("<p style='font-size: 14px; text-align: center;'>"
-                    "<img src='icons/codigo.ico' width='64' height='64' /><br>"
-                    "<b>Fab Blocks IDE</b><br>"
-                    "Versión: 0.2<br>"
-                    "Desarrollado por: Codigo SAC<br><br>"
-                    "Fab Blocks IDE es una aplicación para el desarrollo de proyectos "
-                    "de electrónica y programación.<br><br>"
-                    "Sitio web: <a href='https://fablab.pe/cursos'>https://fablab.pe/cursos</a><br>"
-                    "Soporte: <a href='mailto:coaquiraleonardo19@gmail.com'>coaquiraleonardo19@gmail.com</a>"
-                    "</p>")
+              "<img src='icons/codigo.ico' width='64' height='64' /><br>"
+              "<b>Fab Blocks IDE</b><br>"
+              "<br>Versión: 0.2<br>"
+              "Fecha de lanzamiento: 15 de febrero de 2024<br>"
+              "Desarrollado por: Codigo SAC<br><br>"
+              "En Fab Blocks IDE se pueden configurar módulos, que son dispositivos que permiten la programación de Arduino con actuadores y sensores mediante Modular, nuestra propia interfaz de programación<br><br>"
+              "Sitio web: <a href='https://fablab.pe/cursos'>https://fablab.pe/cursos</a><br><br>"
+              "Soporte: <a href='mailto:coaquiraleonardo19@gmail.com'>coaquiraleonardo19@gmail.com</a><br>"
+              "Programador: <a href='https://www.linkedin.com/in/leonardo-coaquira-b3490a25a/'>Leonardo Coaquira</a><br>"
+              "</p>"
+              )
 
         about_dialog.setText(about_text)
         about_dialog.setTextFormat(Qt.RichText)
