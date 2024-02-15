@@ -472,7 +472,9 @@
                 LANG_SERVO_MOVE_TOOLTIP: 'Move between 0~180 degree',
                 LANG_SERVO_WARNING: 'It is not possible to set the servo pin using a variable',
                 //MODULAR blocks :
-                LANG_CATEGORY_MODULAR: 'Modular'
+                LANG_CATEGORY_MODULAR: 'Modular',
+                //MODULAR blocks :
+                LANG_CATEGORY_BETTO: 'Betto'
             };
             // Node
             if (typeof module !== 'undefined' && module.exports) {
@@ -905,7 +907,9 @@
                 LANG_SERVO_MOVE_TOOLTIP: 'Mover el servo entre 0 y 180 grados.',
                 LANG_SERVO_WARNING: 'No puedes asignar una variable al pin del servo',
                 //MODULAR blocks :
-                LANG_CATEGORY_MODULAR: 'Modular'
+                LANG_CATEGORY_MODULAR: 'Modular',
+                //BETTO blocks :
+                LANG_CATEGORY_BETTO: 'Betto'
             };
             // Node
             if (typeof module !== 'undefined' && module.exports) {
@@ -994,6 +998,7 @@
         RoboBlocks.LANG_COLOUR_TEXT = '#42A3CE';
         RoboBlocks.LANG_COLOUR_COMMUNICATION = '#4263CE';
         RoboBlocks.LANG_COLOUR_MODULAR = '#007fff';
+        RoboBlocks.LANG_COLOUR_BETTO = '#007fff';
         RoboBlocks.LANG_COLOUR_ADVANCED = '#9142CE';
         RoboBlocks.LANG_COLOUR_VARIABLES = '#B244CC';
         RoboBlocks.LANG_COLOUR_PROCEDURES = '#CE42B3';
@@ -1008,9 +1013,10 @@
             RoboBlocks.LANG_COLOUR_TEXT = colorArray[7];
             RoboBlocks.LANG_COLOUR_COMMUNICATION = colorArray[8];
             RoboBlocks.LANG_COLOUR_MODULAR = colorArray[9];
-            RoboBlocks.LANG_COLOUR_ADVANCED = colorArray[10];
-            RoboBlocks.LANG_COLOUR_VARIABLES = colorArray[11];
-            RoboBlocks.LANG_COLOUR_PROCEDURES = colorArray[12];
+            RoboBlocks.LANG_COLOUR_BETTO = colorArray[10];
+            RoboBlocks.LANG_COLOUR_ADVANCED = colorArray[11];
+            RoboBlocks.LANG_COLOUR_VARIABLES = colorArray[12];
+            RoboBlocks.LANG_COLOUR_PROCEDURES = colorArray[13];
         };
         // Source: src/profiles.js
         /*
@@ -2700,6 +2706,58 @@
             return __p
         };
 
+        //BETTO
+        this["JST"]["betto_definitions"] = function(obj) {
+            obj || (obj = {});
+            var __t, __p = '',
+                __e = _.escape;
+            with(obj) {
+                __p += '#include <Betto.h>\n';
+
+            }
+            return __p
+        };
+
+        this["JST"]["mod_def_declare_betto"] = function(obj) {
+            obj || (obj = {});
+            var __t, __p = '',
+                __e = _.escape;
+            with(obj) {
+                __p += 'Betto Betto();\n';
+            }
+            return __p
+        };
+
+        this["JST"]["betto_setups"] = function(obj) {
+            obj || (obj = {});
+            var __t, __p = '',
+                __e = _.escape;
+            with(obj) {
+                __p += 'Betto.init();\n';
+            }
+            return __p
+        };
+
+        this["JST"]["betto_home"] = function(obj) {
+            obj || (obj = {});
+            var __t, __p = '',
+                __e = _.escape;
+            with(obj) {
+                __p += 'Betto.home();\n';
+            }
+            return __p
+        };
+
+        this["JST"]["declare_betto_movement"] = function(obj) {
+            obj || (obj = {});
+            var __t, __p = '',
+                __e = _.escape;
+            with(obj) {
+                __p += 'Betto.' + action + ';\n';
+            }
+            return __p
+        };
+
         var JST = this.JST;
 
         // Source: src/blocks/advanced_conversion/advanced_conversion.js
@@ -2989,19 +3047,10 @@
             dropdown_pin = a['pin'];
 
             if (RoboBlocks.isVariable(dropdown_pin)) {
-                console.log("aca");
                 code += JST['bq_test_setups']({
                     'name_mod': name_mod
                 });
             } else {
-                // Blockly.Arduino.setups_['setup_green_led_' + dropdown_pin] = JST['bq_test_setups']({
-                //     'dropdown_pin': dropdown_pin
-                // });
-                // code += JST['bq_test_definition']({
-                //     'dropdown_mod' : dropdown_mod,
-                //     'dropdown_pin': dropdown_pin,
-                //     'name_mod' : name_mod
-                // });
                 code += JST['bq_test_setups']({
                     'name_mod' : name_mod
                 });
@@ -4125,6 +4174,44 @@
             }
         };
 
+        // BETTO BLOQUES
+        // Source: src/blocks/bq_led/bq_led.js
+        /* global Blockly, options, JST, RoboBlocks */
+        /* jshint sub:true */
+        /**
+         * bq_led code generation
+         * @return {String} Code generated with block parameters
+         */
+        Blockly.Arduino.betto_def_variables = function() {
+            
+            var code = '';
+            Blockly.Arduino.definitions_['define_betto_mod'] = JST['betto_definitions']({});
+            Blockly.Arduino.definitions_['declare_var_mod'] = JST['mod_def_declare_betto']({});
+            
+            code += JST['betto_setups']({});
+
+            return code;
+        };
+        /**
+         * bq_led block definition
+         * @type {Object}
+         */
+        Blockly.Blocks.betto_def_variables = {
+            category: RoboBlocks.locales.getKey('LANG_CATEGORY_BETTO'),
+            tags: ['Betto'],
+            helpUrl: '',
+            /**
+             * bq_led initialization
+             */
+            init: function() {
+                this.setColour(RoboBlocks.LANG_COLOUR_BETTO);
+                this.appendDummyInput().appendField(new Blockly.FieldImage('media/otto.jpg', 50, 50, "*"))
+                .appendField('Declararación de Betto')
+                this.setPreviousStatement(true);
+                this.setNextStatement(true);
+                this.setTooltip(RoboBlocks.locales.getKey('LANG_VARIABLES_GLOBAL_TOOLTIP'));
+            },
+        };
 
         //register with blockly arduino
         Blockly.Arduino.base_delay = function() {
@@ -4153,6 +4240,914 @@
                 this.setNextStatement(true, null);
                 this.setTooltip(RoboBlocks.locales.getKey('LANG_CONTROLS_BASE_DELAY_TOOLTIP'));
             }
+        };
+
+        // COPIA DE LED PRUEBAS para BETTO Movimientos
+        // Source: src/blocks/bq_led/bq_led.js
+        /* global Blockly, options, JST, RoboBlocks */
+        /* jshint sub:true */
+        /**
+         * bq_led code generation
+         * @return {String} Code generated with block parameters
+         */
+        Blockly.Arduino.betto_movs_select = function() {
+            var actions = {
+                '0': 'walk(1,',
+                '1': 'walk(1,',
+                '2': 'turn(1,',
+                '3': 'turn(1,',
+                '4': 'bend(1,',
+                '5': 'bend(1,',
+                '6': 'shakedLeg(1,',
+                '7': 'shakedLeg(1,',
+                '8': 'jump(1,',
+            };
+        
+            var actionKey = this.getFieldValue('ACTION');
+            var action = actions[actionKey];
+            var speed = parseInt(this.getFieldValue('VEL'));
+            var speedValue;
+        
+            switch (speed) {
+                case 0:
+                    speedValue = '1000';
+                    break;
+                case 1:
+                    speedValue = '2000';
+                    break;
+                case 2:
+                    speedValue = '3000';
+                    break;
+                case 3:
+                    speedValue = '750';
+                    break;
+                case 4:
+                    speedValue = '500';
+                    break;
+                case 5:
+                    speedValue = '250';
+                    break;
+                default:
+                    speedValue = '1000';
+            }
+        
+            var code = 'Betto.' + action + speedValue;
+        
+            // Añadir la dirección al final de la llamada de función
+            if (actionKey === '0' || actionKey === '2' || actionKey === '4' || actionKey === '6') {
+                code += ',1';
+            } else if( actionKey === '8' ) {
+                code += '';
+            } else {
+                code += ',-1';
+            }
+        
+            code += ');\n';
+        
+            return code;
+        };
+        
+        
+        /**
+         * bq_led block definition
+         * @type {Object}
+         */
+        Blockly.Blocks.betto_movs_select = {
+            category: RoboBlocks.locales.getKey('LANG_CATEGORY_BETTO'),
+            tags: ['Betto'],
+            helpUrl: '',
+            /**
+             * bq_led initialization
+             */
+            init: function() {
+                this.setColour(RoboBlocks.LANG_COLOUR_MODULAR);
+                this.appendDummyInput('VALUE')
+                .appendField('Movimiento ')
+                .appendField(new Blockly.FieldDropdown([
+                    ['Adelante', '0'],
+                    ['Atras', '1'],
+                    ['Girar a la izquierda', '2'],
+                    ['Girar a la derecha', '3'],
+                    ['Inclinar a la izquierda', '4'],
+                    ['Inclinar a la derecha', '5'],
+                    ['Agitar para la izquierda', '6'],
+                    ['Agitar para la derecha', '7'],
+                    ['Sube', '8'],
+                ]), "ACTION")
+                .appendField('con velocidad')
+                .appendField(new Blockly.FieldDropdown([
+                    ['Normal', '0'],
+                    ['Lento', '1'],
+                    ['Muy Lento', '2'],
+                    ['Rapido', '3'],
+                    ['Muy Rapido', '4'],
+                    ['Demasiado Rapido', '5']
+                ]), "VEL");
+                this.setPreviousStatement(true);
+                this.setNextStatement(true);
+                this.setTooltip(RoboBlocks.locales.getKey('LANG_VARIABLES_GLOBAL_TOOLTIP'));
+            },
+        };
+
+        // COPIA DE LED PRUEBAS para BETTO Movimientos
+        // Source: src/blocks/bq_led/bq_led.js
+        /* global Blockly, options, JST, RoboBlocks */
+        /* jshint sub:true */
+        /**
+         * bq_led code generation
+         * @return {String} Code generated with block parameters
+         */
+        Blockly.Arduino.betto_movs_select_dance = function() {
+            var actions = {
+                '0': 'moonwalker(1,',
+                '1': 'moonwalker(1,',
+                '2': 'crusaito(1,',
+                '3': 'crusaito(1,',
+                '4': 'flapping(1,',
+                '5': 'flapping(1,',
+            };
+        
+            var actionKey = this.getFieldValue('ACTION');
+            var action = actions[actionKey];
+            var speed = parseInt(this.getFieldValue('VEL'));
+            var speedValue;
+            var size = parseInt(this.getFieldValue('SIZE')); // Obtener el tamaño seleccionado
+        
+            // Determinar el valor de velocidad basado en la selección
+            switch (speed) {
+                case 0:
+                    speedValue = '1000';
+                    break;
+                case 1:
+                    speedValue = '2000';
+                    break;
+                case 2:
+                    speedValue = '3000';
+                    break;
+                case 3:
+                    speedValue = '750';
+                    break;
+                case 4:
+                    speedValue = '500';
+                    break;
+                case 5:
+                    speedValue = '250';
+                    break;
+                default:
+                    speedValue = '1000';
+            }
+        
+            // Determinar el valor de tamaño basado en la selección
+            var sizeValue;
+            switch (size) {
+                case 0:
+                    sizeValue = '25';
+                    break;
+                case 1:
+                    sizeValue = '10';
+                    break;
+                case 2:
+                    sizeValue = '40';
+                    break;
+                default:
+                    sizeValue = '25';
+            }
+        
+            var code = 'betto.' + action + speedValue + ',' + sizeValue; // Añadir tamaño al código
+        
+            // Añadir la dirección al final de la llamada de función
+            if (actionKey === '0' || actionKey === '2' || actionKey === '4' || actionKey === '6') {
+                code += ',1';
+            } else if( actionKey === '8' ) {
+                code += '';
+            } else {
+                code += ',-1';
+            }
+        
+            code += ');\n';
+        
+            return code;
+        };
+        
+        
+        /**
+         * bq_led block definition
+         * @type {Object}
+         */
+        Blockly.Blocks.betto_movs_select_dance = {
+            category: RoboBlocks.locales.getKey('LANG_CATEGORY_BETTO'),
+            tags: ['Betto'],
+            helpUrl: '',
+            /**
+             * bq_led initialization
+             */
+            init: function() {
+                this.setColour(RoboBlocks.LANG_COLOUR_MODULAR);
+                this.appendDummyInput('VALUE')
+                .appendField('Bailar ')
+                .appendField(new Blockly.FieldDropdown([
+                    ['Moonwalk Izquierda', '0'],
+                    ['Moonwalk Derecha', '1'],
+                    ['Crusaito Izquierda', '2'],
+                    ['Crusaito Derecha', '3'],
+                    ['Aleteo Arriba', '4'],
+                    ['Aleteo Abajo', '5'],
+                ]), "ACTION")
+                .appendField('velocidad')
+                .appendField(new Blockly.FieldDropdown([
+                    ['Normal', '0'],
+                    ['Lento', '1'],
+                    ['Muy Lento', '2'],
+                    ['Rapido', '3'],
+                    ['Muy Rapido', '4'],
+                    ['Demasiado Rapido', '5']
+                ]), "VEL")
+                .appendField('tamaño')
+                .appendField(new Blockly.FieldDropdown([
+                    ['Normal', '0'],
+                    ['Pequeño', '1'],
+                    ['Grande', '2']
+                ]), "SIZE");
+                this.setPreviousStatement(true);
+                this.setNextStatement(true);
+                this.setTooltip(RoboBlocks.locales.getKey('LANG_VARIABLES_GLOBAL_TOOLTIP'));
+            },
+        };
+
+        // COPIA DE LED PRUEBAS para BETTO Movimientos MOVE
+        // Source: src/blocks/bq_led/bq_led.js
+        /* global Blockly, options, JST, RoboBlocks */
+        /* jshint sub:true */
+        /**
+         * bq_led code generation
+         * @return {String} Code generated with block parameters
+         */
+        Blockly.Arduino.betto_movs_select_move = function() {
+            var actions = {
+                '0': 'swing(1,',
+                '1': 'updown(1,',
+                '2': 'tiptoeSwing(1,',
+                '3': 'jitter(1,',
+                '4': 'ascendingTurn(1,'
+            };
+        
+            var actionKey = this.getFieldValue('ACTION');
+            var action = actions[actionKey];
+            var speed = parseInt(this.getFieldValue('VEL'));
+            var speedValue;
+            var size = parseInt(this.getFieldValue('SIZE')); // Obtener el tamaño seleccionado
+        
+            // Determinar el valor de velocidad basado en la selección
+            switch (speed) {
+                case 0:
+                    speedValue = '1000';
+                    break;
+                case 1:
+                    speedValue = '2000';
+                    break;
+                case 2:
+                    speedValue = '3000';
+                    break;
+                case 3:
+                    speedValue = '750';
+                    break;
+                case 4:
+                    speedValue = '500';
+                    break;
+                case 5:
+                    speedValue = '250';
+                    break;
+                default:
+                    speedValue = '1000';
+            }
+        
+            // Determinar el valor de tamaño basado en la selección
+            var sizeValue;
+            switch (size) {
+                case 0:
+                    sizeValue = '25';
+                    break;
+                case 1:
+                    sizeValue = '10';
+                    break;
+                case 2:
+                    sizeValue = '40';
+                    break;
+                default:
+                    sizeValue = '25';
+            }
+        
+            var code = 'betto.' + action + speedValue + ',' + sizeValue; // Añadir tamaño al código
+        
+            code += ');\n';
+        
+            return code;
+        };
+        
+        
+        /**
+         * bq_led block definition
+         * @type {Object}
+         */
+        Blockly.Blocks.betto_movs_select_move = {
+            category: RoboBlocks.locales.getKey('LANG_CATEGORY_BETTO'),
+            tags: ['Betto'],
+            helpUrl: '',
+            /**
+             * bq_led initialization
+             */
+            init: function() {
+                this.setColour(RoboBlocks.LANG_COLOUR_MODULAR);
+                this.appendDummyInput('VALUE')
+                .appendField('Mover ')
+                .appendField(new Blockly.FieldDropdown([
+                    ['Meneito', '0'],
+                    ['Sube Baja', '1'],
+                    ['Puntillas y Meneo', '2'],
+                    ['Inquieto', '3'],
+                    ['Giro Ascendente', '4']
+                ]), "ACTION")
+                .appendField('velocidad')
+                .appendField(new Blockly.FieldDropdown([
+                    ['Normal', '0'],
+                    ['Lento', '1'],
+                    ['Muy Lento', '2'],
+                    ['Rapido', '3'],
+                    ['Muy Rapido', '4'],
+                    ['Demasiado Rapido', '5']
+                ]), "VEL")
+                .appendField('tamaño')
+                .appendField(new Blockly.FieldDropdown([
+                    ['Normal', '0'],
+                    ['Pequeño', '1'],
+                    ['Grande', '2']
+                ]), "SIZE");
+                this.setPreviousStatement(true);
+                this.setNextStatement(true);
+                this.setTooltip(RoboBlocks.locales.getKey('LANG_VARIABLES_GLOBAL_TOOLTIP'));
+            },
+        };
+
+        // COPIA DE LED PRUEBAS para BETTO Movimientos SOUND
+        // Source: src/blocks/bq_led/bq_led.js
+        /* global Blockly, options, JST, RoboBlocks */
+        /* jshint sub:true */
+        /**
+         * bq_led code generation
+         * @return {String} Code generated with block parameters
+         */
+        Blockly.Arduino.betto_select_sound = function() {
+            var actions = {
+                '0': 'S_superHappy',
+                '1': 'S_happy',
+                '2': 'S_happy_short',
+                '3': 'S_sad',
+                '4': 'S_confused',
+                '5': 'S_cuddly',
+                '6': 'S_OhOoh',
+                '7': 'S_OhOoh2',
+                '8': 'S_surprise',
+                '9': 'S_connection',
+                '10': 'S_disconnection',
+                '11': 'S_buttonPushed',
+                '12': 'S_mode1',
+                '13': 'S_mode2',
+                '14': 'S_mode3',
+                '15': 'S_sleeping',
+                '16': 'S_fart1',
+                '17': 'S_fart2',
+                '18': 'S_fart3'
+            };
+        
+            var actionKey = this.getFieldValue('ACTION');
+            var action = actions[actionKey];
+        
+            var code = 'betto.sing(' + action;
+        
+            code += ');\n';
+        
+            return code;
+        };
+        
+        
+        /**
+         * bq_led block definition
+         * @type {Object}
+         */
+        Blockly.Blocks.betto_select_sound = {
+            category: RoboBlocks.locales.getKey('LANG_CATEGORY_BETTO'),
+            tags: ['Betto'],
+            helpUrl: '',
+            /**
+             * bq_led initialization
+             */
+            init: function() {
+                this.setColour(RoboBlocks.LANG_COLOUR_MODULAR);
+                this.appendDummyInput('VALUE')
+                .appendField('Mover ')
+                .appendField(new Blockly.FieldDropdown([
+                    ['Feliz', '0'],
+                    ['Alegre', '1'],
+                    ['Content@', '2'],
+                    ['Triste', '3'],
+                    ['Confundid@', '4'],
+                    ['Cariños@', '5'],
+                    ['Oh', '6'],
+                    ['Oohh', '7'],
+                    ['Sorpresa', '8'],
+                    ['Conexion', '9'],
+                    ['Desconexion', '10'],
+                    ['Boton', '11'],
+                    ['Modo 1', '12'],
+                    ['Modo 2', '13'],
+                    ['Modo 3', '14'],
+                    ['Dormir', '15'],
+                    ['Peo 1', '16'],
+                    ['Peo 2', '17'],
+                    ['Peo 3', '18'],
+                ]), "ACTION")
+                this.setPreviousStatement(true);
+                this.setNextStatement(true);
+                this.setTooltip(RoboBlocks.locales.getKey('LANG_VARIABLES_GLOBAL_TOOLTIP'));
+            },
+        };
+
+        // COPIA DE LED PRUEBAS para BETTO Movimientos SOUND
+        // Source: src/blocks/bq_led/bq_led.js
+        /* global Blockly, options, JST, RoboBlocks */
+        /* jshint sub:true */
+        /**
+         * bq_led code generation
+         * @return {String} Code generated with block parameters
+         */
+        Blockly.Arduino.betto_select_sound = function() {
+            var dropdown_otto_sound = this.getFieldValue('otto_note');
+            var dropdown_otto_duration = this.getFieldValue('otto_note_duration');
+
+            var code = 'Betto.sing(' + dropdown_otto_sound +','+ dropdown_otto_duration + ',1);\n';
+            return code;
+        };
+        
+        
+        /**
+         * bq_led block definition
+         * @type {Object}
+         */
+        Blockly.Blocks.betto_select_sound = {
+            category: RoboBlocks.locales.getKey('LANG_CATEGORY_BETTO'),
+            tags: ['Betto'],
+            helpUrl: '',
+            /**
+             * bq_led initialization
+             */
+            init: function() {
+                this.setColour(RoboBlocks.LANG_COLOUR_MODULAR);
+                this.appendDummyInput().appendField("🎼")
+                    .appendField(new Blockly.FieldDropdown([["C₄ | Do₄", "262"], ["D₄ | Re₄", "294"], ["E₄ | Mi₄", "330"], ["F₄ | Fa₄", "349"], ["G₄ | Sol₄", "392"], ["A₄ | La₄", "440"], ["B₄ | Si₄", "494"], ["C₅ | Do₅", "523"], ["D₅ | Re₅", "587"] ,["E₅ | Mi₅", "659"], ["F₅ | Fa₅", "698"], ["G₅ | Sol₅", "784"], ["A₅ | La₅", "880"], ["B₅ | Si₅", "988"], ["C₆ | Do₆", "1047"], ["D₆ | Re₆", "1175"], ["E₆ | Mi₆", "1319"], ["F₆ | Fa₆", "1397"], ["G₆ | Sol₆", "1568"], ["A₆ | La₆", "1760"], ["B₆ | Si₆", "1976"]]), "otto_note");
+                this.appendDummyInput().setAlign(Blockly.ALIGN_RIGHT).appendField(" ")
+                    .appendField(new Blockly.FieldDropdown([["\u266B", "125"], ["\u266A", "250"], ["\u2669", "500"], ["𝅗𝅥", "1000"], ["𝅝", "2000"]]), "otto_note_duration");
+                this.setInputsInline(true);
+                this.setPreviousStatement(true);
+                this.setNextStatement(true);
+                this.setColour("#FF63BB");
+            },
+        };
+
+        // COPIA DE LED PRUEBAS para BETTO Movimientos SOUND 3 campos
+        // Source: src/blocks/bq_led/bq_led.js
+        /* global Blockly, options, JST, RoboBlocks */
+        /* jshint sub:true */
+        /**
+         * bq_led code generation
+         * @return {String} Code generated with block parameters
+         */
+        Blockly.Arduino.betto_select_sound_vars = function() {
+            var Hz1 = Blockly.Arduino.valueToCode(this, 'Hz1', Blockly.Arduino.ORDER_ATOMIC);
+            var duration = Blockly.Arduino.valueToCode(this, 'duration', Blockly.Arduino.ORDER_ATOMIC);
+            var silent = Blockly.Arduino.valueToCode(this, 'silent', Blockly.Arduino.ORDER_ATOMIC);
+          
+            var code = "Otto._tone( " + Hz1 + "," + duration + "," + silent + ");\n";
+            return code;
+        };
+        
+        
+        /**
+         * bq_led block definition
+         * @type {Object}
+         */
+        Blockly.Blocks.betto_select_sound_vars = {
+            category: RoboBlocks.locales.getKey('LANG_CATEGORY_BETTO'),
+            tags: ['Betto'],
+            helpUrl: '',
+            /**
+             * bq_led initialization
+             */
+            init: function() {
+                this.setColour(RoboBlocks.LANG_COLOUR_MODULAR);
+                this.appendDummyInput() .appendField("🎼 Hz")
+                this.appendValueInput("Hz1")
+                this.appendValueInput("duration") .setCheck("Number").appendField("⏰");
+                this.appendValueInput("silent") .setCheck("Number").appendField("🔇");
+                this.setInputsInline(true);
+                this.setPreviousStatement(true);
+                this.setNextStatement(true);
+                this.setColour("#FF63BB");
+            },
+        };
+
+        // COPIA DE LED PRUEBAS para BETTO Movimientos SOUND 5 campos
+        // Source: src/blocks/bq_led/bq_led.js
+        /* global Blockly, options, JST, RoboBlocks */
+        /* jshint sub:true */
+        /**
+         * bq_led code generation
+         * @return {String} Code generated with block parameters
+         */
+        Blockly.Arduino.betto_select_sound_5_vars = function() {
+            var Hz1 = Blockly.Arduino.valueToCode(this, 'Hz1', Blockly.Arduino.ORDER_ATOMIC);
+            var Hz2 = Blockly.Arduino.valueToCode(this, 'Hz2', Blockly.Arduino.ORDER_ATOMIC);
+            var prop = Blockly.Arduino.valueToCode(this, 'prop', Blockly.Arduino.ORDER_ATOMIC);
+            var duration = Blockly.Arduino.valueToCode(this, 'duration', Blockly.Arduino.ORDER_ATOMIC);
+            var silent = Blockly.Arduino.valueToCode(this, 'silent', Blockly.Arduino.ORDER_ATOMIC);
+          
+            var code = "Otto.bendTones( " + Hz1 + "," + Hz2 + "," + prop + "," + duration + "," + silent + ");\n";
+            return code;
+        };
+        
+        
+        /**
+         * bq_led block definition
+         * @type {Object}
+         */
+        Blockly.Blocks.betto_select_sound_5_vars = {
+            category: RoboBlocks.locales.getKey('LANG_CATEGORY_BETTO'),
+            tags: ['Betto'],
+            helpUrl: '',
+            /**
+             * bq_led initialization
+             */
+            init: function() {
+                this.setColour(RoboBlocks.LANG_COLOUR_MODULAR);
+                this.appendDummyInput() .appendField("🎼 Hz1")
+                this.appendValueInput("Hz1")
+                this.appendValueInput("Hz2") .appendField("Hz2");
+                this.appendValueInput("prop") .setCheck("Number").appendField("P");
+                this.appendValueInput("duration") .setCheck("Number").appendField("⏰");
+                this.appendValueInput("silent") .setCheck("Number").appendField("🔇");
+                this.setInputsInline(true);
+                this.setPreviousStatement(true);
+                this.setNextStatement(true);
+                this.setColour("#FF63BB");
+            },
+        };
+
+        // COPIA DE LED PRUEBAS para BETTO Movimientos Gesto
+        // Source: src/blocks/bq_led/bq_led.js
+        /* global Blockly, options, JST, RoboBlocks */
+        /* jshint sub:true */
+        /**
+         * bq_led code generation
+         * @return {String} Code generated with block parameters
+         */
+        Blockly.Arduino.betto_select_gest = function() {
+            var dropdown_otto_gesture = this.getFieldValue('otto_gesture');
+
+            var code = 'betto.playGesture(' + dropdown_otto_gesture + ');\n';
+            return code;
+        };
+        
+        
+        /**
+         * bq_led block definition
+         * @type {Object}
+         */
+        Blockly.Blocks.betto_select_gest = {
+            category: RoboBlocks.locales.getKey('LANG_CATEGORY_BETTO'),
+            tags: ['Betto'],
+            helpUrl: '',
+            /**
+             * bq_led initialization
+             */
+            init: function() {
+                this.setColour(RoboBlocks.LANG_COLOUR_MODULAR);
+                this.appendDummyInput().appendField(new Blockly.FieldImage('media/otto_emoji.png', 22, 22, "*"))
+                .appendField("Gesto")
+                .appendField(new Blockly.FieldDropdown([
+                    ["😃 Feliz", "BettoSuperHappy"],
+                    ["🙂 Alegre", "BettoHappy"],
+                    ["🙁 Triste", "BettoSad"],
+                    ["😴 Durmiendo", "BettoSleeping"],
+                    ["😕 Confundid@", "BettoConfused"],
+                    [" 😰 Asustad@", "BettoFretful"],
+                    ["😍 Enamorad@", "BettoLove"],
+                    ["😡 Enfadad@", "BettoAngry"],
+                    ["🤩 Magia", "BettoMagic"],
+                    ["😐 Ola", "BettoWave"],
+                    ["😎 Victoria", "BettoVictory"],
+                    ["😞 Fracaso", "BettoFail"],
+                    ["💩 Peo", "BettoFart"]
+                ]), "otto_gesture");
+                this.setInputsInline(true);
+                this.setPreviousStatement(true);
+                this.setNextStatement(true);
+                this.setColour("#4759F5");
+            },
+        };
+
+        //Matriz 8x8
+        Blockly.Arduino.mouth_matrix8x8 = function(block) {
+            var code = '';
+            for (var i=0; i<64; i++) {
+            
+            if (this.getFieldValue('Pixel' + i) != 'rgb(255, 255, 255)') {
+                var on = this.getFieldValue('Pixel' + i)== "TRUE"? "1" : "0";
+                var row= i +1
+                {if  (i >= 0 && i <= 7)row=0}{if  (i >= 8 && i < 16)row=1}{if  (i >= 16 && i < 24)row=2}{if  (i >= 24 && i < 32)row=3}
+                {if  (i >= 32 && i < 40)row=4}{if  (i >= 40 && i < 48)row=5}{if  (i >= 48 && i < 56)row=6}{if  (i >= 56 && i < 64)row=7}
+                var col= i
+                {if  (i > 1 && i <= 7)col=i}{if  (i >= 8 && i < 16)col=i-8}{if  (i >= 16 && i < 24)col=i-16}{if  (i >= 24 && i < 32)col=i-24}
+                {if  (i >= 32 && i < 40)col=i-32}{if  (i >= 40 && i < 48)col=i-40}{if  (i >= 48 && i < 56)col=i-48}{if  (i >= 56 && i < 64)col=i-56}
+                code += ' Betto.setLed('+row+','+col+',' + on + ');'
+            }
+            };
+            for (var i=0; i<8; i++) {if (this.getFieldValue('eyes_pixel' + i) == 'TRUE')row = 0;};
+            return code+'\n';
+        };
+
+        Blockly.Blocks.mouth_matrix8x8 = {  
+            category: RoboBlocks.locales.getKey('LANG_CATEGORY_BETTO'),
+            init: function() {
+            this.appendDummyInput().appendField('  ').appendField(' 0').appendField(' 1').appendField(' 2').appendField('  3').appendField('  4').appendField(' 5').appendField(' 6').appendField(' 7');
+            Blockly.FieldCheckbox.CHECK_CHAR= '🔴';
+            this.appendDummyInput().appendField('0 ')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel0')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel8')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel16')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel24')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel32')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel40')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel48')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel56');
+            this.appendDummyInput().appendField('1 ')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel1')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel9')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel17')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel25')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel33')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel41')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel49')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel57');
+            this.appendDummyInput().appendField('2 ')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel2')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel10')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel18')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel26')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel34')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel42')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel50')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel58');
+            this.appendDummyInput().appendField('3 ')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel3')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel11')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel19')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel27')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel35')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel43')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel51')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel59');
+            this.appendDummyInput().appendField('4 ')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel4')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel12')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel20')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel28')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel36')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel44')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel52')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel60');
+            this.appendDummyInput().appendField('5 ')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel5')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel13')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel21')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel29')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel37')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel45')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel53')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel61');
+            this.appendDummyInput().appendField('6 ')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel6')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel14')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel22')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel30')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel38')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel46')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel54')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel62');
+            this.appendDummyInput().appendField('7 ')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel7')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel15')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel23')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel31')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel39')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel47')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel55')
+                .appendField(new Blockly.FieldCheckbox("1"), 'Pixel63');
+            this.setInputsInline(false);
+            this.setPreviousStatement(true);
+            this.setNextStatement(true);
+            this.setColour("#B655F5");
+            },
+        };
+
+        // Copia de digital Write 1 argumento true-false para BETTO
+        // Source: src/blocks/inout_digital_write/inout_digital_write.js
+        /* global Blockly, JST, RoboBlocks */
+        /* jshint sub:true */
+        /**
+         * inout_digital_write code generation
+         * @return {String} Code generated with block parameters
+         */
+        Blockly.Arduino.test_inout_digital_write = function() {
+            var code = '';
+            code += JST['betto_home']({});
+            return code;
+        };
+        /**
+         * inout_digital_write block definition
+         * @type {Object}
+         */
+        Blockly.Blocks.test_inout_digital_write = {
+            category: RoboBlocks.locales.getKey('LANG_CATEGORY_BETTO'),
+            helpUrl: RoboBlocks.URL_PIN_FUNC,
+            /**
+             * inout_digital_write initialization
+             */
+            init: function() {
+                this.setColour('#E5BE01');
+                this.appendDummyInput('DUMMY').appendField('Posicion parado');
+                this.setPreviousStatement(true, null);
+                this.setInputsInline(true);
+                this.setNextStatement(true, null);
+                this.setTooltip(RoboBlocks.locales.getKey('LANG_ADVANCED_INOUT_DIGITAL_WRITE_TOOLTIP'));
+            }
+        };
+
+        // Copia de digital Write 1 argumento true-false para BETTO 2
+        // Source: src/blocks/inout_digital_write/inout_digital_write.js
+        /* global Blockly, JST, RoboBlocks */
+        /* jshint sub:true */
+        /**
+         * inout_digital_write code generation
+         * @return {String} Code generated with block parameters
+         */
+        Blockly.Arduino.betto_clear_mouth = function() {
+            var code = '';
+            code += 'Betto.clearMouth();'
+            return code;
+        };
+        /**
+         * inout_digital_write block definition
+         * @type {Object}
+         */
+        Blockly.Blocks.betto_clear_mouth = {
+            category: RoboBlocks.locales.getKey('LANG_CATEGORY_BETTO'),
+            helpUrl: RoboBlocks.URL_PIN_FUNC,
+            /**
+             * inout_digital_write initialization
+             */
+            init: function() {
+                this.setColour('#E5BE01');
+                this.appendDummyInput('DUMMY').appendField('Borrar Boca');
+                this.setPreviousStatement(true, null);
+                this.setInputsInline(true);
+                this.setNextStatement(true, null);
+                this.setTooltip(RoboBlocks.locales.getKey('LANG_ADVANCED_INOUT_DIGITAL_WRITE_TOOLTIP'));
+            }
+        };
+
+        // Mouth
+        Blockly.Blocks.betto_mouth_text = {
+            
+            category: RoboBlocks.locales.getKey('LANG_CATEGORY_BETTO'),
+            init: function() {
+                this.appendDummyInput() .appendField('Texto de boca').appendField(new Blockly.FieldTextInput('I AM OTTO'), 'input');
+                this.setInputsInline(true);
+                this.setPreviousStatement(true);
+                this.setNextStatement(true);
+                this.setColour("#B655F5");
+            }
+        };
+        Blockly.Arduino.betto_mouth_text = function(block) {
+            var text_input = block.getFieldValue('input');
+            var code = 'Betto.writeText('+ '"' + text_input +'"' +',80);\n';
+            return code;
+        };
+
+        // Brightness
+        Blockly.Blocks.betto_mouth_brightness = {
+            category: RoboBlocks.locales.getKey('LANG_CATEGORY_BETTO'),
+            init: function() {
+                this.appendValueInput("brightness")
+                    .setCheck(Number)
+                    .appendField("👄 Brillo de Boca");
+                this.setInputsInline(true);
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#B655F5");
+            }
+        };
+
+        Blockly.Arduino.betto_mouth_brightness = function(block) {
+            var brightness = Blockly.Arduino.valueToCode(block, "brightness", Blockly.Arduino.ORDER_ATOMIC);
+            var code = "Betto.matrixIntensity(" + brightness + ");\n";
+            return code;
+        };
+
+        // Boca
+        Blockly.Blocks.betto_mouth_face = {
+            category: RoboBlocks.locales.getKey('LANG_CATEGORY_BETTO'),
+            init: function() {
+            this.appendDummyInput()  .appendField("👄 Boca").appendField(new Blockly.FieldDropdown([
+                ["😃 Feliz", "happyOpen"], ["🙂 Alegre", "happyClosed"], ["😊 Sonrisa", "smile"], ["😦Triste", "23"], ["🙁 Decaid@","24"], ["😮 Asombrad@","smallSurprise"], ["😲 Sorprendid@","bigSurprise"], ["😕 Confundid@","confused"], ["😛 Lengua","tongueOut"], ["🙃 Tont@ ","culito"], ["😑 Seri@","lineMouth"], ["🙄 Decepcionad@","21"], ["💖 Enamorad@","heart"], ["🦇 Vampiro","vamp1"], ["🦇 Dientes","vamp2"], ["❌ No","xMouth"], ["✅ OK","okMouth"], ["❓ Interrogacion","27"], ["⚡ Trueno","thunder"]
+            ]), "otto9_mouth_choice");
+            this.setInputsInline(true);
+            this.setPreviousStatement(true);
+            this.setNextStatement(true);
+            this.setColour("#B655F5");
+          }
+        };
+        Blockly.Arduino.betto_mouth_face = function(block) {
+          var dropdown_otto9_mouth_choice = block.getFieldValue('otto9_mouth_choice');
+          var code = 'Betto.putMouth(' + dropdown_otto9_mouth_choice + ');\n';
+          return code;
+        };
+
+        // MIC
+        Blockly.Blocks.Sound_sensor2 = {
+            helpUrl: '',
+            category: RoboBlocks.locales.getKey('LANG_CATEGORY_BETTO'),
+            init: function() {
+              var card=window.localStorage.card;
+              this.setColour("#54BCF7");
+              this.appendDummyInput()
+                  .appendField(new Blockly.FieldImage("media/sensor_noise.png",33,33))
+                  .appendField(Blockly.Msg.SOUND_NAME)
+                  .appendField(Blockly.Msg.PIN)
+                  .appendField(new Blockly.FieldDropdown([
+                    ["A0","A0"],
+                    ["A1","A1"],
+                    ["A2","A2"],
+                    ["A3","A3"],
+                    ["A4","A4"],
+                    ["A5","A5"],
+                    ["A6","A6"],
+                    ["A7","A7"]
+                  ]), "PIN_SOUND")
+              this.appendDummyInput()
+            .appendField(new Blockly.FieldDropdown([["Valor (0-1023)", "1"], ["Porcentaje (0-100%)", "0"]]), "OUTPUT_VALUE");
+              this.setOutput(true, 'Number');
+              this.setInputsInline(true);
+              this.setTooltip('Analog sound sensor.Value');
+            }
+          };
+          
+        Blockly.Arduino.Sound_sensor2 = function(block) {
+            var PinSound = block.getFieldValue('PIN_SOUND');
+            var Status = this.getFieldValue('OUTPUT_VALUE');
+              var code;
+              var card=window.localStorage.card;
+          
+                if (card =="MRTnode")
+                    Blockly.Arduino.setups_['setup_analogResolutionESP32'] = 'analogReadResolution(10);\n';
+            
+            
+                //Blockly.Arduino.setups_['setup_input_'+PinPotentiometer] = 'pinMode('+PinPotentiometer+', INPUT);';
+                if(Status=='0')
+                    var code = 'map(analogRead('+PinSound+'),0,1023,0,100)';
+                else
+                    var code = 'analogRead('+PinSound+')';
+          
+            return [code, Blockly.Arduino.ORDER_ATOMIC];
+        };
+        
+        // Ultrasonido
+        Blockly.Blocks.ultrasonic_distance={
+            category: RoboBlocks.locales.getKey('LANG_CATEGORY_BETTO'),
+            init:function(){
+            this.appendDummyInput()
+              .appendField(new Blockly.FieldImage("media/sensor_ultrasound.png",25,15))
+            .appendField("#")	.appendField(new Blockly.FieldDropdown([['1','1'],['2','2'],['3','3'],['4','4']]), "US_NUMBER")
+              .appendField("Distancia en cm");
+            this.setColour("#54BCF7");
+            this.setInputsInline(false);
+            this.setOutput(true, "Number");
+            }
+        };
+        Blockly.Arduino.ultrasonic_distance=function(block){
+            var code;
+            var us_number = this.getFieldValue('US_NUMBER');
+        
+            code = 'ultrasound_distance_simple()';
+            return code;
         };
 
         // Source: src/blocks/base_map/base_map.js
@@ -4464,572 +5459,6 @@
             }
         };
 
-        // // Source: src/blocks/bq_button/bq_button.js
-        // /* global Blockly, options, JST, RoboBlocks */
-        // /* jshint sub:true */
-        // /**
-        //  * bq_button code generation
-        //  * @return {String} Code generated with block parameters
-        //  */
-        // Blockly.Arduino.bq_button = function() {
-        //     var dropdown_pin = Blockly.Arduino.valueToCode(this, 'PIN', Blockly.Arduino.ORDER_ATOMIC);
-        //     var code = '';
-        //     var a = RoboBlocks.findPinMode(dropdown_pin);
-        //     code += a['code'];
-        //     dropdown_pin = a['pin'];
-
-        //     if (RoboBlocks.isVariable(dropdown_pin)) {
-        //         code += JST['bq_button_setups']({
-        //             'dropdown_pin': dropdown_pin,
-        //         });
-        //     } else {
-        //         Blockly.Arduino.setups_['setup_button_' + dropdown_pin] = JST['bq_button_setups']({
-        //             'dropdown_pin': dropdown_pin,
-        //         });
-        //     }
-        //     code += JST['bq_button']({
-        //         'dropdown_pin': dropdown_pin,
-        //     });
-        //     // console.log('code',code);
-        //     return [code, Blockly.Arduino.ORDER_ATOMIC];
-        // };
-        // /**
-        //  * bq_button block definition
-        //  * @type {Object}
-        //  */
-        // Blockly.Blocks.bq_button = {
-        //     category: RoboBlocks.locales.getKey('LANG_CATEGORY_BQ'),
-        //     tags: ['button'],
-        //     helpUrl: RoboBlocks.URL_BUTTON,
-        //     /**
-        //      * bq_button initialization
-        //      **/
-        //     init: function() {
-        //         this.setColour(RoboBlocks.LANG_COLOUR_BQ);
-        //         this.appendValueInput('PIN').appendField(RoboBlocks.locales.getKey('LANG_BQ_BUTTON')).appendField(new Blockly.FieldImage('img/blocks/bqmod05.png', 212 * options.zoom, 139 * options.zoom)).setCheck(Number).appendField(RoboBlocks.locales.getKey('LANG_BQ_BUTTON_PIN')).setAlign(Blockly.ALIGN_RIGHT);
-        //         this.setOutput(true, Boolean);
-        //         this.setTooltip(RoboBlocks.locales.getKey('LANG_BQ_BUTTON_TOOLTIP'));
-        //     }
-        // };
-
-        // // Source: src/blocks/bq_buttons/bq_buttons.js
-        // /* global Blockly, options, JST, RoboBlocks */
-        // /* jshint sub:true */
-
-        // /**
-        //  * bq_buttons code generation
-        //  * @return {String} Code generated with block parameters
-        //  */
-
-
-        // Blockly.Arduino.bq_buttons = function() {
-        //     var dropdown_pin = Blockly.Arduino.valueToCode(this, 'PIN', Blockly.Arduino.ORDER_ATOMIC);
-        //     var code_btn1 = Blockly.Arduino.statementToCode(this, 'BUTN1');
-        //     var code_btn2 = Blockly.Arduino.statementToCode(this, 'BUTN2');
-        //     var code_btn3 = Blockly.Arduino.statementToCode(this, 'BUTN3');
-        //     var code_btn4 = Blockly.Arduino.statementToCode(this, 'BUTN4');
-        //     var code_btn5 = Blockly.Arduino.statementToCode(this, 'BUTN5');
-
-        //     var code = '';
-        //     var a = RoboBlocks.findPinMode(dropdown_pin);
-        //     code += a['code'];
-        //     dropdown_pin = a['pin'];
-
-
-        //     code_btn1 = code_btn1.replace(/&quot;/g, '"');
-        //     code_btn2 = code_btn2.replace(/&quot;/g, '"');
-        //     code_btn3 = code_btn3.replace(/&quot;/g, '"');
-        //     code_btn4 = code_btn4.replace(/&quot;/g, '"');
-        //     code_btn5 = code_btn5.replace(/&quot;/g, '"');
-
-        //     // code_btn1=code_btn1.replace(/&amp;/g,'');
-        //     // code_btn2=code_btn2.replace(/&amp;/g,'');
-        //     // code_btn3=code_btn3.replace(/&amp;/g,'');
-        //     // code_btn4=code_btn4.replace(/&amp;/g,'');
-        //     // code_btn5=code_btn5.replace(/&amp;/g,'');
-
-        //     Blockly.Arduino.definitions_['declare_var_define_buttons' + dropdown_pin] = JST['bq_buttons_definitions_variables']({});
-        //     Blockly.Arduino.definitions_['define_buttons' + dropdown_pin] = JST['bq_buttons_definitions']({
-        //         'dropdown_pin': dropdown_pin
-        //     });
-
-
-        //     code += JST['bq_buttons']({
-        //         'dropdown_pin': dropdown_pin,
-        //         'code_btn1': code_btn1,
-        //         'code_btn2': code_btn2,
-        //         'code_btn3': code_btn3,
-        //         'code_btn4': code_btn4,
-        //         'code_btn5': code_btn5
-        //     });
-
-        //     return code;
-        // };
-
-        // /**
-        //  * bq_buttons block definition
-        //  * @type {Object}
-        //  */
-        // Blockly.Blocks.bq_buttons = {
-        //     category: RoboBlocks.locales.getKey('LANG_CATEGORY_BQ'),
-        //     tags: ['buttons'],
-        //     helpUrl: RoboBlocks.URL_BUTTONS,
-        //     /**
-        //      * bq_buttons initialization
-        //      */
-        //     init: function() {
-        //         this.setColour(RoboBlocks.LANG_COLOUR_BQ);
-        //         this.appendValueInput('PIN')
-        //             .appendField(RoboBlocks.locales.getKey('LANG_BQ_BUTTONS'))
-        //             .appendField(new Blockly.FieldImage('img/blocks/bqmod10.png', 336 * options.zoom, 176 * options.zoom))
-        //             .appendField(RoboBlocks.locales.getKey('LANG_BQ_BUTTONS_PIN'))
-        //             .setCheck(Number);
-        //         this.appendStatementInput('BUTN1')
-        //             .setAlign(Blockly.ALIGN_RIGHT)
-        //             .appendField(RoboBlocks.locales.getKey('LANG_BQ_BUTTONS_BUTTON_A'));
-        //         this.appendStatementInput('BUTN2')
-        //             .setAlign(Blockly.ALIGN_RIGHT)
-        //             .appendField(RoboBlocks.locales.getKey('LANG_BQ_BUTTONS_BUTTON_B'));
-        //         this.appendStatementInput('BUTN3')
-        //             .setAlign(Blockly.ALIGN_RIGHT)
-        //             .appendField(RoboBlocks.locales.getKey('LANG_BQ_BUTTONS_BUTTON_C'));
-        //         this.appendStatementInput('BUTN4')
-        //             .setAlign(Blockly.ALIGN_RIGHT)
-        //             .appendField(RoboBlocks.locales.getKey('LANG_BQ_BUTTONS_BUTTON_D'));
-        //         this.appendStatementInput('BUTN5')
-        //             .setAlign(Blockly.ALIGN_RIGHT)
-        //             .appendField(RoboBlocks.locales.getKey('LANG_BQ_BUTTONS_BUTTON_E'));
-        //         this.setPreviousStatement(true, null);
-        //         this.setNextStatement(true, null);
-        //         this.setTooltip(RoboBlocks.locales.getKey('LANG_BQ_BUTTONS_TOOLTIP'));
-        //     }
-        // };
-
-        // // Source: src/blocks/bq_infrared/bq_infrared.js
-        // /* global Blockly, options,  JST, RoboBlocks */
-        // /* jshint sub:true */
-        // /**
-        //  * bq_infrared code generation
-        //  * @return {String} Code generated with block parameters
-        //  */
-        // Blockly.Arduino.bq_infrared = function() {
-        //     var dropdown_pin = Blockly.Arduino.valueToCode(this, 'PIN', Blockly.Arduino.ORDER_ATOMIC);
-        //     var code = '';
-        //     var a = RoboBlocks.findPinMode(dropdown_pin);
-        //     code += a['code'];
-        //     dropdown_pin = a['pin'];
-
-        //     if (RoboBlocks.isVariable(dropdown_pin)) {
-        //         code += JST['bq_infrared_setups']({
-        //             'dropdown_pin': dropdown_pin
-        //         });
-        //     } else {
-        //         Blockly.Arduino.setups_['setup_infrared_' + dropdown_pin] = JST['bq_infrared_setups']({
-        //             'dropdown_pin': dropdown_pin
-        //         });
-        //     }
-        //     code += JST['bq_infrared']({
-        //         'dropdown_pin': dropdown_pin
-        //     });
-        //     return [code, Blockly.Arduino.ORDER_ATOMIC];
-        // };
-        // /**
-        //  * bq_infrared block definition
-        //  * @type {Object}
-        //  */
-        // Blockly.Blocks.bq_infrared = {
-        //     category: RoboBlocks.locales.getKey('LANG_CATEGORY_BQ'),
-        //     tags: ['infrared'],
-        //     helpUrl: RoboBlocks.URL_IR,
-        //     /**
-        //      * bq_infrared initialization
-        //      */
-        //     init: function() {
-        //         this.setColour(RoboBlocks.LANG_COLOUR_BQ);
-        //         this.appendValueInput('PIN').appendField(RoboBlocks.locales.getKey('LANG_BQ_INFRARED')).appendField(new Blockly.FieldImage('img/blocks/bqmod04.png', 208 * options.zoom, 126 * options.zoom)).appendField(RoboBlocks.locales.getKey('LANG_BQ_INFRARED_PIN')).setCheck(Number);
-        //         this.setOutput(true);
-        //         this.setTooltip(RoboBlocks.locales.getKey('LANG_BQ_INFRARED_TOOLTIP'));
-        //     }
-        // };
-
-        // // Source: src/blocks/bq_joystick/bq_joystick.js
-        // /* global Blockly, options,JST, RoboBlocks */
-        // /* jshint sub:true */
-        // /**
-        //  * bq_joystick code generation
-        //  * @return {String} Code generated with block parameters
-        //  */
-        // Blockly.Arduino.bq_joystick = function() {
-        //     var pinx = Blockly.Arduino.valueToCode(this, 'PINX', Blockly.Arduino.ORDER_ATOMIC);
-        //     var piny = Blockly.Arduino.valueToCode(this, 'PINY', Blockly.Arduino.ORDER_ATOMIC);
-        //     var pinbutton = Blockly.Arduino.valueToCode(this, 'PINBUTTON', Blockly.Arduino.ORDER_ATOMIC);
-        //     var code = '';
-
-        //     var a = RoboBlocks.findPinMode(pinx);
-        //     code += a['code'];
-        //     pinx = a['pin'];
-
-        //     a = RoboBlocks.findPinMode(piny);
-        //     code += a['code'];
-        //     piny = a['pin'];
-
-        //     a = RoboBlocks.findPinMode(pinbutton);
-        //     code += a['code'];
-        //     pinbutton = a['pin'];
-
-
-        //     var name = pinx.substring(0, 3) + '_' + piny.substring(0, 3);
-
-        //     Blockly.Arduino.definitions_['declare_var_internal_readJoystick_array_' + pinx] = 'int _internal_readJoystick_array_' + name + '[3];\n';
-        //     Blockly.Arduino.definitions_['define_joystick' + pinx] = JST['bq_joystick_definitions']({
-        //         'name': name,
-        //         'pinx': pinx,
-        //         'piny': piny,
-        //         'pinbutton': pinbutton
-        //     });
-        //     if (RoboBlocks.isVariable(pinbutton)) {
-        //         code += JST['bq_joystick_setups']({
-        //             'pinbutton': pinbutton
-        //         });
-        //     } else {
-        //         Blockly.Arduino.setups_['setup_joystick_' + pinbutton] = JST['bq_joystick_setups']({
-        //             'pinbutton': pinbutton
-        //         });
-        //     }
-        //     var array = Blockly.Arduino.valueToCode(this, 'POS', Blockly.Arduino.ORDER_ATOMIC);
-        //     code += JST['bq_joystick']({
-        //         'name': name,
-        //         'pinx': pinx,
-        //         'array': array
-        //     });
-        //     return [code, Blockly.Arduino.ORDER_ATOMIC];
-        // };
-        // /**
-        //  * bq_joystick block definition
-        //  * @type {Object}
-        //  */
-        // Blockly.Blocks.bq_joystick = {
-        //     category: RoboBlocks.locales.getKey('LANG_CATEGORY_BQ'),
-        //     tags: ['joystick'],
-        //     helpUrl: RoboBlocks.URL_JOYSTICK,
-        //     /**
-        //      * bq_joystick initialization
-        //      */
-        //     init: function() {
-        //         this.setColour(RoboBlocks.LANG_COLOUR_BQ);
-        //         this.appendDummyInput().appendField(RoboBlocks.locales.getKey('LANG_BQ_JOYSTICK')).appendField(new Blockly.FieldImage('img/blocks/bqmod11.png', 209 * options.zoom, 277 * options.zoom));
-        //         // this.appendValueInput('POS')
-        //         //     .appendField(RoboBlocks.locales.getKey('LANG_BQ_JOYSTICK_POSITION'))
-        //         //     .setAlign(Blockly.ALIGN_RIGHT)
-        //         //     .setCheck(Number);
-        //         this.appendValueInput('PINX').appendField(RoboBlocks.locales.getKey('LANG_BQ_JOYSTICK_PIN_X')).setAlign(Blockly.ALIGN_RIGHT).setCheck(Number);
-        //         this.appendValueInput('PINY').appendField(RoboBlocks.locales.getKey('LANG_BQ_JOYSTICK_PIN_Y')).setAlign(Blockly.ALIGN_RIGHT).setCheck(Number);
-        //         this.appendValueInput('PINBUTTON').appendField(RoboBlocks.locales.getKey('LANG_BQ_JOYSTICK_PIN_BUTTON')).setAlign(Blockly.ALIGN_RIGHT).setCheck(Number);
-        //         this.setOutput(true, Number);
-        //         // this.setPreviousStatement(true, null);
-        //         // this.setNextStatement(true, null);
-        //         this.setTooltip(RoboBlocks.locales.getKey('LANG_BQ_JOYSTICK_TOOLTIP'));
-        //     }
-        // };
-
-        // // Source: src/blocks/bq_led/bq_led.js
-        // /* global Blockly, options, JST, RoboBlocks */
-        // /* jshint sub:true */
-        // /**
-        //  * bq_led code generation
-        //  * @return {String} Code generated with block parameters
-        //  */
-        // Blockly.Arduino.bq_led = function() {
-        //     var dropdown_pin = Blockly.Arduino.valueToCode(this, 'PIN', Blockly.Arduino.ORDER_ATOMIC);
-        //     var dropdown_stat = this.getFieldValue('STAT');
-        //     var code = '';
-
-        //     var a = RoboBlocks.findPinMode(dropdown_pin);
-        //     code += a['code'];
-        //     dropdown_pin = a['pin'];
-
-        //     if (RoboBlocks.isVariable(dropdown_pin)) {
-        //         code += JST['bq_led_setups']({
-        //             'dropdown_pin': dropdown_pin,
-        //             'dropdown_stat': dropdown_stat
-        //         });
-        //     } else {
-        //         Blockly.Arduino.setups_['setup_green_led_' + dropdown_pin] = JST['bq_led_setups']({
-        //             'dropdown_pin': dropdown_pin,
-        //             'dropdown_stat': dropdown_stat
-        //         });
-        //     }
-        //     code += JST['bq_led']({
-        //         'dropdown_pin': dropdown_pin,
-        //         'dropdown_stat': dropdown_stat
-        //     });
-        //     return code;
-        // };
-        // /**
-        //  * bq_led block definition
-        //  * @type {Object}
-        //  */
-        // Blockly.Blocks.bq_led = {
-        //     category: RoboBlocks.locales.getKey('LANG_CATEGORY_BQ'),
-        //     tags: ['led'],
-        //     helpUrl: RoboBlocks.URL_LED,
-        //     /**
-        //      * bq_led initialization
-        //      */
-        //     init: function() {
-        //         this.setColour(RoboBlocks.LANG_COLOUR_BQ);
-        //         this.appendValueInput('PIN').appendField(RoboBlocks.locales.getKey('LANG_BQ_LED')).appendField(new Blockly.FieldImage('img/blocks/bqmod02.png', 208 * options.zoom, 140 * options.zoom)).appendField(RoboBlocks.locales.getKey('LANG_BQ_LED_PIN')).setCheck(Number);
-        //         this.appendDummyInput('').appendField(RoboBlocks.locales.getKey('LANG_BQ_LED_STATE')).appendField(new Blockly.FieldDropdown([
-        //             [RoboBlocks.locales.getKey('LANG_BQ_LED_ON') || 'ON', 'HIGH'],
-        //             [RoboBlocks.locales.getKey('LANG_BQ_LED_OFF') || 'OFF', 'LOW']
-        //         ]), 'STAT').setAlign(Blockly.ALIGN_RIGHT);
-        //         this.setPreviousStatement(true, null);
-        //         this.setNextStatement(true, null);
-        //         this.setTooltip(RoboBlocks.locales.getKey('LANG_BQ_LED_TOOLTIP'));
-        //     }
-        // };
-
-        // // Source: src/blocks/bq_photoresistor/bq_photoresistor.js
-        // /* global Blockly, options, JST, RoboBlocks */
-        // /* jshint sub:true */
-
-        // /**
-        //  * bq_photoresistor code generation
-        //  * @return {String} Code generated with block parameters
-        //  */
-        // //        var code = 'analogRead(' + dropdown_pin + ')';
-        // Blockly.Arduino.bq_photoresistor = function() {
-        //     var dropdown_pin = Blockly.Arduino.valueToCode(this, 'PIN', Blockly.Arduino.ORDER_ATOMIC);
-        //     var code = '';
-        //     var a = RoboBlocks.findPinMode(dropdown_pin);
-        //     code += a['code'];
-        //     dropdown_pin = a['pin'];
-
-        //     code += JST['bq_photoresistor']({
-        //         'dropdown_pin': dropdown_pin
-        //     });
-
-        //     //  code=code.substring(0,code.length-1);
-        //     return [code, Blockly.Arduino.ORDER_ATOMIC];
-        // };
-
-
-        // /**
-        //  * bq_photoresistor block definition
-        //  * @type {Object}
-        //  */
-        // Blockly.Blocks.bq_photoresistor = {
-        //     category: RoboBlocks.locales.getKey('LANG_CATEGORY_BQ'),
-        //     tags: ['photoresistor'],
-        //     helpUrl: RoboBlocks.URL_LDR,
-        //     /**
-        //      * bq_photoresistor initialization
-        //      */
-        //     init: function() {
-        //         this.setColour(RoboBlocks.LANG_COLOUR_BQ);
-        //         this.appendValueInput('PIN')
-        //             .appendField(RoboBlocks.locales.getKey('LANG_BQ_PHOTORESISTOR'))
-        //             .appendField(new Blockly.FieldImage('img/blocks/bqmod01.png', 208 * options.zoom, 140 * options.zoom))
-        //             .appendField(RoboBlocks.locales.getKey('LANG_BQ_PHOTORESISTOR_PIN'))
-        //             .setCheck(Number);
-        //         this.setOutput(true, Number);
-        //         this.setTooltip(RoboBlocks.locales.getKey('LANG_BQ_PHOTORESISTOR_TOOLTIP'));
-        //     }
-        // };
-
-        // // Source: src/blocks/bq_piezo_buzzer/bq_piezo_buzzer.js
-        // /* global Blockly, options, JST, RoboBlocks */
-        // /* jshint sub:true */
-
-        // /**
-        //  * bq_piezo_buzzer code generation
-        //  * @return {String} Code generated with block parameters
-        //  */
-        // Blockly.Arduino.bq_piezo_buzzer = function() {
-        //     var dropdown_pin = Blockly.Arduino.valueToCode(this, 'PIN', Blockly.Arduino.ORDER_ATOMIC) || '';
-        //     var dropdown_stat = this.getFieldValue('STAT') || '';
-        //     var delay_time = Blockly.Arduino.valueToCode(this, 'DURA', Blockly.Arduino.ORDER_ATOMIC) || '';
-        //     var code = '';
-        //     var a = RoboBlocks.findPinMode(dropdown_pin);
-        //     code += a['code'];
-        //     dropdown_pin = a['pin'];
-
-        //     a = RoboBlocks.findPinMode(delay_time);
-        //     code += a['code'];
-        //     delay_time = a['pin'];
-
-
-        //     code += JST['bq_piezo_buzzer']({
-        //         'dropdown_pin': dropdown_pin,
-        //         'dropdown_stat': dropdown_stat,
-        //         'delay_time': delay_time
-        //     });
-
-        //     return code;
-        // };
-
-
-        // /**
-        //  * bq_piezo_buzzer block definition
-        //  * @type {Object}
-        //  */
-        // Blockly.Blocks.bq_piezo_buzzer = {
-        //     category: RoboBlocks.locales.getKey('LANG_CATEGORY_BQ'),
-        //     tags: ['buzzer'],
-        //     helpUrl: RoboBlocks.URL_BUZZER,
-        //     /**
-        //      * bq_piezo_buzzer initialization
-        //      */
-        //     init: function() {
-        //         this.setColour(RoboBlocks.LANG_COLOUR_BQ);
-        //         this.appendDummyInput('')
-        //             .appendField(RoboBlocks.locales.getKey('LANG_BQ_PIEZO_BUZZER'))
-        //             .appendField(new Blockly.FieldImage('img/blocks/bqmod07.png', 208 * options.zoom, 140 * options.zoom));
-        //         this.appendValueInput('PIN')
-        //             .appendField(RoboBlocks.locales.getKey('LANG_BQ_PIEZO_BUZZER_PIN'))
-        //             .setCheck(Number)
-        //             .setAlign(Blockly.ALIGN_RIGHT);
-
-        //         this.appendDummyInput('')
-        //             .appendField(RoboBlocks.locales.getKey('LANG_BQ_PIEZO_BUZZER_TONE'))
-        //             .appendField(new Blockly.FieldDropdown([
-        //                 [RoboBlocks.locales.getKey('LANG_BQ_PIEZO_BUZZER_DO') || 'DO', '261'],
-        //                 [RoboBlocks.locales.getKey('LANG_BQ_PIEZO_BUZZER_RE') || 'RE', '293'],
-        //                 [RoboBlocks.locales.getKey('LANG_BQ_PIEZO_BUZZER_MI') || 'MI', '329'],
-        //                 [RoboBlocks.locales.getKey('LANG_BQ_PIEZO_BUZZER_FA') || 'FA', '349'],
-        //                 [RoboBlocks.locales.getKey('LANG_BQ_PIEZO_BUZZER_SOL') || 'SOL', '392'],
-        //                 [RoboBlocks.locales.getKey('LANG_BQ_PIEZO_BUZZER_LA') || 'LA', '440'],
-        //                 [RoboBlocks.locales.getKey('LANG_BQ_PIEZO_BUZZER_SI') || 'SI', '494']
-        //             ]), 'STAT') //523
-        //             .setAlign(Blockly.ALIGN_RIGHT);
-
-        //         this.appendValueInput('DURA', Number)
-        //             .setCheck(Number)
-        //             .setAlign(Blockly.ALIGN_RIGHT)
-        //             .appendField(RoboBlocks.locales.getKey('LANG_BQ_PIEZO_BUZZER_DURATION'));
-
-        //         this.setPreviousStatement(true, null);
-        //         this.setNextStatement(true, null);
-        //         this.setTooltip(RoboBlocks.locales.getKey('LANG_BQ_PIEZO_BUZZER_TOOLTIP'));
-        //     }
-        // };
-
-
-        // // Source: src/blocks/bq_piezo_buzzerav/bq_piezo_buzzerav.js
-        // /* global Blockly, options, JST, RoboBlocks */
-        // /* jshint sub:true */
-
-        // /**
-        //  * bq_piezo_buzzerav code generation
-        //  * @return {String} Code generated with block parameters
-        //  */
-        // Blockly.Arduino.bq_piezo_buzzerav = function() {
-        //     var dropdown_pin = Blockly.Arduino.valueToCode(this, 'PIN', Blockly.Arduino.ORDER_ATOMIC);
-        //     var Buzztone = Blockly.Arduino.valueToCode(this, 'TONE', Blockly.Arduino.ORDER_ATOMIC);
-        //     var delay_time = Blockly.Arduino.valueToCode(this, 'DURA', Blockly.Arduino.ORDER_ATOMIC);
-        //     var code = '';
-        //     var a = RoboBlocks.findPinMode(dropdown_pin);
-        //     code += a['code'];
-        //     dropdown_pin = a['pin'];
-
-        //     a = RoboBlocks.findPinMode(delay_time);
-        //     code += a['code'];
-        //     delay_time = a['pin'];
-
-        //     a = RoboBlocks.findPinMode(Buzztone);
-        //     code += a['code'];
-        //     Buzztone = a['pin'];
-
-
-        //     code += JST['bq_piezo_buzzerav']({
-        //         'dropdown_pin': dropdown_pin,
-        //         'Buzztone': Buzztone,
-        //         'delay_time': delay_time
-        //     });
-
-        //     return code;
-        // };
-
-
-        // /**
-        //  * bq_piezo_buzzerav block definition
-        //  * @type {Object}
-        //  */
-        // Blockly.Blocks.bq_piezo_buzzerav = {
-        //     category: RoboBlocks.locales.getKey('LANG_CATEGORY_BQ'),
-        //     tags: ['buzzer'],
-        //     helpUrl: RoboBlocks.URL_BUZZER,
-        //     /**
-        //      * bq_piezo_buzzerav initialization
-        //      */
-        //     init: function() {
-        //         this.setColour(RoboBlocks.LANG_COLOUR_BQ);
-        //         this.appendValueInput('PIN')
-        //             .appendField(RoboBlocks.locales.getKey('LANG_BQ_PIEZO_BUZZERAV'))
-        //             .appendField(new Blockly.FieldImage('img/blocks/bqmod08.png', 208 * options.zoom, 140 * options.zoom))
-        //             .appendField(RoboBlocks.locales.getKey('LANG_BQ_PIEZO_BUZZERAV_PIN'))
-        //             .setCheck(Number);
-
-        //         this.appendValueInput('TONE', Number)
-        //             .setCheck(Number)
-        //             .setAlign(Blockly.ALIGN_RIGHT)
-        //             .appendField(RoboBlocks.locales.getKey('LANG_BQ_PIEZO_BUZZERAV_TONE'));
-
-        //         this.appendValueInput('DURA', Number)
-        //             .setCheck(Number)
-        //             .setAlign(Blockly.ALIGN_RIGHT)
-        //             .appendField(RoboBlocks.locales.getKey('LANG_BQ_PIEZO_BUZZERAV_DURATION'));
-
-        //         this.setPreviousStatement(true, null);
-        //         this.setNextStatement(true, null);
-        //         this.setTooltip(RoboBlocks.locales.getKey('LANG_BQ_PIEZO_BUZZERAV_TOOLTIP'));
-        //     }
-        // };
-
-        // Source: src/blocks/bq_potentiometer/bq_potentiometer.js
-        /* global Blockly, options,JST, RoboBlocks */
-        /* jshint sub:true */
-
-        // /**
-        //  * bq_potentiometer code generation
-        //  * @return {String} Code generated with block parameters
-        //  */
-        // Blockly.Arduino.bq_potentiometer = function() {
-        //     var dropdown_pin = Blockly.Arduino.valueToCode(this, 'PIN', Blockly.Arduino.ORDER_ATOMIC);
-        //     var code = '';
-        //     var a = RoboBlocks.findPinMode(dropdown_pin);
-        //     code += a['code'];
-        //     dropdown_pin = a['pin'];
-
-        //     code += JST['bq_potentiometer']({
-        //         'dropdown_pin': dropdown_pin
-        //     });
-
-        //     return [code, Blockly.Arduino.ORDER_ATOMIC];
-        // };
-
-        // /**
-        //  * bq_potentiometer block definition
-        //  * @type {Object}
-        //  */
-        // Blockly.Blocks.bq_potentiometer = {
-        //     category: RoboBlocks.locales.getKey('LANG_CATEGORY_BQ'),
-        //     tags: ['potentiometer'],
-        //     helpUrl: RoboBlocks.URL_POTENTIOMETER,
-        //     /**
-        //      * bq_potentiometer initialization
-        //      */
-        //     init: function() {
-        //         this.setColour(RoboBlocks.LANG_COLOUR_BQ);
-        //         this.appendValueInput('PIN')
-        //             .appendField(RoboBlocks.locales.getKey('LANG_BQ_POTENTIOMETER'))
-        //             .appendField(new Blockly.FieldImage('img/blocks/bqmod06.png', 208 * options.zoom, 139 * options.zoom))
-        //             .appendField(RoboBlocks.locales.getKey('LANG_BQ_POTENTIOMETER_PIN'))
-        //             .setCheck(Number);
-        //         this.setOutput(true, Number);
-        //         this.setTooltip(RoboBlocks.locales.getKey('LANG_BQ_POTENTIOMETER_TOOLTIP'));
-        //     }
-        // };
 
         // Source: src/blocks/bt_serial_available/bt_serial_available.js
         /* global Blockly, JST, RoboBlocks */
@@ -9935,458 +10364,6 @@
                 return false;
             }
         };
-        // // Source: src/blocks/zum_button/zum_button.js
-        // /* global Blockly, options, JST, RoboBlocks */
-        // /* jshint sub:true */
-        // /**
-        //  * zum_button code generation
-        //  * @return {String} Code generated with block parameters
-        //  */
-        // Blockly.Arduino.zum_button = function() {
-        //     var dropdown_pin = Blockly.Arduino.valueToCode(this, 'PIN', Blockly.Arduino.ORDER_ATOMIC);
-        //     var code = '';
-        //     var a = RoboBlocks.findPinMode(dropdown_pin);
-        //     code += a['code'];
-        //     dropdown_pin = a['pin'];
-        //     if (RoboBlocks.isVariable(dropdown_pin)) {
-        //         code += JST['zum_button_setups']({
-        //             'dropdown_pin': dropdown_pin,
-        //         });
-        //     } else {
-        //         Blockly.Arduino.setups_['setup_button_' + dropdown_pin] = JST['zum_button_setups']({
-        //             'dropdown_pin': dropdown_pin,
-        //         });
-        //     }
-        //     code += JST['zum_button']({
-        //         'dropdown_pin': dropdown_pin,
-        //     });
-        //     return [code, Blockly.Arduino.ORDER_ATOMIC];
-        // };
-        // /**
-        //  * zum_button block definition
-        //  * @type {Object}
-        //  */
-        // Blockly.Blocks.zum_button = {
-        //     category: RoboBlocks.locales.getKey('LANG_CATEGORY_ZUM'),
-        //     tags: ['button'],
-        //     helpUrl: RoboBlocks.URL_BUTTON,
-        //     /**
-        //      * zum_button initialization
-        //      */
-        //     init: function() {
-        //         this.setColour(RoboBlocks.LANG_COLOUR_ZUM);
-        //         this.appendValueInput('PIN').appendField(RoboBlocks.locales.getKey('LANG_ZUM_BUTTON')).appendField(new Blockly.FieldImage('img/blocks/zum02.png', 212 * options.zoom, 139 * options.zoom)).appendField(RoboBlocks.locales.getKey('LANG_ZUM_BUTTON_PIN'));
-        //         this.setOutput(true, Boolean);
-        //         this.setTooltip(RoboBlocks.locales.getKey('LANG_ZUM_BUTTON_TOOLTIP'));
-        //     }
-        // };
-
-        // // Source: src/blocks/zum_follower/zum_follower.js
-        // /* global Blockly, options, JST, RoboBlocks */
-        // /* jshint sub:true */
-        // /**
-        //  * zum_follower code generation
-        //  * @return {String} Code generated with block parameters
-        //  */
-        // Blockly.Arduino.zum_follower = function() {
-        //     var dropdown_pin = Blockly.Arduino.valueToCode(this, 'PIN', Blockly.Arduino.ORDER_ATOMIC) || '';
-        //     var NextPIN = Blockly.Arduino.valueToCode(this, 'PIN2', Blockly.Arduino.ORDER_ATOMIC) || '';
-        //     var code_btn1 = Blockly.Arduino.statementToCode(this, 'SENS1');
-        //     code_btn1 = code_btn1.replace(/&quot;/g, '"');
-        //     // code_btn1=code_btn1.replace(/&amp;/g,'');
-        //     var code_btn2 = Blockly.Arduino.statementToCode(this, 'SENS2');
-        //     code_btn2 = code_btn2.replace(/&quot;/g, '"');
-        //     // code_btn2=code_btn2.replace(/&amp;/g,'');
-        //     var code = '';
-        //     var a = RoboBlocks.findPinMode(dropdown_pin);
-        //     code += a['code'];
-        //     dropdown_pin = a['pin'];
-        //     var b = RoboBlocks.findPinMode(NextPIN);
-        //     code += b['code'];
-        //     NextPIN = b['pin'];
-        //     if (RoboBlocks.isVariable(dropdown_pin)) {
-        //         code += JST['zum_follower_setups_pin']({
-        //             'dropdown_pin': dropdown_pin
-        //         });
-        //     } else {
-        //         Blockly.Arduino.setups_['setup_follower_1_' + dropdown_pin] = JST['zum_follower_setups_pin']({
-        //             'dropdown_pin': dropdown_pin
-        //         });
-        //     }
-        //     if (RoboBlocks.isVariable(NextPIN)) {
-        //         code += JST['zum_follower_setups_nextpin']({
-        //             'NextPIN': NextPIN
-        //         });
-        //     } else {
-        //         Blockly.Arduino.setups_['setup_follower_2_' + NextPIN] = JST['zum_follower_setups_nextpin']({
-        //             'NextPIN': NextPIN
-        //         });
-        //     }
-        //     code += JST['zum_follower']({
-        //         'dropdown_pin': dropdown_pin,
-        //         'NextPIN': NextPIN,
-        //         'code_btn1': code_btn1,
-        //         'code_btn2': code_btn2
-        //     });
-        //     return code;
-        // };
-        // /**
-        //  * zum_follower block definition
-        //  * @type {Object}
-        //  */
-        // Blockly.Blocks.zum_follower = {
-        //     category: RoboBlocks.locales.getKey('LANG_CATEGORY_ZUM'),
-        //     tags: ['infrared'],
-        //     helpUrl: RoboBlocks.URL_IR,
-        //     /**
-        //      * zum_follower initialization
-        //      */
-        //     init: function() {
-        //         this.setColour(RoboBlocks.LANG_COLOUR_ZUM);
-        //         this.appendDummyInput('').appendField(RoboBlocks.locales.getKey('LANG_ZUM_FOLLOWER')).appendField(new Blockly.FieldImage('img/blocks/zum06.png', 203 * options.zoom, 165 * options.zoom));
-        //         this.appendValueInput('PIN').setAlign(Blockly.ALIGN_RIGHT).appendField(RoboBlocks.locales.getKey('LANG_ZUM_FOLLOWER_PIN_LEFT'));
-        //         this.appendValueInput('PIN2').setAlign(Blockly.ALIGN_RIGHT).appendField(RoboBlocks.locales.getKey('LANG_ZUM_FOLLOWER_PIN_RIGHT'));
-        //         this.appendStatementInput('SENS1').setAlign(Blockly.ALIGN_RIGHT).appendField(RoboBlocks.locales.getKey('LANG_ZUM_FOLLOWER_LEFT'));
-        //         this.appendStatementInput('SENS2').setAlign(Blockly.ALIGN_RIGHT).appendField(RoboBlocks.locales.getKey('LANG_ZUM_FOLLOWER_RIGHT'));
-        //         this.setPreviousStatement(true, null);
-        //         this.setNextStatement(true, null);
-        //         this.setTooltip(RoboBlocks.locales.getKey('LANG_ZUM_FOLLOWER_TOOLTIP'));
-        //     }
-        // };
-
-        // // Source: src/blocks/zum_infrared/zum_infrared.js
-        // /* global Blockly, options, JST, RoboBlocks */
-        // /* jshint sub:true */
-        // /**
-        //  * zum_infrared code generation
-        //  * @return {String} Code generated with block parameters
-        //  */
-        // Blockly.Arduino.zum_infrared = function() {
-        //     var dropdown_pin = Blockly.Arduino.valueToCode(this, 'PIN', Blockly.Arduino.ORDER_ATOMIC) || '';
-        //     var code = '';
-        //     var a = RoboBlocks.findPinMode(dropdown_pin);
-        //     code += a['code'];
-        //     dropdown_pin = a['pin'];
-        //     if (RoboBlocks.isVariable(dropdown_pin)) {
-        //         code += JST['zum_infrared_setups']({
-        //             'dropdown_pin': dropdown_pin
-        //         });
-        //     } else {
-        //         Blockly.Arduino.setups_['setup_infrared_' + dropdown_pin] = JST['zum_infrared_setups']({
-        //             'dropdown_pin': dropdown_pin
-        //         });
-        //     }
-        //     code += JST['zum_infrared']({
-        //         'dropdown_pin': dropdown_pin
-        //     });
-        //     //  code=code.substring(0,code.length-1);
-        //     return [code, Blockly.Arduino.ORDER_ATOMIC];
-        // };
-        // /**
-        //  * zum_infrared block definition
-        //  * @type {Object}
-        //  */
-        // Blockly.Blocks.zum_infrared = {
-        //     category: RoboBlocks.locales.getKey('LANG_CATEGORY_ZUM'),
-        //     tags: ['infrared'],
-        //     helpUrl: RoboBlocks.URL_IR,
-        //     /**
-        //      * zum_infrared initialization
-        //      */
-        //     init: function() {
-        //         this.setColour(RoboBlocks.LANG_COLOUR_ZUM);
-        //         this.appendValueInput('PIN').appendField(RoboBlocks.locales.getKey('LANG_ZUM_INFRARED')).appendField(new Blockly.FieldImage('img/blocks/zum07.png', 208 * options.zoom, 126 * options.zoom)).appendField(RoboBlocks.locales.getKey('LANG_ZUM_INFRARED_PIN'));
-        //         this.setOutput(true);
-        //         this.setTooltip(RoboBlocks.locales.getKey('LANG_ZUM_INFRARED_TOOLTIP'));
-        //     }
-        // };
-
-        // // Source: src/blocks/zum_led/zum_led.js
-        // /* global Blockly, options, JST, RoboBlocks */
-        // /* jshint sub:true */
-        // /**
-        //  * zum_led code generation
-        //  * @return {String} Code generated with block parameters
-        //  */
-        // Blockly.Arduino.zum_led = function() {
-        //     var dropdown_pin = Blockly.Arduino.valueToCode(this, 'PIN', Blockly.Arduino.ORDER_ATOMIC) || '';
-        //     var dropdown_stat = this.getFieldValue('STAT');
-        //     var code = '';
-        //     var a = RoboBlocks.findPinMode(dropdown_pin);
-        //     code += a['code'];
-        //     dropdown_pin = a['pin'];
-        //     if (RoboBlocks.isVariable(dropdown_pin)) {
-        //         code += JST['zum_led_setups']({
-        //             'dropdown_pin': dropdown_pin,
-        //             'dropdown_stat': dropdown_stat
-        //         });
-        //     } else {
-        //         Blockly.Arduino.setups_['setup_green_led_' + dropdown_pin] = JST['zum_led_setups']({
-        //             'dropdown_pin': dropdown_pin,
-        //             'dropdown_stat': dropdown_stat
-        //         });
-        //     }
-        //     code += JST['zum_led']({
-        //         'dropdown_pin': dropdown_pin,
-        //         'dropdown_stat': dropdown_stat
-        //     });
-        //     return code;
-        // };
-        // /**
-        //  * zum_led block definition
-        //  * @type {Object}
-        //  */
-        // Blockly.Blocks.zum_led = {
-        //     category: RoboBlocks.locales.getKey('LANG_CATEGORY_ZUM'),
-        //     tags: ['led'],
-        //     helpUrl: RoboBlocks.URL_LED,
-        //     /**
-        //      * zum_led initialization
-        //      */
-        //     init: function() {
-        //         this.setColour(RoboBlocks.LANG_COLOUR_ZUM);
-        //         this.appendValueInput('PIN').appendField(RoboBlocks.locales.getKey('LANG_ZUM_LED')).appendField(new Blockly.FieldImage('img/blocks/zum04.png', 208 * options.zoom, 140 * options.zoom)).appendField(RoboBlocks.locales.getKey('LANG_ZUM_LED_PIN'));
-        //         this.appendDummyInput().appendField(RoboBlocks.locales.getKey('LANG_ZUM_LED_STATE')).setAlign(Blockly.ALIGN_RIGHT).appendField(new Blockly.FieldDropdown([
-        //             [RoboBlocks.locales.getKey('LANG_ZUM_LED_ON') || 'ON', 'HIGH'],
-        //             [RoboBlocks.locales.getKey('LANG_ZUM_LED_OFF') || 'OFF', 'LOW']
-        //         ]), 'STAT');
-        //         this.setPreviousStatement(true, null);
-        //         this.setNextStatement(true, null);
-        //         this.setTooltip(RoboBlocks.locales.getKey('LANG_ZUM_LED_TOOLTIP'));
-        //     }
-        // };
-
-        // // Source: src/blocks/zum_photoresistor/zum_photoresistor.js
-        // /* global Blockly, options, JST, RoboBlocks */
-        // /* jshint sub:true */
-
-        // /**
-        //  * zum_photoresistor code generation
-        //  * @return {String} Code generated with block parameters
-        //  */
-        // Blockly.Arduino.zum_photoresistor = function() {
-        //     var dropdown_pin = Blockly.Arduino.valueToCode(this, 'PIN', Blockly.Arduino.ORDER_ATOMIC) || '';
-        //     var code = '';
-        //     var a = RoboBlocks.findPinMode(dropdown_pin);
-        //     code += a['code'];
-        //     dropdown_pin = a['pin'];
-
-
-        //     code += JST['zum_photoresistor']({
-        //         'dropdown_pin': dropdown_pin
-        //     });
-
-        //     //  code=code.substring(0,code.length-1);
-        //     return [code, Blockly.Arduino.ORDER_ATOMIC];
-        // };
-
-
-        // /**
-        //  * zum_photoresistor block definition
-        //  * @type {Object}
-        //  */
-        // Blockly.Blocks.zum_photoresistor = {
-        //     category: RoboBlocks.locales.getKey('LANG_CATEGORY_ZUM'),
-        //     tags: ['photoresistor'],
-        //     helpUrl: RoboBlocks.URL_LDR,
-        //     /**
-        //      * zum_photoresistor initialization
-        //      */
-        //     init: function() {
-        //         this.setColour(RoboBlocks.LANG_COLOUR_ZUM);
-        //         this.appendValueInput('PIN')
-        //             .appendField(RoboBlocks.locales.getKey('LANG_ZUM_PHOTORESISTOR'))
-        //             .appendField(new Blockly.FieldImage('img/blocks/zum05.png', 208 * options.zoom, 126 * options.zoom))
-        //             .appendField(RoboBlocks.locales.getKey('LANG_ZUM_PHOTORESISTOR_PIN'));
-        //         this.setOutput(true, Number);
-        //         this.setTooltip(RoboBlocks.locales.getKey('LANG_ZUM_PHOTORESISTOR_TOOLTIP'));
-        //     }
-        // };
-
-        // // Source: src/blocks/zum_piezo_buzzer/zum_piezo_buzzer.js
-        // /* global Blockly, options, JST, RoboBlocks */
-        // /* jshint sub:true */
-
-        // /**
-        //  * zum_piezo_buzzer code generation
-        //  * @return {String} Code generated with block parameters
-        //  */
-        // Blockly.Arduino.zum_piezo_buzzer = function() {
-        //     var dropdown_pin = Blockly.Arduino.valueToCode(this, 'PIN', Blockly.Arduino.ORDER_ATOMIC) || '';
-        //     var dropdown_stat = this.getFieldValue('STAT');
-        //     var delay_time = Blockly.Arduino.valueToCode(this, 'DURA', Blockly.Arduino.ORDER_ATOMIC);
-
-        //     var code = '';
-        //     var a = RoboBlocks.findPinMode(dropdown_pin);
-        //     code += a['code'];
-        //     dropdown_pin = a['pin'];
-
-        //     a = RoboBlocks.findPinMode(delay_time);
-        //     code += a['code'];
-        //     delay_time = a['pin'];
-
-        //     code += JST['zum_piezo_buzzer']({
-        //         'dropdown_pin': dropdown_pin,
-        //         'dropdown_stat': dropdown_stat,
-        //         'delay_time': delay_time
-        //     });
-
-        //     return code;
-        // };
-
-
-        // /**
-        //  * zum_piezo_buzzer block definition
-        //  * @type {Object}
-        //  */
-        // Blockly.Blocks.zum_piezo_buzzer = {
-        //     category: RoboBlocks.locales.getKey('LANG_CATEGORY_ZUM'),
-        //     tags: ['buzzer'],
-        //     helpUrl: RoboBlocks.URL_BUZZER,
-        //     /**
-        //      * zum_piezo_buzzer initialization
-        //      */
-        //     init: function() {
-        //         this.setColour(RoboBlocks.LANG_COLOUR_ZUM);
-        //         this.appendValueInput('PIN')
-        //             .appendField(RoboBlocks.locales.getKey('LANG_ZUM_PIEZO_BUZZER'))
-        //             .appendField(new Blockly.FieldImage('img/blocks/zum01.png', 208 * options.zoom, 140 * options.zoom))
-        //             .appendField(RoboBlocks.locales.getKey('LANG_ZUM_PIEZO_BUZZER_PIN'));
-        //         this.appendDummyInput()
-        //             .appendField(RoboBlocks.locales.getKey('LANG_ZUM_PIEZO_BUZZER_TONE'))
-        //             .setAlign(Blockly.ALIGN_RIGHT)
-        //             .appendField(new Blockly.FieldDropdown([
-        //                 [RoboBlocks.locales.getKey('LANG_ZUM_PIEZO_BUZZER_DO') || 'DO', '261'],
-        //                 [RoboBlocks.locales.getKey('LANG_ZUM_PIEZO_BUZZER_RE') || 'RE', '293'],
-        //                 [RoboBlocks.locales.getKey('LANG_ZUM_PIEZO_BUZZER_MI') || 'MI', '329'],
-        //                 [RoboBlocks.locales.getKey('LANG_ZUM_PIEZO_BUZZER_FA') || 'FA', '349'],
-        //                 [RoboBlocks.locales.getKey('LANG_ZUM_PIEZO_BUZZER_SOL') || 'SOL', '392'],
-        //                 [RoboBlocks.locales.getKey('LANG_ZUM_PIEZO_BUZZER_LA') || 'LA', '440'],
-        //                 [RoboBlocks.locales.getKey('LANG_ZUM_PIEZO_BUZZER_SI') || 'SI', '494']
-        //             ]), 'STAT'); //523
-        //         this.appendValueInput('DURA', Number)
-        //             .setCheck(Number)
-        //             .setAlign(Blockly.ALIGN_RIGHT)
-        //             .appendField(RoboBlocks.locales.getKey('LANG_ZUM_PIEZO_BUZZER_DURATION'));
-
-        //         this.setPreviousStatement(true, null);
-        //         this.setNextStatement(true, null);
-        //         this.setTooltip(RoboBlocks.locales.getKey('LANG_ZUM_PIEZO_BUZZER_TOOLTIP'));
-        //     }
-        // };
-
-        // // Source: src/blocks/zum_piezo_buzzerav/zum_piezo_buzzerav.js
-        // /* global Blockly, options, JST, RoboBlocks */
-        // /* jshint sub:true */
-
-        // /**
-        //  * zum_piezo_buzzerav code generation
-        //  * @return {String} Code generated with block parameters
-        //  */
-        // Blockly.Arduino.zum_piezo_buzzerav = function() {
-        //     var dropdown_pin = Blockly.Arduino.valueToCode(this, 'PIN', Blockly.Arduino.ORDER_ATOMIC) || '';
-        //     var Buzztone = Blockly.Arduino.valueToCode(this, 'TONE', Blockly.Arduino.ORDER_ATOMIC);
-        //     var delay_time = Blockly.Arduino.valueToCode(this, 'DURA', Blockly.Arduino.ORDER_ATOMIC);
-
-        //     var code = '';
-        //     var a = RoboBlocks.findPinMode(dropdown_pin);
-        //     code += a['code'];
-        //     dropdown_pin = a['pin'];
-
-        //     a = RoboBlocks.findPinMode(Buzztone);
-        //     code += a['code'];
-        //     Buzztone = a['pin'];
-
-        //     a = RoboBlocks.findPinMode(delay_time);
-        //     code += a['code'];
-        //     delay_time = a['pin'];
-
-        //     code += JST['zum_piezo_buzzerav']({
-        //         'dropdown_pin': dropdown_pin,
-        //         'Buzztone': Buzztone,
-        //         'delay_time': delay_time
-        //     });
-
-        //     return code;
-        // };
-
-
-        // /**
-        //  * zum_piezo_buzzerav block definition
-        //  * @type {Object}
-        //  */
-        // Blockly.Blocks.zum_piezo_buzzerav = {
-        //     category: RoboBlocks.locales.getKey('LANG_CATEGORY_ZUM'),
-        //     tags: ['buzzer'],
-        //     helpUrl: RoboBlocks.URL_BUZZER,
-        //     /**
-        //      * zum_piezo_buzzerav initialization
-        //      */
-        //     init: function() {
-        //         this.setColour(RoboBlocks.LANG_COLOUR_ZUM);
-        //         this.appendValueInput('PIN')
-        //             .appendField(RoboBlocks.locales.getKey('LANG_ZUM_PIEZO_BUZZERAV'))
-        //             .appendField(new Blockly.FieldImage('img/blocks/zum01.png', 208 * options.zoom, 140 * options.zoom))
-        //             .appendField(RoboBlocks.locales.getKey('LANG_ZUM_PIEZO_BUZZERAV_PIN'));
-        //         this.appendValueInput('TONE', Number)
-        //             .setCheck(Number)
-        //             .setAlign(Blockly.ALIGN_RIGHT)
-        //             .appendField(RoboBlocks.locales.getKey('LANG_ZUM_PIEZO_BUZZERAV_TONE'));
-
-        //         this.appendValueInput('DURA', Number)
-        //             .setCheck(Number)
-        //             .setAlign(Blockly.ALIGN_RIGHT)
-        //             .appendField(RoboBlocks.locales.getKey('LANG_ZUM_PIEZO_BUZZERAV_DURATION'));
-
-        //         this.setPreviousStatement(true, null);
-        //         this.setNextStatement(true, null);
-        //         this.setTooltip(RoboBlocks.locales.getKey('LANG_ZUM_PIEZO_BUZZERAV_TOOLTIP'));
-        //     }
-        // };
-
-        // // Source: src/blocks/zum_potentiometer/zum_potentiometer.js
-        // /* global Blockly, options, JST, RoboBlocks */
-        // /* jshint sub:true */
-
-        // /**
-        //  * zum_potentiometer code generation
-        //  * @return {String} Code generated with block parameters
-        //  */
-        // Blockly.Arduino.zum_potentiometer = function() {
-        //     var dropdown_pin = Blockly.Arduino.valueToCode(this, 'PIN', Blockly.Arduino.ORDER_ATOMIC) || '';
-        //     var code = '';
-        //     var a = RoboBlocks.findPinMode(dropdown_pin);
-        //     code += a['code'];
-        //     dropdown_pin = a['pin'];
-
-        //     code += JST['zum_potentiometer']({
-        //         'dropdown_pin': dropdown_pin
-        //     });
-
-        //     return [code, Blockly.Arduino.ORDER_ATOMIC];
-        // };
-
-        // /**
-        //  * zum_potentiometer block definition
-        //  * @type {Object}
-        //  */
-        // Blockly.Blocks.zum_potentiometer = {
-        //     category: RoboBlocks.locales.getKey('LANG_CATEGORY_ZUM'),
-        //     tags: ['potentiometer'],
-        //     helpUrl: RoboBlocks.URL_POTENTIOMETER,
-        //     /**
-        //      * zum_potentiometer initialization
-        //      */
-        //     init: function() {
-        //         this.setColour(RoboBlocks.LANG_COLOUR_ZUM);
-        //         this.appendValueInput('PIN')
-        //             .appendField(RoboBlocks.locales.getKey('LANG_ZUM_POTENTIOMETER'))
-        //             .appendField(new Blockly.FieldImage('img/blocks/zum03.png', 208 * options.zoom, 139 * options.zoom))
-        //             .appendField(RoboBlocks.locales.getKey('LANG_ZUM_POTENTIOMETER_PIN'));
-        //         this.setOutput(true, Number);
-        //         this.setTooltip(RoboBlocks.locales.getKey('LANG_ZUM_POTENTIOMETER_TOOLTIP'));
-        //     }
-        // };
         return Blockly.Blocks;
     }
     var RoboBlocks = {

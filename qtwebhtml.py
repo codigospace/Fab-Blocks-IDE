@@ -16,6 +16,23 @@ import webbrowser
 from monitor_plotter import MainWindow
 iconSize = 32
 
+class ForumDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self.setWindowTitle("Visualino Issues")
+        self.setGeometry(100, 100, 800, 600)
+
+        layout = QVBoxLayout()
+        web_view = QWebEngineView()
+        web_view.load(QUrl("https://github.com/Ultimaker/Cura/issues"))
+
+        layout.addWidget(web_view)
+
+        central_widget = QWidget()
+        central_widget.setLayout(layout)
+        self.setLayout(layout)
+    
 # Clase para manejar la configuración
 class ConfigManager:
     def __init__(self, filename='config.json'):
@@ -359,6 +376,7 @@ class WebViewer(QMainWindow):
         action43 = QAction("FAQ", self)
         action44 = QAction("Contactenos", self)
         action45 = QAction("Acerca de", self)
+        action46 = QAction("Foro", self)
 
         # Conectar las acciones a las funciones correspondientes
         action41.triggered.connect(lambda: self.open_link("https://www.ejemplo.com/primeros_pasos"))
@@ -366,6 +384,7 @@ class WebViewer(QMainWindow):
         action43.triggered.connect(lambda: self.open_link("https://www.ejemplo.com/faq"))
         action44.triggered.connect(lambda: self.open_link("https://wa.me/+51984425782"))
         action45.triggered.connect(self.show_about_dialog)
+        action46.triggered.connect(self.show_forum_dialog)
         
         # Agregar el menú de herramientas al menú principal
         menu4.addAction(action41)
@@ -375,6 +394,7 @@ class WebViewer(QMainWindow):
         menu4.addAction(action44)
         menu4.addSeparator()
         menu4.addAction(action45)
+        menu4.addAction(action46)
 
         # Crear una fila adicional para botones con iconos
         button_layout = QHBoxLayout()
@@ -908,6 +928,23 @@ class WebViewer(QMainWindow):
 
         # Mostrar el cuadro de diálogo
         about_dialog.exec_()
+
+    def show_forum_dialog(self):
+        # Crear el cuadro de diálogo del foro
+        forum_dialog = QDialog(self)
+        forum_dialog.setWindowTitle("Fab Blocks IDE")
+        forum_dialog.setGeometry(100, 100, 800, 600)
+
+        # Crear un layout vertical para el diálogo del foro
+        layout = QVBoxLayout(forum_dialog)
+        
+        # Crear un QWebEngineView para mostrar el foro de GitHub
+        web_view = QWebEngineView()
+        web_view.load(QUrl("https://github.com/codigorobotico/Fab-Blocks-IDE/issues/"))
+        layout.addWidget(web_view)
+
+        # Mostrar el diálogo del foro
+        forum_dialog.exec_()
         
     def open_link(self,url):
         webbrowser.open(url)
