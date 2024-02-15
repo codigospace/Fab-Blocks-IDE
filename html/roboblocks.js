@@ -472,9 +472,7 @@
                 LANG_SERVO_MOVE_TOOLTIP: 'Move between 0~180 degree',
                 LANG_SERVO_WARNING: 'It is not possible to set the servo pin using a variable',
                 //MODULAR blocks :
-                LANG_CATEGORY_MODULAR: 'Modular',
-                //MODULAR blocks :
-                LANG_CATEGORY_BETTO: 'Betto'
+                LANG_CATEGORY_MODULAR: 'Modular'
             };
             // Node
             if (typeof module !== 'undefined' && module.exports) {
@@ -907,9 +905,7 @@
                 LANG_SERVO_MOVE_TOOLTIP: 'Mover el servo entre 0 y 180 grados.',
                 LANG_SERVO_WARNING: 'No puedes asignar una variable al pin del servo',
                 //MODULAR blocks :
-                LANG_CATEGORY_MODULAR: 'Modular',
-                //BETTO blocks :
-                LANG_CATEGORY_BETTO: 'Betto'
+                LANG_CATEGORY_MODULAR: 'Modular'
             };
             // Node
             if (typeof module !== 'undefined' && module.exports) {
@@ -998,7 +994,6 @@
         RoboBlocks.LANG_COLOUR_TEXT = '#42A3CE';
         RoboBlocks.LANG_COLOUR_COMMUNICATION = '#4263CE';
         RoboBlocks.LANG_COLOUR_MODULAR = '#007fff';
-        RoboBlocks.LANG_COLOUR_BETTO = '#007fff';
         RoboBlocks.LANG_COLOUR_ADVANCED = '#9142CE';
         RoboBlocks.LANG_COLOUR_VARIABLES = '#B244CC';
         RoboBlocks.LANG_COLOUR_PROCEDURES = '#CE42B3';
@@ -1013,10 +1008,9 @@
             RoboBlocks.LANG_COLOUR_TEXT = colorArray[7];
             RoboBlocks.LANG_COLOUR_COMMUNICATION = colorArray[8];
             RoboBlocks.LANG_COLOUR_MODULAR = colorArray[9];
-            RoboBlocks.LANG_COLOUR_BETTO = colorArray[10];
-            RoboBlocks.LANG_COLOUR_ADVANCED = colorArray[11];
-            RoboBlocks.LANG_COLOUR_VARIABLES = colorArray[12];
-            RoboBlocks.LANG_COLOUR_PROCEDURES = colorArray[13];
+            RoboBlocks.LANG_COLOUR_ADVANCED = colorArray[10];
+            RoboBlocks.LANG_COLOUR_VARIABLES = colorArray[11];
+            RoboBlocks.LANG_COLOUR_PROCEDURES = colorArray[12];
         };
         // Source: src/profiles.js
         /*
@@ -2706,58 +2700,6 @@
             return __p
         };
 
-        //BETTO
-        this["JST"]["betto_definitions"] = function(obj) {
-            obj || (obj = {});
-            var __t, __p = '',
-                __e = _.escape;
-            with(obj) {
-                __p += '#include <Betto.h>\n';
-
-            }
-            return __p
-        };
-
-        this["JST"]["mod_def_declare_betto"] = function(obj) {
-            obj || (obj = {});
-            var __t, __p = '',
-                __e = _.escape;
-            with(obj) {
-                __p += 'Betto betto(' + leg_left + ','+ foot_left + ',' + leg_right +  ',' + foot_right +');\n';
-            }
-            return __p
-        };
-
-        this["JST"]["betto_setups"] = function(obj) {
-            obj || (obj = {});
-            var __t, __p = '',
-                __e = _.escape;
-            with(obj) {
-                __p += 'betto.init();\n';
-            }
-            return __p
-        };
-
-        this["JST"]["betto_home"] = function(obj) {
-            obj || (obj = {});
-            var __t, __p = '',
-                __e = _.escape;
-            with(obj) {
-                __p += 'betto.home();\n';
-            }
-            return __p
-        };
-
-        this["JST"]["declare_betto_movement"] = function(obj) {
-            obj || (obj = {});
-            var __t, __p = '',
-                __e = _.escape;
-            with(obj) {
-                __p += 'betto.' + action + ';\n';
-            }
-            return __p
-        };
-
         var JST = this.JST;
 
         // Source: src/blocks/advanced_conversion/advanced_conversion.js
@@ -3047,10 +2989,19 @@
             dropdown_pin = a['pin'];
 
             if (RoboBlocks.isVariable(dropdown_pin)) {
+                console.log("aca");
                 code += JST['bq_test_setups']({
                     'name_mod': name_mod
                 });
             } else {
+                // Blockly.Arduino.setups_['setup_green_led_' + dropdown_pin] = JST['bq_test_setups']({
+                //     'dropdown_pin': dropdown_pin
+                // });
+                // code += JST['bq_test_definition']({
+                //     'dropdown_mod' : dropdown_mod,
+                //     'dropdown_pin': dropdown_pin,
+                //     'name_mod' : name_mod
+                // });
                 code += JST['bq_test_setups']({
                     'name_mod' : name_mod
                 });
@@ -4174,212 +4125,6 @@
             }
         };
 
-        // BETTO BLOQUES
-        // Source: src/blocks/bq_led/bq_led.js
-        /* global Blockly, options, JST, RoboBlocks */
-        /* jshint sub:true */
-        /**
-         * bq_led code generation
-         * @return {String} Code generated with block parameters
-         */
-        Blockly.Arduino.betto_def_variables = function() {
-            
-            var leg_left = this.getFieldValue('LEG_LEFT');
-            var foot_left = this.getFieldValue('FOOT_LEFT');
-            var leg_right = this.getFieldValue('LEG_RIGHT');
-            var foot_right = this.getFieldValue('FOOT_RIGHT');
-
-            var code = '';
-            Blockly.Arduino.definitions_['define_betto_mod'] = JST['betto_definitions']({});
-            Blockly.Arduino.definitions_['declare_var_mod'+foot_left] = JST['mod_def_declare_betto']({
-                'leg_left': leg_left,
-                'foot_left': foot_left,
-                'leg_right' : leg_right,
-                'foot_right': foot_right
-            });
-            
-            code += JST['betto_setups']({});
-
-            return code;
-        };
-        /**
-         * bq_led block definition
-         * @type {Object}
-         */
-        Blockly.Blocks.betto_def_variables = {
-            category: RoboBlocks.locales.getKey('LANG_CATEGORY_BETTO'),
-            tags: ['Betto'],
-            helpUrl: '',
-            /**
-             * bq_led initialization
-             */
-            init: function() {
-                this.setColour(RoboBlocks.LANG_COLOUR_BETTO);
-                this.appendDummyInput('VALUE')
-                .appendField('Declarar pierna izquierda')
-                .appendField(new Blockly.FieldDropdown([
-                    ['0', '0'],
-                    ['1', '1'],
-                    ['2', '2'],
-                    ['3', '3'],
-                    ['4', '4'],
-                    ['5', '5'],
-                    ['6', '6'],
-                    ['7', '7'],
-                    ['8', '8'],
-                    ['9', '9'],
-                    ['10', '10'],
-                    ['11', '11'],
-                    ['12', '12'],
-                    ['13', '13'],
-                    ['14', '14'],
-                ]), "LEG_LEFT")
-                .appendField('pie izquierdo')
-                .appendField(new Blockly.FieldDropdown([
-                    ['0', '0'],
-                    ['1', '1'],
-                    ['2', '2'],
-                    ['3', '3'],
-                    ['4', '4'],
-                    ['5', '5'],
-                    ['6', '6'],
-                    ['7', '7'],
-                    ['8', '8'],
-                    ['9', '9'],
-                    ['10', '10'],
-                ]), "FOOT_LEFT")
-                .appendField('pierna derecha')
-                .appendField(new Blockly.FieldDropdown([
-                    ['0', '0'],
-                    ['1', '1'],
-                    ['2', '2'],
-                    ['3', '3'],
-                    ['4', '4'],
-                    ['5', '5'],
-                    ['6', '6'],
-                    ['7', '7'],
-                    ['8', '8'],
-                    ['9', '9'],
-                    ['10', '10'],
-                ]), "LEG_RIGHT")
-                .appendField('pie derecho')
-                .appendField(new Blockly.FieldDropdown([
-                    ['0', '0'],
-                    ['1', '1'],
-                    ['2', '2'],
-                    ['3', '3'],
-                    ['4', '4'],
-                    ['5', '5'],
-                    ['6', '6'],
-                    ['7', '7'],
-                    ['8', '8'],
-                    ['9', '9'],
-                    ['10', '10'],
-                ]), "FOOT_RIGHT");
-                this.setPreviousStatement(true);
-                this.setNextStatement(true);
-                this.setTooltip(RoboBlocks.locales.getKey('LANG_VARIABLES_GLOBAL_TOOLTIP'));
-            },
-            getVars: function() {
-                return [this.getFieldValue('VAR')];
-            },
-            renameVar: function(oldName, newName) {
-                if (Blockly.Names.equals(oldName, this.getFieldValue('VAR'))) {
-                    this.setFieldValue(newName, 'VAR');
-                }
-            },
-            isVariable: function(varValue) {
-                for (var i in Blockly.Variables.allVariables()) {
-                    if (Blockly.Variables.allVariables()[i] === varValue) {
-                        return true;
-                    }
-                }
-                return false;
-            },
-            validName: function(name) {
-                if (name && name.length > 0) {
-                    var i = 0;
-                    while (i < name.length) {
-                        if (!isNaN(parseFloat(name[i]))) {
-                            name = name.substring(1, name.length);
-                        } else {
-                            break;
-                        }
-                    }
-                    name = name.replace(/([ ])/g, '_');
-                    name = name.replace(/([áàâä])/g, 'a');
-                    name = name.replace(/([éèêë])/g, 'e');
-                    name = name.replace(/([íìîï])/g, 'i');
-                    name = name.replace(/([óòôö])/g, 'o');
-                    name = name.replace(/([úùûü])/g, 'u');
-                    name = name.replace(/([ñ])/g, 'n');
-                    name = name.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|<>\-\&\Ç\%\=\~\{\}\¿\¡\"\@\:\;\-\"\·\|\º\ª\¨\'\·\̣\─\ç\`\´\¨\^])/g, '');
-                    i = 0;
-                    while (i < name.length) {
-                        if (!isNaN(parseFloat(name[i]))) {
-                            name = name.substring(1, name.length);
-                        } else {
-                            break;
-                        }
-                    }
-                    for (var j in Blockly.Arduino.RESERVED_WORDS_) {
-                        var reserved_words = Blockly.Arduino.RESERVED_WORDS_.split(',');
-                        if (name === reserved_words[j]) {
-                            this.setWarningText(RoboBlocks.locales.getKey('LANG_RESERVED_WORDS'));
-                            name = '';
-                            break;
-                        } else {
-                            this.setWarningText(null);
-                        }
-                    }
-                }
-                return name;
-            },
-            onchange: function() {
-                if (this.last_variable !== this.getFieldValue('VAR')) {
-                    var name = this.getFieldValue('VAR');
-                    name = this.validName(name);
-                    try {
-                        this.setFieldValue(name, 'VAR');
-                    } catch (e) {}
-                    this.last_variable = name;
-                }
-                
-            }
-        };
-
-        // Copia de digital Write 1 argumento true-false para BETTO
-        // Source: src/blocks/inout_digital_write/inout_digital_write.js
-        /* global Blockly, JST, RoboBlocks */
-        /* jshint sub:true */
-        /**
-         * inout_digital_write code generation
-         * @return {String} Code generated with block parameters
-         */
-        Blockly.Arduino.test_inout_digital_write = function() {
-            var code = '';
-            code += JST['betto_home']({});
-            return code;
-        };
-        /**
-         * inout_digital_write block definition
-         * @type {Object}
-         */
-        Blockly.Blocks.test_inout_digital_write = {
-            category: RoboBlocks.locales.getKey('LANG_CATEGORY_BETTO'),
-            helpUrl: RoboBlocks.URL_PIN_FUNC,
-            /**
-             * inout_digital_write initialization
-             */
-            init: function() {
-                this.setColour('#E5BE01');
-                this.appendDummyInput('DUMMY').appendField('Posicion parado');
-                this.setPreviousStatement(true, null);
-                this.setInputsInline(true);
-                this.setNextStatement(true, null);
-                this.setTooltip(RoboBlocks.locales.getKey('LANG_ADVANCED_INOUT_DIGITAL_WRITE_TOOLTIP'));
-            }
-        };
 
         //register with blockly arduino
         Blockly.Arduino.base_delay = function() {
@@ -4408,223 +4153,6 @@
                 this.setNextStatement(true, null);
                 this.setTooltip(RoboBlocks.locales.getKey('LANG_CONTROLS_BASE_DELAY_TOOLTIP'));
             }
-        };
-
-        // COPIA DE LED PRUEBAS para BETTO Movimientos
-        // Source: src/blocks/bq_led/bq_led.js
-        /* global Blockly, options, JST, RoboBlocks */
-        /* jshint sub:true */
-        /**
-         * bq_led code generation
-         * @return {String} Code generated with block parameters
-         */
-        Blockly.Arduino.betto_movs_select = function() {
-            var actions = {
-                '0': 'walk(1,',
-                '1': 'walk(1,',
-                '2': 'turn(1,',
-                '3': 'turn(1,',
-                '4': 'bend(1,',
-                '5': 'bend(1,',
-                '6': 'shakedLeg(1,',
-                '7': 'shakedLeg(1,',
-                '8': 'jump(1,',
-            };
-        
-            var actionKey = this.getFieldValue('ACTION');
-            var action = actions[actionKey];
-            var speed = parseInt(this.getFieldValue('VEL'));
-            var speedValue;
-        
-            switch (speed) {
-                case 0:
-                    speedValue = '1000';
-                    break;
-                case 1:
-                    speedValue = '2000';
-                    break;
-                case 2:
-                    speedValue = '3000';
-                    break;
-                case 3:
-                    speedValue = '750';
-                    break;
-                case 4:
-                    speedValue = '500';
-                    break;
-                case 5:
-                    speedValue = '250';
-                    break;
-                default:
-                    speedValue = '1000';
-            }
-        
-            var code = 'betto.' + action + speedValue;
-        
-            // Añadir la dirección al final de la llamada de función
-            if (actionKey === '0' || actionKey === '2' || actionKey === '4' || actionKey === '6') {
-                code += ',1';
-            } else if( actionKey === '8' ) {
-                code += '';
-            } else {
-                code += ',-1';
-            }
-        
-            code += ');\n';
-        
-            return code;
-        };
-        
-        
-        /**
-         * bq_led block definition
-         * @type {Object}
-         */
-        Blockly.Blocks.betto_movs_select = {
-            category: RoboBlocks.locales.getKey('LANG_CATEGORY_BETTO'),
-            tags: ['Betto'],
-            helpUrl: '',
-            /**
-             * bq_led initialization
-             */
-            init: function() {
-                this.setColour(RoboBlocks.LANG_COLOUR_MODULAR);
-                this.appendDummyInput('VALUE')
-                .appendField('Movimiento ')
-                .appendField(new Blockly.FieldDropdown([
-                    ['Adelante', '0'],
-                    ['Atras', '1'],
-                    ['Girar a la izquierda', '2'],
-                    ['Girar a la derecha', '3'],
-                    ['Inclinar a la izquierda', '4'],
-                    ['Inclinar a la derecha', '5'],
-                    ['Agitar para la izquierda', '6'],
-                    ['Agitar para la derecha', '7'],
-                    ['Sube', '8'],
-                ]), "ACTION")
-                .appendField('con velocidad')
-                .appendField(new Blockly.FieldDropdown([
-                    ['Normal', '0'],
-                    ['Lento', '1'],
-                    ['Muy Lento', '2'],
-                    ['Rapido', '3'],
-                    ['Muy Rapido', '4'],
-                    ['Demasiado Rapido', '5']
-                ]), "VEL");
-                this.setPreviousStatement(true);
-                this.setNextStatement(true);
-                this.setTooltip(RoboBlocks.locales.getKey('LANG_VARIABLES_GLOBAL_TOOLTIP'));
-            },
-        };
-
-        // COPIA DE LED PRUEBAS para BETTO Movimientos
-        // Source: src/blocks/bq_led/bq_led.js
-        /* global Blockly, options, JST, RoboBlocks */
-        /* jshint sub:true */
-        /**
-         * bq_led code generation
-         * @return {String} Code generated with block parameters
-         */
-        Blockly.Arduino.betto_movs_select_dance = function() {
-            var actions = {
-                '0': 'walk(1,',
-                '1': 'walk(1,',
-                '2': 'turn(1,',
-                '3': 'turn(1,',
-                '4': 'bend(1,',
-                '5': 'bend(1,',
-                '6': 'shakedLeg(1,',
-                '7': 'shakedLeg(1,',
-                '8': 'jump(1,',
-            };
-        
-            var actionKey = this.getFieldValue('ACTION');
-            var action = actions[actionKey];
-            var speed = parseInt(this.getFieldValue('VEL'));
-            var speedValue;
-        
-            switch (speed) {
-                case 0:
-                    speedValue = '1000';
-                    break;
-                case 1:
-                    speedValue = '2000';
-                    break;
-                case 2:
-                    speedValue = '3000';
-                    break;
-                case 3:
-                    speedValue = '750';
-                    break;
-                case 4:
-                    speedValue = '500';
-                    break;
-                case 5:
-                    speedValue = '250';
-                    break;
-                default:
-                    speedValue = '1000';
-            }
-        
-            var code = 'betto.' + action + speedValue;
-        
-            // Añadir la dirección al final de la llamada de función
-            if (actionKey === '0' || actionKey === '2' || actionKey === '4' || actionKey === '6') {
-                code += ',1';
-            } else if( actionKey === '8' ) {
-                code += '';
-            } else {
-                code += ',-1';
-            }
-        
-            code += ');\n';
-        
-            return code;
-        };
-        
-        
-        /**
-         * bq_led block definition
-         * @type {Object}
-         */
-        Blockly.Blocks.betto_movs_select_dance = {
-            category: RoboBlocks.locales.getKey('LANG_CATEGORY_BETTO'),
-            tags: ['Betto'],
-            helpUrl: '',
-            /**
-             * bq_led initialization
-             */
-            init: function() {
-                this.setColour(RoboBlocks.LANG_COLOUR_MODULAR);
-                this.appendDummyInput('VALUE')
-                .appendField('Bailar ')
-                .appendField(new Blockly.FieldDropdown([
-                    ['Moonwalk Izquierda', '0'],
-                    ['Moonwalk Derecha', '1'],
-                    ['Crusaito Izquierda', '2'],
-                    ['Crusaito Derecha', '3'],
-                    ['Aleteo Arriba', '4'],
-                    ['Aleteo Abajo', '5'],
-                ]), "ACTION")
-                .appendField('velocidad')
-                .appendField(new Blockly.FieldDropdown([
-                    ['Normal', '0'],
-                    ['Lento', '1'],
-                    ['Muy Lento', '2'],
-                    ['Rapido', '3'],
-                    ['Muy Rapido', '4'],
-                    ['Demasiado Rapido', '5']
-                ]), "VEL")
-                .appendField('tamaño')
-                .appendField(new Blockly.FieldDropdown([
-                    ['Normal', '0'],
-                    ['Pequeño', '1'],
-                    ['Grande', '2']
-                ]), "SIZE");
-                this.setPreviousStatement(true);
-                this.setNextStatement(true);
-                this.setTooltip(RoboBlocks.locales.getKey('LANG_VARIABLES_GLOBAL_TOOLTIP'));
-            },
         };
 
         // Source: src/blocks/base_map/base_map.js

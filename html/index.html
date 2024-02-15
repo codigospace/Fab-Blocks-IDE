@@ -25,7 +25,7 @@
     <script>
             if (window.roboblocksLanguage === undefined
                 || window.roboblocksLanguage == null) {
-                var roboblocksLanguage = 'es-ES';
+                var roboblocksLanguage = 'en-GB';
             }
 
             RoboBlocks.load({
@@ -54,7 +54,6 @@
                 RoboBlocks.LANG_COLOUR_TEXT,
                 RoboBlocks.LANG_COLOUR_COMMUNICATION,
                 RoboBlocks.LANG_COLOUR_MODULAR,
-                RoboBlocks.LANG_COLOUR_BETTO,
                 RoboBlocks.LANG_COLOUR_ZUM,
                 RoboBlocks.LANG_COLOUR_BQ,
                 RoboBlocks.LANG_COLOUR_ADVANCED,
@@ -74,6 +73,8 @@
                 $("pre").each(function (i, e) {
                   hljs.highlightBlock(e);
                 });
+                // webHelper is injected in Visualino
+                webHelper.sourceChanged();
             });
 
             // Show/hide code
@@ -103,6 +104,7 @@
                 Blockly.Xml.domToWorkspace(Blockly.getMainWorkspace(),
                     document.getElementById('startBlocks'));
             }
+
     </script>
 </body>
 </html>
