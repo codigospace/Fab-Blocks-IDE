@@ -474,7 +474,9 @@
                 //MODULAR blocks :
                 LANG_CATEGORY_MODULAR: 'Modular',
                 //MODULAR blocks :
-                LANG_CATEGORY_BETTO: 'Betto'
+                LANG_CATEGORY_BETTO: 'Betto',
+                //CARLITTO blocks :
+                LANG_CATEGORY_CARLITTO: 'Betto'
             };
             // Node
             if (typeof module !== 'undefined' && module.exports) {
@@ -909,7 +911,9 @@
                 //MODULAR blocks :
                 LANG_CATEGORY_MODULAR: 'Modular',
                 //BETTO blocks :
-                LANG_CATEGORY_BETTO: 'Betto'
+                LANG_CATEGORY_BETTO: 'Betto',
+                //BETTO blocks :
+                LANG_CATEGORY_CARLITTO: 'Carlitto'
             };
             // Node
             if (typeof module !== 'undefined' && module.exports) {
@@ -999,6 +1003,7 @@
         RoboBlocks.LANG_COLOUR_COMMUNICATION = '#4263CE';
         RoboBlocks.LANG_COLOUR_MODULAR = '#007fff';
         RoboBlocks.LANG_COLOUR_BETTO = '#007fff';
+        RoboBlocks.LANG_COLOUR_CARLITTO = '#007fff';
         RoboBlocks.LANG_COLOUR_ADVANCED = '#9142CE';
         RoboBlocks.LANG_COLOUR_VARIABLES = '#B244CC';
         RoboBlocks.LANG_COLOUR_PROCEDURES = '#CE42B3';
@@ -1014,9 +1019,10 @@
             RoboBlocks.LANG_COLOUR_COMMUNICATION = colorArray[8];
             RoboBlocks.LANG_COLOUR_MODULAR = colorArray[9];
             RoboBlocks.LANG_COLOUR_BETTO = colorArray[10];
-            RoboBlocks.LANG_COLOUR_ADVANCED = colorArray[11];
-            RoboBlocks.LANG_COLOUR_VARIABLES = colorArray[12];
-            RoboBlocks.LANG_COLOUR_PROCEDURES = colorArray[13];
+            RoboBlocks.LANG_COLOUR_CARLITTO = colorArray[11];
+            RoboBlocks.LANG_COLOUR_ADVANCED = colorArray[12];
+            RoboBlocks.LANG_COLOUR_VARIABLES = colorArray[13];
+            RoboBlocks.LANG_COLOUR_PROCEDURES = colorArray[14];
         };
         // Source: src/profiles.js
         /*
@@ -2723,7 +2729,7 @@
             var __t, __p = '',
                 __e = _.escape;
             with(obj) {
-                __p += 'Betto Betto();\n';
+                __p += 'Betto betto;\n';
             }
             return __p
         };
@@ -2733,7 +2739,7 @@
             var __t, __p = '',
                 __e = _.escape;
             with(obj) {
-                __p += 'Betto.init();\n';
+                __p += 'betto.init();\n';
             }
             return __p
         };
@@ -2743,7 +2749,7 @@
             var __t, __p = '',
                 __e = _.escape;
             with(obj) {
-                __p += 'Betto.home();\n';
+                __p += 'betto.home();\n';
             }
             return __p
         };
@@ -2753,7 +2759,50 @@
             var __t, __p = '',
                 __e = _.escape;
             with(obj) {
-                __p += 'Betto.' + action + ';\n';
+                __p += 'betto.' + action + ';\n';
+            }
+            return __p
+        };
+
+        //CARLITTO
+        this["JST"]["carlitto_definitions"] = function(obj) {
+            obj || (obj = {});
+            var __t, __p = '',
+                __e = _.escape;
+            with(obj) {
+                __p += '#include <Carlitto.h>\n';
+
+            }
+            return __p
+        };
+
+        this["JST"]["mod_def_declare_carlitto"] = function(obj) {
+            obj || (obj = {});
+            var __t, __p = '',
+                __e = _.escape;
+            with(obj) {
+                __p += 'Carlitto carlitto(' + MOT_LEFT + ',' + POT_LEFT + ',' + MOT_RIGHT + ',' + POT_RIGHT + ',' + POT + ');\n';
+            }
+            return __p
+        };
+        
+
+        this["JST"]["carlitto_setups"] = function(obj) {
+            obj || (obj = {});
+            var __t, __p = '',
+                __e = _.escape;
+            with(obj) {
+                __p += 'carlitto.init();\n';
+            }
+            return __p
+        };
+
+        this["JST"]["carlitto_stop"] = function(obj) {
+            obj || (obj = {});
+            var __t, __p = '',
+                __e = _.escape;
+            with(obj) {
+                __p += 'carlitto.stop();\n';
             }
             return __p
         };
@@ -4206,40 +4255,11 @@
             init: function() {
                 this.setColour(RoboBlocks.LANG_COLOUR_BETTO);
                 this.appendDummyInput().appendField(new Blockly.FieldImage('media/otto.jpg', 50, 50, "*"))
-                .appendField('Declararación de Betto')
+                .appendField('Declarar Betto')
                 this.setPreviousStatement(true);
                 this.setNextStatement(true);
                 this.setTooltip(RoboBlocks.locales.getKey('LANG_VARIABLES_GLOBAL_TOOLTIP'));
             },
-        };
-
-        //register with blockly arduino
-        Blockly.Arduino.base_delay = function() {
-            var delay_time = Blockly.Arduino.valueToCode(this, 'DELAY_TIME', Blockly.Arduino.ORDER_ATOMIC);
-            var code = '';
-            var a = RoboBlocks.findPinMode(delay_time);
-            code += a['code'];
-            delay_time = a['pin'];
-
-            code += JST['base_delay']({
-                'delay_time': delay_time
-            });
-            return code;
-        };
-
-        Blockly.Blocks.base_delay = {
-            category: RoboBlocks.locales.getKey('LANG_CATEGORY_CONTROLS'),
-            helpUrl: RoboBlocks.URL_LED,
-            init: function() {
-                this.setColour(RoboBlocks.LANG_COLOUR_CONTROL);
-                this.appendValueInput('DELAY_TIME', Number)
-                    .appendField(RoboBlocks.locales.getKey('LANG_CONTROLS_BASE_DELAY_WAIT'))
-                    .setCheck(Number);
-                this.setInputsInline(true);
-                this.setPreviousStatement(true, null);
-                this.setNextStatement(true, null);
-                this.setTooltip(RoboBlocks.locales.getKey('LANG_CONTROLS_BASE_DELAY_TOOLTIP'));
-            }
         };
 
         // COPIA DE LED PRUEBAS para BETTO Movimientos
@@ -4291,7 +4311,7 @@
                     speedValue = '1000';
             }
         
-            var code = 'Betto.' + action + speedValue;
+            var code = 'betto.' + action + speedValue;
         
             // Añadir la dirección al final de la llamada de función
             if (actionKey === '0' || actionKey === '2' || actionKey === '4' || actionKey === '6') {
@@ -4413,7 +4433,7 @@
                     sizeValue = '25';
             }
         
-            var code = 'Betto.' + action + speedValue + ',' + sizeValue; // Añadir tamaño al código
+            var code = 'betto.' + action + speedValue + ',' + sizeValue; // Añadir tamaño al código
         
             // Añadir la dirección al final de la llamada de función
             if (actionKey === '0' || actionKey === '2' || actionKey === '4' || actionKey === '6') {
@@ -4537,7 +4557,7 @@
                     sizeValue = '25';
             }
         
-            var code = 'Betto.' + action + speedValue + ',' + sizeValue; // Añadir tamaño al código
+            var code = 'betto.' + action + speedValue + ',' + sizeValue; // Añadir tamaño al código
         
             code += ');\n';
         
@@ -4684,7 +4704,7 @@
             var dropdown_otto_sound = this.getFieldValue('otto_note');
             var dropdown_otto_duration = this.getFieldValue('otto_note_duration');
 
-            var code = 'Betto.sing(' + dropdown_otto_sound +','+ dropdown_otto_duration + ',1);\n';
+            var code = 'betto.sing(' + dropdown_otto_sound +','+ dropdown_otto_duration + ',1);\n';
             return code;
         };
         
@@ -4726,7 +4746,7 @@
             var duration = Blockly.Arduino.valueToCode(this, 'duration', Blockly.Arduino.ORDER_ATOMIC);
             var silent = Blockly.Arduino.valueToCode(this, 'silent', Blockly.Arduino.ORDER_ATOMIC);
           
-            var code = "Otto._tone( " + Hz1 + "," + duration + "," + silent + ");\n";
+            var code = "betto._tone( " + Hz1 + "," + duration + "," + silent + ");\n";
             return code;
         };
         
@@ -4770,7 +4790,7 @@
             var duration = Blockly.Arduino.valueToCode(this, 'duration', Blockly.Arduino.ORDER_ATOMIC);
             var silent = Blockly.Arduino.valueToCode(this, 'silent', Blockly.Arduino.ORDER_ATOMIC);
           
-            var code = "Otto.bendTones( " + Hz1 + "," + Hz2 + "," + prop + "," + duration + "," + silent + ");\n";
+            var code = "betto.bendTones( " + Hz1 + "," + Hz2 + "," + prop + "," + duration + "," + silent + ");\n";
             return code;
         };
         
@@ -4867,7 +4887,7 @@
                 var col= i
                 {if  (i > 1 && i <= 7)col=i}{if  (i >= 8 && i < 16)col=i-8}{if  (i >= 16 && i < 24)col=i-16}{if  (i >= 24 && i < 32)col=i-24}
                 {if  (i >= 32 && i < 40)col=i-32}{if  (i >= 40 && i < 48)col=i-40}{if  (i >= 48 && i < 56)col=i-48}{if  (i >= 56 && i < 64)col=i-56}
-                code += ' Betto.setLed('+row+','+col+',' + on + ');'
+                code += ' betto.setLed('+row+','+col+',' + on + ');'
             }
             };
             for (var i=0; i<8; i++) {if (this.getFieldValue('eyes_pixel' + i) == 'TRUE')row = 0;};
@@ -5001,7 +5021,7 @@
          */
         Blockly.Arduino.betto_clear_mouth = function() {
             var code = '';
-            code += 'Betto.clearMouth();'
+            code += 'betto.clearMouth();'
             return code;
         };
         /**
@@ -5038,7 +5058,7 @@
         };
         Blockly.Arduino.betto_mouth_text = function(block) {
             var text_input = block.getFieldValue('input');
-            var code = 'Betto.writeText('+ '"' + text_input +'"' +',80);\n';
+            var code = 'betto.writeText('+ '"' + text_input +'"' +',80);\n';
             return code;
         };
 
@@ -5058,7 +5078,7 @@
 
         Blockly.Arduino.betto_mouth_brightness = function(block) {
             var brightness = Blockly.Arduino.valueToCode(block, "brightness", Blockly.Arduino.ORDER_ATOMIC);
-            var code = "Betto.matrixIntensity(" + brightness + ");\n";
+            var code = "betto.matrixIntensity(" + brightness + ");\n";
             return code;
         };
 
@@ -5077,7 +5097,7 @@
         };
         Blockly.Arduino.betto_mouth_face = function(block) {
           var dropdown_otto9_mouth_choice = block.getFieldValue('otto9_mouth_choice');
-          var code = 'Betto.putMouth(' + dropdown_otto9_mouth_choice + ');\n';
+          var code = 'betto.putMouth(' + dropdown_otto9_mouth_choice + ');\n';
           return code;
         };
 
@@ -5149,6 +5169,143 @@
             code = 'ultrasound_distance_simple()';
             return code;
         };
+
+        // CARLITTO BLOQUES
+        // Source: src/blocks/bq_led/bq_led.js
+        /* global Blockly, options, JST, RoboBlocks */
+        /* jshint sub:true */
+        /**
+         * bq_led code generation
+         * @return {String} Code generated with block parameters
+         */
+        Blockly.Arduino.carlitto_def_variables = function() {
+            
+            var code = '';
+            var MOT_LEFT = this.getFieldValue('MOT_LEFT');
+            var MOT_RIGHT = this.getFieldValue('MOT_RIGHT');
+            var POT_LEFT = this.getFieldValue('POT_LEFT');
+            var POT_RIGHT = this.getFieldValue('POT_RIGHT');
+            var POT = this.getFieldValue('POT');
+            Blockly.Arduino.definitions_['define_carlitto_mod'] = JST['carlitto_definitions']({});
+            Blockly.Arduino.definitions_['declare_var_mod_carlitto'] = JST['mod_def_declare_carlitto']({
+                'MOT_LEFT': MOT_LEFT,
+                'MOT_RIGHT': MOT_RIGHT,
+                'POT_LEFT': POT_LEFT,
+                'POT_RIGHT': POT_RIGHT,
+                'POT': POT
+            });
+            
+            code += JST['carlitto_setups']({});
+
+            return code;
+        };
+        /**
+         * bq_led block definition
+         * @type {Object}
+         */
+        Blockly.Blocks.carlitto_def_variables = {
+            category: RoboBlocks.locales.getKey('LANG_CATEGORY_CARLITTO'),
+            tags: ['Carlitto'],
+            helpUrl: '',
+            init: function() {
+                this.setColour(RoboBlocks.LANG_COLOUR_CARLITTO);
+                this.appendDummyInput()
+                .appendField('Declarar Carlitto')
+                .appendField("con motor izquierdo:")
+                .appendField(new Blockly.FieldDropdown([["0", "0"], ["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"], ["8", "8"], ["9", "9"], ["10", "10"]]), "MOT_LEFT");
+                this.appendDummyInput()
+                    .appendField('potencia izquierda')
+                    .appendField(new Blockly.FieldTextInput('0', Blockly.Blocks.math_integer_dc.validator), 'POT_LEFT');
+                this.appendDummyInput()
+                .appendField("motor Derecha:")
+                .appendField(new Blockly.FieldDropdown([["0", "0"], ["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"], ["8", "8"], ["9", "9"], ["10", "10"]]), "MOT_RIGHT");
+                this.appendDummyInput()
+                    .appendField('potencia derecha')
+                    .appendField(new Blockly.FieldTextInput('0', Blockly.Blocks.math_integer_dc.validator), 'POT_RIGHT');
+                this.appendDummyInput()
+                .appendField("potenciómetro:")
+                        .appendField(new Blockly.FieldDropdown([["0", "0"], ["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"], ["8", "8"], ["9", "9"], ["10", "10"]]),"POT");
+            this.setPreviousStatement(true);
+            this.setNextStatement(true);
+            this.setTooltip(RoboBlocks.locales.getKey('LANG_VARIABLES_GLOBAL_TOOLTIP'));
+        },
+        };
+
+        // Copia de digital Write 1 argumento true-false para BETTO
+        // Source: src/blocks/inout_digital_write/inout_digital_write.js
+        /* global Blockly, JST, RoboBlocks */
+        /* jshint sub:true */
+        /**
+         * inout_digital_write code generation
+         * @return {String} Code generated with block parameters
+         */
+        Blockly.Arduino.carlitto_stop = function() {
+            var code = '';
+            code += JST['carlitto_stop']({});
+            return code;
+        };
+        /**
+         * inout_digital_write block definition
+         * @type {Object}
+         */
+        Blockly.Blocks.carlitto_stop = {
+            category: RoboBlocks.locales.getKey('LANG_CATEGORY_CARLITTO'),
+            /**
+             * inout_digital_write initialization
+             */
+            init: function() {
+                this.setColour(RoboBlocks.LANG_COLOUR_CARLITTO);
+                this.appendDummyInput('DUMMY').appendField('Detener Carlitto');
+                this.setPreviousStatement(true, null);
+                this.setInputsInline(true);
+                this.setNextStatement(true, null);
+                this.setTooltip(RoboBlocks.locales.getKey('LANG_ADVANCED_INOUT_DIGITAL_WRITE_TOOLTIP'));
+            }
+        };
+
+        // COPIA DE LED PRUEBAS para BETTO Movimientos Gesto
+        // Source: src/blocks/bq_led/bq_led.js
+        /* global Blockly, options, JST, RoboBlocks */
+        /* jshint sub:true */
+        /**
+         * bq_led code generation
+         * @return {String} Code generated with block parameters
+         */
+        Blockly.Arduino.betto_select_gest = function() {
+            var dropdown_carlitto_move = this.getFieldValue('carlitto_move');
+
+            var code = 'carlitto.move(' + dropdown_carlitto_move + ');\n';
+            return code;
+        };
+        
+        
+        /**
+         * bq_led block definition
+         * @type {Object}
+         */
+        Blockly.Blocks.betto_select_gest = {
+            category: RoboBlocks.locales.getKey('LANG_CATEGORY_CARLITTO'),
+            tags: ['Carlitto'],
+            helpUrl: '',
+            /**
+             * bq_led initialization
+             */
+            init: function() {
+                this.setColour(RoboBlocks.LANG_COLOUR_CARLITTO);
+                this.appendDummyInput()
+                .appendField("Movimiento en ")
+                .appendField(new Blockly.FieldDropdown([
+                    ["ADELANTE", "ADELANTE"],
+                    ["ATRAS", "ATRAS"],
+                    ["DERECHA", "DERECHA"],
+                    ["IZQUIERDA", "IZQUIERDA"]
+                ]), "carlitto_move");
+                this.setInputsInline(true);
+                this.setPreviousStatement(true);
+                this.setNextStatement(true);
+            },
+        };
+
 
         // Source: src/blocks/base_map/base_map.js
         /* global Blockly, JST, RoboBlocks */
@@ -5282,6 +5439,34 @@
         //         this.setTooltip(RoboBlocks.locales.getKey('LANG_BQ_BAT_TOOLTIP'));
         //     }
         // };
+        //register with blockly arduino
+        Blockly.Arduino.base_delay = function() {
+            var delay_time = Blockly.Arduino.valueToCode(this, 'DELAY_TIME', Blockly.Arduino.ORDER_ATOMIC);
+            var code = '';
+            var a = RoboBlocks.findPinMode(delay_time);
+            code += a['code'];
+            delay_time = a['pin'];
+
+            code += JST['base_delay']({
+                'delay_time': delay_time
+            });
+            return code;
+        };
+
+        Blockly.Blocks.base_delay = {
+            category: RoboBlocks.locales.getKey('LANG_CATEGORY_CONTROLS'),
+            helpUrl: RoboBlocks.URL_LED,
+            init: function() {
+                this.setColour(RoboBlocks.LANG_COLOUR_CONTROL);
+                this.appendValueInput('DELAY_TIME', Number)
+                    .appendField(RoboBlocks.locales.getKey('LANG_CONTROLS_BASE_DELAY_WAIT'))
+                    .setCheck(Number);
+                this.setInputsInline(true);
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setTooltip(RoboBlocks.locales.getKey('LANG_CONTROLS_BASE_DELAY_TOOLTIP'));
+            }
+        };
         // Source: src/blocks/bq_bluetooth_def/bq_bluetooth_def.js
         /* global Blockly, options, JST, RoboBlocks */
         /* jshint sub:true */
@@ -9132,164 +9317,6 @@
             }
         };
 
-        // // Source: src/blocks/servo_cont/servo_cont.js
-        // /* global Blockly, options,JST, RoboBlocks */
-        // /* jshint sub:true */
-        // /**
-        //  * servo_cont code generation
-        //  * @return {String} Code generated with block parameters
-        //  */
-        // Blockly.Arduino.servo_cont = function() {
-        //     var dropdown_pin = Blockly.Arduino.valueToCode(this, 'PIN', Blockly.Arduino.ORDER_ATOMIC) || '';
-        //     var value_degree = this.getFieldValue('ROT') || '';
-        //     var delay_time = Blockly.Arduino.valueToCode(this, 'DELAY_TIME', Blockly.Arduino.ORDER_ATOMIC) || '';
-        //     Blockly.Arduino.definitions_['include_servo'] = JST['servo_cont_definitions_include']({});
-        //     var code = '';
-        //     var a = RoboBlocks.findPinMode(dropdown_pin);
-        //     code += a['code'];
-        //     dropdown_pin = a['pin'];
-        //     var b = RoboBlocks.findPinMode(delay_time);
-        //     code += b['code'];
-        //     delay_time = b['pin'];
-
-
-        //     if (RoboBlocks.isVariable(dropdown_pin)) {
-        //         code += JST['servo_cont_setups']({
-        //             'dropdown_pin': dropdown_pin
-        //         });
-        //     } else {
-        //         Blockly.Arduino.setups_['servo_cont_' + dropdown_pin] = JST['servo_cont_setups']({
-        //             'dropdown_pin': dropdown_pin
-        //         });
-        //     }
-        //     code += JST['servo_cont']({
-        //         'dropdown_pin': dropdown_pin,
-        //         'value_degree': value_degree,
-        //         'delay_time': delay_time
-        //     });
-        //     return code;
-        // };
-        // /**
-        //  * servo_cont block definition
-        //  * @type {Object}
-        //  */
-        // Blockly.Blocks.servo_cont = {
-        //     category: RoboBlocks.locales.getKey('LANG_CATEGORY_SERVO'),
-        //     tags: ['servo'],
-        //     helpUrl: RoboBlocks.URL_CONTINUOUS_ROTATION_SERVO,
-        //     init: function() {
-        //         this.setColour(RoboBlocks.LANG_COLOUR_SERVO);
-        //         this.appendValueInput('PIN').appendField(RoboBlocks.locales.getKey('LANG_SERVO_CONT')).appendField(new Blockly.FieldImage('img/blocks/bqservo03.png', 208 * options.zoom, 126 * options.zoom)).appendField(RoboBlocks.locales.getKey('LANG_SERVO_CONT_PIN')).setCheck(Number);
-        //         this.appendDummyInput().appendField(RoboBlocks.locales.getKey('LANG_SERVO_CONT_ROT')).setAlign(Blockly.ALIGN_RIGHT).appendField(new Blockly.FieldDropdown([
-        //             [RoboBlocks.locales.getKey('LANG_SERVO_CONT_TURN_CLOCKWISE') || 'CLOCKWISE', '0'],
-        //             [RoboBlocks.locales.getKey('LANG_SERVO_CONT_TURN_COUNTERCLOCKWISE') || 'ANTICLOCKWISE', '180'],
-        //             [RoboBlocks.locales.getKey('LANG_SERVO_CONT_STOPPED') || 'STOPPED', '90']
-        //         ]), 'ROT');
-        //         this.appendValueInput('DELAY_TIME', Number).setCheck(Number).setAlign(Blockly.ALIGN_RIGHT).appendField(RoboBlocks.locales.getKey('LANG_SERVO_CONT_DELAY'));
-        //         this.setPreviousStatement(true, null);
-        //         this.setNextStatement(true, null);
-        //         this.setTooltip(RoboBlocks.locales.getKey('LANG_SERVO_CONT_TOOLTIP'));
-        //     },
-        //     isVariable: function(varValue) {
-        //         for (var i in Blockly.Variables.allVariables()) {
-        //             if (Blockly.Variables.allVariables()[i] === varValue) {
-        //                 return true;
-        //             }
-        //         }
-        //         return false;
-        //     },
-        //     onchange: function() {
-        //         // try {
-        //         //     if (this.isVariable(Blockly.Arduino.valueToCode(this, 'PIN', Blockly.Arduino.ORDER_ATOMIC))) {
-        //         //         this.setWarningText(RoboBlocks.locales.getKey('LANG_SERVO_WARNING'));
-        //         //     } else {
-        //         //         this.setWarningText(null);
-        //         //     }
-        //         // } catch (e) {}
-        //     }
-        // };
-
-        // // Source: src/blocks/servo_move/servo_move.js
-        // /* global Blockly, options, JST, RoboBlocks */
-        // /* jshint sub:true */
-        // /**
-        //  * servo_move code generation
-        //  * @return {String} Code generated with block parameters
-        //  */
-        // Blockly.Arduino.servo_move = function() {
-        //     var dropdown_pin = Blockly.Arduino.valueToCode(this, 'PIN', Blockly.Arduino.ORDER_ATOMIC);
-        //     var value_degree = Blockly.Arduino.valueToCode(this, 'DEGREE', Blockly.Arduino.ORDER_ATOMIC);
-        //     var delay_time = Blockly.Arduino.valueToCode(this, 'DELAY_TIME', Blockly.Arduino.ORDER_ATOMIC);
-        //     Blockly.Arduino.definitions_['include_servo'] = JST['servo_move_definitions_include']({
-        //         'dropdown_pin': dropdown_pin
-        //     });
-        //     var code = '';
-        //     var a = RoboBlocks.findPinMode(dropdown_pin);
-        //     code += a['code'];
-        //     dropdown_pin = a['pin'];
-        //     var b = RoboBlocks.findPinMode(delay_time);
-        //     code += b['code'];
-        //     delay_time = b['pin'];
-        //     var c = RoboBlocks.findPinMode(value_degree);
-        //     code += c['code'];
-        //     value_degree = c['pin'];
-
-        //     if (RoboBlocks.isVariable(dropdown_pin)) {
-        //         code += JST['servo_move_setups']({
-        //             'dropdown_pin': dropdown_pin
-        //         });
-        //     } else {
-        //         Blockly.Arduino.setups_['servo_move_' + dropdown_pin] = JST['servo_move_setups']({
-        //             'dropdown_pin': dropdown_pin
-        //         });
-        //     }
-
-        //     code += JST['servo_move']({
-        //         'dropdown_pin': dropdown_pin,
-        //         'value_degree': value_degree,
-        //         'delay_time': delay_time
-        //     });
-        //     return code;
-        // };
-        // /**
-        //  * servo_move block definition
-        //  * @type {Object}
-        //  */
-        // Blockly.Blocks.servo_move = {
-        //     category: RoboBlocks.locales.getKey('LANG_CATEGORY_SERVO'),
-        //     tags: ['servo'],
-        //     helpUrl: RoboBlocks.URL_SERVO,
-        //     /**
-        //      * servo_move initialization
-        //      */
-        //     init: function() {
-        //         this.setColour(RoboBlocks.LANG_COLOUR_SERVO);
-        //         this.appendValueInput('PIN').appendField(RoboBlocks.locales.getKey('LANG_SERVO_MOVE')).appendField(new Blockly.FieldImage('img/blocks/bqservo01.png', 208 * options.zoom, 126 * options.zoom)).appendField(RoboBlocks.locales.getKey('LANG_SERVO_MOVE_PIN')).setCheck(Number);
-        //         this.appendValueInput('DEGREE', Number).setCheck(Number).setAlign(Blockly.ALIGN_RIGHT).appendField(RoboBlocks.locales.getKey('LANG_SERVO_MOVE_DEGREES'));
-        //         this.appendValueInput('DELAY_TIME', Number).setCheck(Number).setAlign(Blockly.ALIGN_RIGHT).appendField(RoboBlocks.locales.getKey('LANG_SERVO_MOVE_DELAY'));
-        //         this.setPreviousStatement(true);
-        //         this.setNextStatement(true);
-        //         this.setTooltip(RoboBlocks.locales.getKey('LANG_SERVO_MOVE_TOOLTIP'));
-        //     },
-        //     isVariable: function(varValue) {
-        //         for (var i in Blockly.Variables.allVariables()) {
-        //             if (Blockly.Variables.allVariables()[i] === varValue) {
-        //                 return true;
-        //             }
-        //         }
-        //         return false;
-        //     },
-        //     onchange: function() {
-        //         // try {
-        //         //     if (this.isVariable(Blockly.Arduino.valueToCode(this,'PIN', Blockly.Arduino.ORDER_ATOMIC))) {
-        //         //         this.setWarningText(RoboBlocks.locales.getKey('LANG_SERVO_WARNING'));
-        //         //     } else {
-        //         //         this.setWarningText(null);
-        //         //     }
-        //         // } catch (e) {}
-        //     }
-        // };
-
         // Source: src/blocks/text/text.js
         /* global Blockly, RoboBlocks */
 
@@ -10322,26 +10349,6 @@
                     // Block has been deleted.
                     return;
                 }
-                // this.last_variable=this.getFieldValue('VAR');
-                // if (!this.last_variables){
-                //     this.last_variables=Blockly.Variables.allVariables();
-                // }
-                // var variables=Blockly.Variables.allVariables();
-                // for (var i in variables){
-                //     if (Blockly.Variables.allVariables()[i]!==this.last_variables[i]){
-                //         try{
-                //             this.removeInput('VALUE');
-                //             this.appendValueInput('VALUE')
-                //                 .appendField(RoboBlocks.locales.getKey('LANG_VARIABLES_SET'))
-                //                 .appendField(new Blockly.FieldDropdown(this.getVariables()), 'VAR')
-                //                 .appendField(RoboBlocks.locales.getKey('LANG_VARIABLES_SET_AS'))
-                //                 .setAlign(Blockly.ALIGN_RIGHT);
-                //             this.setInputsInline(false);
-                //             this.setFieldValue(this.last_variable, 'VAR');
-                //         }catch(e){}
-                //         this.last_variables=Blockly.Variables.allVariables();
-                //     }
-                // }
                 try {
                     if (!this.exists()) {
                         this.setWarningText(RoboBlocks.locales.getKey('LANG_VARIABLES_CALL_WITHOUT_DEFINITION'));
