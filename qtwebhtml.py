@@ -259,21 +259,21 @@ class WebViewer(QMainWindow):
         submenu_arduino.addAction(action_arduino_example9)
         submenu_arduino.addAction(action_arduino_example10)
 
-        action_arduino_example1.triggered.connect(lambda: self.open_example("Arduino/01-variables.bly"))
-        action_arduino_example2.triggered.connect(lambda: self.open_example("Arduino/02-variables-text.bly"))
-        action_arduino_example3.triggered.connect(lambda: self.open_example("Arduino/03-variables-serial.bly"))
-        action_arduino_example4.triggered.connect(lambda: self.open_example("Arduino/04-led-blink.bly"))
-        action_arduino_example5.triggered.connect(lambda: self.open_example("Arduino/05-led-blink-3.bly"))
-        action_arduino_example6.triggered.connect(lambda: self.open_example("Arduino/06-led-blink-for.bly"))
-        action_arduino_example7.triggered.connect(lambda: self.open_example("Arduino/07-led-knight-rider.bly"))
-        action_arduino_example8.triggered.connect(lambda: self.open_example("Arduino/08-led-fade.bly"))
-        action_arduino_example9.triggered.connect(lambda: self.open_example("Arduino/09-serial-counter.bly"))
-        action_arduino_example10.triggered.connect(lambda: self.open_example("Arduino/10-serial-led-switch.bly"))
+        action_arduino_example1.triggered.connect(lambda: self.open_example("Arduino/01-variables.fab"))
+        action_arduino_example2.triggered.connect(lambda: self.open_example("Arduino/02-variables-text.fab"))
+        action_arduino_example3.triggered.connect(lambda: self.open_example("Arduino/03-variables-serial.fab"))
+        action_arduino_example4.triggered.connect(lambda: self.open_example("Arduino/04-led-blink.fab"))
+        action_arduino_example5.triggered.connect(lambda: self.open_example("Arduino/05-led-blink-3.fab"))
+        action_arduino_example6.triggered.connect(lambda: self.open_example("Arduino/06-led-blink-for.fab"))
+        action_arduino_example7.triggered.connect(lambda: self.open_example("Arduino/07-led-knight-rider.fab"))
+        action_arduino_example8.triggered.connect(lambda: self.open_example("Arduino/08-led-fade.fab"))
+        action_arduino_example9.triggered.connect(lambda: self.open_example("Arduino/09-serial-counter.fab"))
+        action_arduino_example10.triggered.connect(lambda: self.open_example("Arduino/10-serial-led-switch.fab"))
 
 
         action_modular_v1_example1 = QAction("Parpadeo Led", self)
         submenu_modular_v1.addAction(action_modular_v1_example1)
-        action_modular_v1_example1.triggered.connect(lambda: self.open_example("Modular/blink.bly"))
+        action_modular_v1_example1.triggered.connect(lambda: self.open_example("Modular/blink.fab"))
 
         action_robot_betto_example1 = QAction("Por añadir", self)
         submenu_robot_betto.addAction(action_robot_betto_example1)
@@ -787,14 +787,13 @@ class WebViewer(QMainWindow):
         # Mostrar el diálogo para seleccionar la ubicación y el nombre del archivo
         file_dialog = QFileDialog(self)
         file_dialog.setFileMode(QFileDialog.AnyFile)
-        file_dialog.setNameFilter("Archivos BLY (*.bly)")
-        file_dialog.setDefaultSuffix(".bly")
+        file_dialog.setNameFilter("Archivos BLY (*.fab)")
+        file_dialog.setDefaultSuffix(".fab")
         file_dialog.setDirectory(initial_dir)
 
         if file_dialog.exec_():
             # Obtener la ubicación y el nombre del archivo seleccionado por el usuario
             selected_file = file_dialog.selectedFiles()[0]
-            # Obtener el contenido del archivo .bly desde la página web y guardar
             self.webview.page().runJavaScript('''
             var xml = Blockly.Xml.domToPrettyText(Blockly.Xml.workspaceToDom(Blockly.getMainWorkspace()));
             xml;''', lambda result: self.save_to_file(result, selected_file))
@@ -832,7 +831,7 @@ class WebViewer(QMainWindow):
     def open_file(self):
         # Mostrar un cuadro de diálogo para seleccionar el archivo
         file_dialog = QFileDialog(self)
-        file_dialog.setNameFilter("Archivos BLY (*.bly)")  # Filtro para archivos .bly
+        file_dialog.setNameFilter("Archivos BLY (*.fab)")
         file_dialog.setFileMode(QFileDialog.ExistingFile)
         initial_dir_open = os.path.join(os.getcwd(), "examples")
         file_dialog.setDirectory(initial_dir_open)
@@ -878,7 +877,6 @@ class WebViewer(QMainWindow):
         if file_dialog.exec_():
             # Obtener la ubicación y el nombre del archivo seleccionado por el usuario
             selected_file = file_dialog.selectedFiles()[0]
-            # Obtener el contenido del archivo .bly desde la página web y guardar
             self.webview.page().runJavaScript('''
             var xml = Blockly.Xml.domToPrettyText(Blockly.Xml.workspaceToDom(Blockly.getMainWorkspace()));
             xml;''', lambda result: self.save_to_ino(result, selected_file))
