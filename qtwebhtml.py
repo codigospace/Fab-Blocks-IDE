@@ -374,9 +374,9 @@ class WebViewer(QMainWindow):
         action41 = QAction("Primeros Pasos", self)
         action42 = QAction("Tutoriales", self)
         action43 = QAction("FAQ", self)
+        action46 = QAction("Foro", self)
         action44 = QAction("Contactenos", self)
         action45 = QAction("Acerca de", self)
-        action46 = QAction("Foro", self)
 
         # Conectar las acciones a las funciones correspondientes
         action41.triggered.connect(lambda: self.open_link("https://www.ejemplo.com/primeros_pasos"))
@@ -392,9 +392,9 @@ class WebViewer(QMainWindow):
         menu4.addAction(action43)
         menu4.addSeparator()
         menu4.addAction(action44)
+        menu4.addAction(action46)
         menu4.addSeparator()
         menu4.addAction(action45)
-        menu4.addAction(action46)
 
         # Crear una fila adicional para botones con iconos
         button_layout = QHBoxLayout()
@@ -701,7 +701,6 @@ class WebViewer(QMainWindow):
         folder_actual = os.getcwd()
 
         command = f'''{arduinoDev_folder}/arduino-builder -compile -logger=machine -hardware {arduinoDev_folder}/hardware -tools {arduinoDev_folder}/tools-builder -tools {arduinoDev_folder}/hardware/tools/avr -built-in-libraries {arduinoDev_folder}/libraries -fqbn arduino:avr:uno -vid-pid 1A86_7523 -ide-version=10815 -build-path {folder_actual}/build -warnings=none -build-cache {folder_actual}/Temp/arduino_cache_914083 -prefs=build.warn_data_percentage=75 -prefs=runtime.tools.arduinoOTA.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.arduinoOTA-1.3.0.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avrdude.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avrdude-6.3.0-arduino17.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avr-gcc.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avr-gcc-7.3.0-atmel3.6.1-arduino7.path={arduinoDev_folder}/hardware/tools/avr -verbose {folder_actual}/extracted_code.ino'''
-        print(command)
         self.runner_com = CommandRunner(command)
         self.runner_com.output_received.connect(self.updateOutput)
         self.runner_com.start()
@@ -806,7 +805,6 @@ class WebViewer(QMainWindow):
             file.write("\n".join(result))
 
     def save_to_file(self, result, file_path):
-        print(result)
         # Guardar el contenido obtenido en el archivo seleccionado por el usuario
         with open(file_path, "w") as file:
             file.write(result)

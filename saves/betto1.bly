@@ -1,0 +1,50 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <block type="controls_setupLoop" id="1" deletable="false" x="0" y="0">
+    <statement name="SETUP">
+      <block type="betto_def_variables" id="18"></block>
+    </statement>
+    <statement name="LOOP">
+      <block type="test_inout_digital_write" id="96">
+        <next>
+          <block type="betto_movs_select" id="45">
+            <field name="ACTION">0</field>
+            <field name="VEL">0</field>
+            <next>
+              <block type="betto_movs_select_dance" id="62">
+                <field name="ACTION">0</field>
+                <field name="VEL">0</field>
+                <field name="SIZE">0</field>
+                <next>
+                  <block type="betto_movs_select_move" id="79">
+                    <field name="ACTION">0</field>
+                    <field name="VEL">0</field>
+                    <field name="SIZE">0</field>
+                    <next>
+                      <block type="betto_select_sound" id="113">
+                        <field name="otto_note">262</field>
+                        <field name="otto_note_duration">125</field>
+                        <next>
+                          <block type="betto_select_sound_vars" id="138" inline="true">
+                            <next>
+                              <block type="betto_select_sound_5_vars" id="155" inline="true">
+                                <next>
+                                  <block type="betto_select_gest" id="172">
+                                    <field name="otto_gesture">BettoSuperHappy</field>
+                                  </block>
+                                </next>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </statement>
+  </block>
+</xml>

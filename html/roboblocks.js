@@ -4413,7 +4413,7 @@
                     sizeValue = '25';
             }
         
-            var code = 'betto.' + action + speedValue + ',' + sizeValue; // Añadir tamaño al código
+            var code = 'Betto.' + action + speedValue + ',' + sizeValue; // Añadir tamaño al código
         
             // Añadir la dirección al final de la llamada de función
             if (actionKey === '0' || actionKey === '2' || actionKey === '4' || actionKey === '6') {
@@ -4537,7 +4537,7 @@
                     sizeValue = '25';
             }
         
-            var code = 'betto.' + action + speedValue + ',' + sizeValue; // Añadir tamaño al código
+            var code = 'Betto.' + action + speedValue + ',' + sizeValue; // Añadir tamaño al código
         
             code += ');\n';
         
