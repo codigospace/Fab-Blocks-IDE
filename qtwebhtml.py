@@ -16,6 +16,9 @@ import webbrowser
 from monitor_plotter import MainWindow
 iconSize = 32
 
+if getattr(sys, 'frozen', False):
+    import pyi_splash
+
 class ForumDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -966,6 +969,8 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     config_manager = ConfigManager()
     viewer = WebViewer()
+    if getattr(sys, 'frozen', False):
+        pyi_splash.close()
     viewer.show()
     about_shortcut = QShortcut(QKeySequence("Ctrl+H"), viewer)
     about_shortcut.activated.connect(viewer.show_about_dialog)
