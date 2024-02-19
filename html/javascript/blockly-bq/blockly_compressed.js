@@ -16406,7 +16406,6 @@ Blockly.preloadAudio_ = function() {
     for (var a in Blockly.SOUNDS_) {
         var b = Blockly.SOUNDS_[a];
         b.volume = .01;
-        b.play();
         b.pause();
         if (goog.userAgent.IPAD || goog.userAgent.IPHONE) break
     }
