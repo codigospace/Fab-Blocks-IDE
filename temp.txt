@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QPushButton, QVBoxLayout, QWidget, QComboBox, QLabel, QHBoxLayout, QLineEdit
-from PyQt5.QtCore import QTimer, QObject, pyqtSignal
+from PyQt5.QtCore import QTimer, pyqtSignal, QObject
 import pyqtgraph as pg
 from collections import deque
 import time
@@ -132,7 +132,8 @@ class MainWindow(QMainWindow):
 
         self.start_time = None
         self.last_update_time = None
-        
+
+        # Crear el directorio de datos una vez al inicio
         self.data_folder = self.get_data_folder()
 
     def populate_port_combo(self):
@@ -193,7 +194,6 @@ class MainWindow(QMainWindow):
                         self.dataY.append(deque(maxlen=300))
                         self.curves.append(self.plot.plot(pen=self.colors[len(self.dataY) - 1]))
                         self.plot.plotItem.legend.addItem(self.curves[-1], name=name)  # Agregar la línea a la leyenda
-                    self.dataY[self.variable_indices[name]].append(value)
             else:
                 # Procesar datos numéricos
                 valores = [float(valor) for valor in variables]
@@ -203,7 +203,7 @@ class MainWindow(QMainWindow):
                     while len(self.dataY) < num_valores:
                         self.dataY.append(deque(maxlen=300))
                         self.curves.append(self.plot.plot(pen=self.colors[len(self.dataY) - 1]))
-                        self.plot.plotItem.legend.addItem(self.curves[-1], name=f'Línea {len(self.dataY)}')  # Agregar la línea a la leyenda con un nombre único
+                        self.plot.plotItem.legend.addItem(self.curves[-1], name=f'Valor {len(self.dataY)}')  # Agregar la línea a la leyenda con un nombre único
 
                     # Actualizar los datos de cada serie
                     for i, valor in enumerate(valores):
@@ -232,17 +232,6 @@ class MainWindow(QMainWindow):
             self.text_edit.hide()
             self.plot.show()
             self.graph_button.setText('Monitor')
-    
-    def get_data_folder(self):
-        # current_date = time.strftime("%Y-%m-%d")
-        # folder_name = f"data_{current_date}"
-        # if not os.path.exists(folder_name):
-        #     os.makedirs(folder_name)
-        # return folder_name
-        folder_name = "data_serial"
-        if not os.path.exists(folder_name):
-            os.makedirs(folder_name)
-        return folder_name
 
     def save_text_edit_content(self, filename):
         with open(filename, 'w') as file:
@@ -265,11 +254,23 @@ class MainWindow(QMainWindow):
             self.save_text_edit_content(text_file_path)
             image_file_path = os.path.join(self.data_folder, 'grafico.png')
             self.save_plot_as_image(image_file_path)
+
+    def get_data_folder(self):
+        # current_date = time.strftime("%Y-%m-%d")
+        # folder_name = f"data_{current_date}"
+        # if not os.path.exists(folder_name):
+        #     os.makedirs(folder_name)
+        # return folder_name
+        folder_name = "data_serial"
+        if not os.path.exists(folder_name):
+            os.makedirs(folder_name)
+        return folder_name
     
     # Método para manejar la acción de guardar
     def save_option(self):
         index = self.save_option_combo.currentIndex()  # Obtener el índice de la opción seleccionada
         self.handle_save_option(index)  # Llamar al método handle_save_option con el índice
+
 
 def run_serial_monitor_app():
     if not QApplication.instance():
