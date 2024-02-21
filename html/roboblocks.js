@@ -1002,8 +1002,8 @@
         RoboBlocks.LANG_COLOUR_TEXT = '#42A3CE';
         RoboBlocks.LANG_COLOUR_COMMUNICATION = '#4263CE';
         RoboBlocks.LANG_COLOUR_MODULAR = '#007fff';
-        RoboBlocks.LANG_COLOUR_BETTO = '#007fff';
-        RoboBlocks.LANG_COLOUR_CARLITTO = '#007fff';
+        RoboBlocks.LANG_COLOUR_BETTO = '#733B2F';
+        RoboBlocks.LANG_COLOUR_CARLITTO = '#D7C017';
         RoboBlocks.LANG_COLOUR_ADVANCED = '#9142CE';
         RoboBlocks.LANG_COLOUR_VARIABLES = '#B244CC';
         RoboBlocks.LANG_COLOUR_PROCEDURES = '#CE42B3';
@@ -3120,10 +3120,11 @@
              */
             init: function() {
                 this.setColour(RoboBlocks.LANG_COLOUR_MODULAR);
-                this.appendDummyInput('VALUE')
+                this.appendDummyInput().appendField(new Blockly.FieldImage('media/DELCARARMODULAR.png', 90, 90, "*"))
                 .appendField('Declarar el modulo')
                 .appendField(new Blockly.FieldTextInput('name'), 'VAR')
-                .appendField('de tipo')
+                this.appendDummyInput().appendField('de tipo')
+                .setAlign(Blockly.ALIGN_RIGHT)
                 .appendField(new Blockly.FieldDropdown([
                     ['Sensor Potenciometro', '0'],
                     ['Sensor Infarrojo', '1'],
@@ -3140,8 +3141,9 @@
                     ['Actuador OLED', '12'],
                     ['Modulo Bluetooth', '13'],
                     ['Modulo Wifi', '14'],
-                ]), "MOD")
-                .appendField('en el puerto')
+                ]), "MOD");
+                this.appendDummyInput().appendField('en el puerto')
+                .setAlign(Blockly.ALIGN_RIGHT)
                 .appendField(new Blockly.FieldDropdown([
                     ['0', '0'],
                     ['1', '1'],
@@ -3269,8 +3271,7 @@
              */
             init: function() {
                 this.setColour(RoboBlocks.LANG_COLOUR_ADVANCED);
-                this.appendDummyInput('DUMMY').appendField('Leer el estado de:')
-                    //.appendField(new Blockly.FieldDropdown(this.getVariables()), 'VAR');
+                this.appendDummyInput().appendField(new Blockly.FieldImage('media/LEERMODULAR.png', 40, 40, "*"))
                     .appendField(new Blockly.FieldVariable(' '), 'VAR');
                 this.setOutput(true);
                 this.setOutput(true, Boolean);
@@ -3332,92 +3333,7 @@
                 }
                 return false;
             }
-        };
-
-        //Copia variables
-        // Source: src/blocks/variables_get/variables_get.js
-        /* global Blockly, RoboBlocks */
-        /* jshint sub:true */
-        /**
-         * variables_get code generation
-         * @return {String} Code generated with block parameters
-         */
-        Blockly.Arduino.test_variables_get = function() {
-            // Variable setter.
-            var varName = this.getFieldValue('VAR') || '';
-            if (RoboBlocks.variables[this.getFieldValue('VAR')] !== undefined) {
-                this.var_type = RoboBlocks.variables[this.getFieldValue('VAR')][0];
-            }
-            return [varName, Blockly.Arduino.ORDER_ATOMIC];
-        };
-        Blockly.Blocks.test_variables_get = {
-            // Variable setter.
-            category: RoboBlocks.locales.getKey('LANG_CATEGORY_MODULAR'), // Variables are handled specially.
-            helpUrl: RoboBlocks.URL_VAR,
-            init: function() {
-                this.setColour(RoboBlocks.LANG_COLOUR_VARIABLES);
-                this.appendDummyInput('DUMMY').appendField(RoboBlocks.locales.getKey('LANG_VARIABLES_GET'))
-                    //.appendField(new Blockly.FieldDropdown(this.getVariables()), 'VAR');
-                    .appendField(new Blockly.FieldVariable(' '), 'VAR');
-                this.setOutput(true);
-                this.setTooltip(RoboBlocks.locales.getKey('LANG_VARIABLES_GET_TOOLTIP'));
-            },
-            getVariables: function() {
-                var variables = Blockly.Variables.allVariables();
-                var dropdown = [];
-                if (variables.length > 0) {
-                    for (var i in variables) {
-                        dropdown.push([variables[i], variables[i]]);
-                    }
-                } else {
-                    dropdown.push(['', '']);
-                }
-                return dropdown;
-            },
-            onchange: function() {
-                // if (!this.workspace) {
-                //     // Block has been deleted.
-                //     return;
-                // }
-                // this.last_variable=this.getFieldValue('VAR');
-                // if (!this.last_variables){
-                //     this.last_variables=Blockly.Variables.allVariables();
-                // }
-                // var variables=Blockly.Variables.allVariables();
-                // for (var i in variables){
-                //     if (Blockly.Variables.allVariables()[i]!==this.last_variables[i]){
-                //         try{
-                //             this.removeInput('DUMMY');
-                //         }catch(e){}
-                //         this.appendDummyInput('DUMMY')
-                //             .appendField(RoboBlocks.locales.getKey('LANG_VARIABLES_GET'))
-                //             .appendField(new Blockly.FieldDropdown(this.getVariables()), 'VAR');
-                //         this.setFieldValue(this.last_variable, 'VAR');
-                //         this.last_variables=Blockly.Variables.allVariables();
-                //     }
-                // }
-                try {
-                    if (!this.exists()) {
-                        this.setWarningText(RoboBlocks.locales.getKey('LANG_VARIABLES_CALL_WITHOUT_DEFINITION'));
-                    } else {
-                        this.setWarningText(null);
-                    }
-                } catch (e) {}
-            },
-            renameVar: function(oldName, newName) {
-                if (Blockly.Names.equals(oldName, this.getFieldValue('VAR'))) {
-                    this.setTitleValue(newName, 'VAR');
-                }
-            },
-            exists: function() {
-                for (var i in Blockly.Variables.allVariables()) {
-                    if (Blockly.Variables.allVariables()[i] === this.getFieldValue('VAR')) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        };
+        };        
 
         // Copia de digital Write 1 argumento true-false
         // Source: src/blocks/inout_digital_write/inout_digital_write.js
@@ -3427,7 +3343,7 @@
          * inout_digital_write code generation
          * @return {String} Code generated with block parameters
          */
-        Blockly.Arduino.test_inout_digital_write = function() {
+        Blockly.Arduino.test_inout_digital_write_op = function() {
             var dropdown_pin = this.getFieldValue('VAR');
             var dropdown_stat = this.getFieldValue('STAT');
             var code = '';
@@ -3455,7 +3371,7 @@
          * inout_digital_write block definition
          * @type {Object}
          */
-        Blockly.Blocks.test_inout_digital_write = {
+        Blockly.Blocks.test_inout_digital_write_op = {
             category: RoboBlocks.locales.getKey('LANG_CATEGORY_MODULAR'),
             helpUrl: RoboBlocks.URL_PIN_FUNC,
             /**
@@ -3463,6 +3379,7 @@
              */
             init: function() {
                 this.setColour('#E5BE01');
+                this.appendDummyInput().appendField(new Blockly.FieldImage('media/ESCRIBIRMODULAR.png', 40, 40, "*"));
                 this.appendDummyInput('DUMMY').appendField('Escribir en el actuador')
                     //.appendField(new Blockly.FieldDropdown(this.getVariables()), 'VAR');
                     .appendField(new Blockly.FieldVariable(' '), 'VAR');
@@ -3488,27 +3405,6 @@
                 return dropdown;
             },
             onchange: function() {
-                // if (!this.workspace) {
-                //     // Block has been deleted.
-                //     return;
-                // }
-                // this.last_variable=this.getFieldValue('VAR');
-                // if (!this.last_variables){
-                //     this.last_variables=Blockly.Variables.allVariables();
-                // }
-                // var variables=Blockly.Variables.allVariables();
-                // for (var i in variables){
-                //     if (Blockly.Variables.allVariables()[i]!==this.last_variables[i]){
-                //         try{
-                //             this.removeInput('DUMMY');
-                //         }catch(e){}
-                //         this.appendDummyInput('DUMMY')
-                //             .appendField(RoboBlocks.locales.getKey('LANG_VARIABLES_GET'))
-                //             .appendField(new Blockly.FieldDropdown(this.getVariables()), 'VAR');
-                //         this.setFieldValue(this.last_variable, 'VAR');
-                //         this.last_variables=Blockly.Variables.allVariables();
-                //     }
-                // }
                 try {
                     if (!this.exists()) {
                         this.setWarningText(RoboBlocks.locales.getKey('LANG_VARIABLES_CALL_WITHOUT_DEFINITION'));
@@ -3565,6 +3461,7 @@
              */
             init: function() {
                 this.setColour('#E5BE01');
+                this.appendDummyInput().appendField(new Blockly.FieldImage('media/ESCRIBIRMODULAR.png', 40, 40, "*"));
                 this.appendDummyInput('DUMMY').appendField('Escribir en el actuador')
                     //.appendField(new Blockly.FieldDropdown(this.getVariables()), 'VAR');
                     .appendField(new Blockly.FieldVariable(' '), 'VAR');
@@ -3658,6 +3555,7 @@
              */
             init: function() {
                 this.setColour(RoboBlocks.LANG_COLOUR_ADVANCED);
+                this.appendDummyInput().appendField(new Blockly.FieldImage('media/ESCRIBIRMODULAR.png', 40, 40, "*"));
                 this.appendDummyInput('DUMMY').appendField('Escribir en el motor de pasos')
                     //.appendField(new Blockly.FieldDropdown(this.getVariables()), 'VAR');
                     .appendField(new Blockly.FieldVariable(' '), 'VAR');
@@ -3771,6 +3669,7 @@
              */
             init: function() {
                 this.setColour(RoboBlocks.LANG_COLOUR_ADVANCED);
+                this.appendDummyInput().appendField(new Blockly.FieldImage('media/ESCRIBIRMODULAR.png', 40, 40, "*"));
                 this.appendDummyInput('DUMMY').appendField('Escribir en el display 7 segmentos')
                     //.appendField(new Blockly.FieldDropdown(this.getVariables()), 'VAR');
                     .appendField(new Blockly.FieldVariable(' '), 'VAR');
@@ -3885,6 +3784,7 @@
              */
             init: function() {
                 this.setColour('#FF8000');
+                this.appendDummyInput().appendField(new Blockly.FieldImage('media/ESCRIBIRMODULAR.png', 40, 40, "*"));
                 this.appendDummyInput('DUMMY').appendField('Escribir en el servo motor')
                     //.appendField(new Blockly.FieldDropdown(this.getVariables()), 'VAR');
                     .appendField(new Blockly.FieldVariable(' '), 'VAR');
@@ -4000,6 +3900,7 @@
              */
             init: function() {
                 this.setColour('#666666');
+                this.appendDummyInput().appendField(new Blockly.FieldImage('media/ESCRIBIRMODULAR.png', 40, 40, "*"));
                 this.appendDummyInput('DUMMY').appendField('Escribir en el motor de corriente continua')
                     //.appendField(new Blockly.FieldDropdown(this.getVariables()), 'VAR');
                     .appendField(new Blockly.FieldVariable(' '), 'VAR');
@@ -4115,6 +4016,7 @@
              */
             init: function() {
                 this.setColour(RoboBlocks.LANG_COLOUR_ADVANCED);
+                this.appendDummyInput().appendField(new Blockly.FieldImage('media/ESCRIBIRMODULAR.png', 40, 40, "*"));
                 this.appendDummyInput('DUMMY').appendField('Escribir en la pantalla')
                     //.appendField(new Blockly.FieldDropdown(this.getVariables()), 'VAR');
                     .appendField(new Blockly.FieldVariable(' '), 'VAR');
@@ -4213,7 +4115,7 @@
              */
             init: function() {
                 this.setColour(RoboBlocks.LANG_COLOUR_ADVANCED);
-                this.appendDummyInput('')
+                this.appendDummyInput().appendField(new Blockly.FieldImage('media/ESCRIBIRMODULAR.png', 40, 40, "*"))
                     .appendField(new Blockly.FieldDropdown([
                         ['ADELANTE', 'HIGH'],
                         ['ATRAS', 'LOW']
@@ -5209,21 +5111,26 @@
             helpUrl: '',
             init: function() {
                 this.setColour(RoboBlocks.LANG_COLOUR_CARLITTO);
-                this.appendDummyInput()
-                .appendField('Declarar Carlitto')
-                .appendField("con motor izquierdo:")
+                this.appendDummyInput().appendField(new Blockly.FieldImage('media/DECLARARCARLITO.png', 80, 80, "*"))
+                .appendField('Declarar Carlitto');
+                this.appendDummyInput().appendField("con motor izquierdo:")
+                .setAlign(Blockly.ALIGN_RIGHT)
                 .appendField(new Blockly.FieldDropdown([["0", "0"], ["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"], ["8", "8"], ["9", "9"], ["10", "10"]]), "MOT_LEFT");
                 this.appendDummyInput()
                     .appendField('potencia izquierda')
+                    .setAlign(Blockly.ALIGN_RIGHT)
                     .appendField(new Blockly.FieldTextInput('0', Blockly.Blocks.math_integer_dc.validator), 'POT_LEFT');
                 this.appendDummyInput()
                 .appendField("motor Derecha:")
+                .setAlign(Blockly.ALIGN_RIGHT)
                 .appendField(new Blockly.FieldDropdown([["0", "0"], ["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"], ["8", "8"], ["9", "9"], ["10", "10"]]), "MOT_RIGHT");
                 this.appendDummyInput()
                     .appendField('potencia derecha')
+                    .setAlign(Blockly.ALIGN_RIGHT)
                     .appendField(new Blockly.FieldTextInput('0', Blockly.Blocks.math_integer_dc.validator), 'POT_RIGHT');
                 this.appendDummyInput()
                 .appendField("potenciómetro:")
+                .setAlign(Blockly.ALIGN_RIGHT)
                         .appendField(new Blockly.FieldDropdown([["0", "0"], ["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"], ["8", "8"], ["9", "9"], ["10", "10"]]),"POT");
             this.setPreviousStatement(true);
             this.setNextStatement(true);
@@ -5255,7 +5162,8 @@
              */
             init: function() {
                 this.setColour(RoboBlocks.LANG_COLOUR_CARLITTO);
-                this.appendDummyInput('DUMMY').appendField('Detener Carlitto');
+                this.appendDummyInput().appendField(new Blockly.FieldImage('media/PARARCARLITO.png', 40, 40, "*"))
+                .appendField('Detener Carlitto');
                 this.setPreviousStatement(true, null);
                 this.setInputsInline(true);
                 this.setNextStatement(true, null);
@@ -5292,7 +5200,7 @@
              */
             init: function() {
                 this.setColour(RoboBlocks.LANG_COLOUR_CARLITTO);
-                this.appendDummyInput()
+                this.appendDummyInput().appendField(new Blockly.FieldImage('media/MOVIMIENTOCARLITO.png', 30, 30, "*"))
                 .appendField("Movimiento en ")
                 .appendField(new Blockly.FieldDropdown([
                     ["ADELANTE", "ADELANTE"],

@@ -223,15 +223,25 @@ class MainWindow(QMainWindow):
     def update_ports(self):
         self.populate_port_combo()
 
-    def toggle_graph(self):
-        if self.plot.isVisible():
-            self.plot.hide()
-            self.text_edit.show()
-            self.graph_button.setText('Gráfico')
+    def toggle_graph(self, show_graph):
+        if show_graph:
+            self.show_graph()
         else:
-            self.text_edit.hide()
-            self.plot.show()
-            self.graph_button.setText('Monitor')
+            self.hide_graph()
+
+    def show_graph(self):
+        self.text_edit.hide()
+        self.plot.show()
+        self.graph_button.setText('Monitor')
+        self.graph_button.clicked.disconnect()  # Desconectar el botón del método anterior
+        self.graph_button.clicked.connect(lambda: self.toggle_graph(False))  # Conectar el botón al nuevo método
+
+    def hide_graph(self):
+        self.plot.hide()
+        self.text_edit.show()
+        self.graph_button.setText('Gráfico')
+        self.graph_button.clicked.disconnect()  # Desconectar el botón del método anterior
+        self.graph_button.clicked.connect(lambda: self.toggle_graph(True))
     
     def get_data_folder(self):
         # current_date = time.strftime("%Y-%m-%d")
@@ -255,23 +265,22 @@ class MainWindow(QMainWindow):
     def handle_save_option(self, index):
         option = self.save_option_combo.itemText(index)
         if option == "Texto":
-            file_path = os.path.join(self.data_folder, 'contenido.txt')
+            file_path = os.path.join(self.data_folder, 'contenido.csv')
             self.save_text_edit_content(file_path)
         elif option == "Imagen":
             file_path = os.path.join(self.data_folder, 'grafico.png')
             self.save_plot_as_image(file_path)
         elif option == "Ambos":
-            text_file_path = os.path.join(self.data_folder, 'contenido.txt')
+            text_file_path = os.path.join(self.data_folder, 'contenido.csv')
             self.save_text_edit_content(text_file_path)
             image_file_path = os.path.join(self.data_folder, 'grafico.png')
             self.save_plot_as_image(image_file_path)
     
-    # Método para manejar la acción de guardar
     def save_option(self):
-        index = self.save_option_combo.currentIndex()  # Obtener el índice de la opción seleccionada
-        self.handle_save_option(index)  # Llamar al método handle_save_option con el índice
+        index = self.save_option_combo.currentIndex()
+        self.handle_save_option(index)
 
-def run_serial_monitor_app():
+def run_serial_monitor_app(show_graph=False):
     if not QApplication.instance():
         app = QApplication(sys.argv)
     else:
@@ -279,6 +288,7 @@ def run_serial_monitor_app():
 
     window = MainWindow()
     window.show()
+    window.toggle_graph(show_graph)
     sys.exit(app.exec_())
 
 
