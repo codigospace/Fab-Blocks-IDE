@@ -364,11 +364,6 @@ class WebViewer(QMainWindow):
         menu3.addSeparator()
         menu3.addMenu(self.placas_menu)
         menu3.addMenu(self.ports_menu)
-    
-        # Conectar acciones a funciones
-        action31.triggered.connect(self.action1_triggered)
-        action32.setVisible(False)
-        #action32.triggered.connect(self.action2_triggered)
 
         # Crear un nuevo menú
         menu4 = self.menuBar().addMenu("Ayuda")
@@ -437,7 +432,7 @@ class WebViewer(QMainWindow):
         graphic_serial.setIcon(QIcon("icons/graphic.png"))
         graphic_serial.setIconSize(QSize(iconSize, iconSize))
         graphic_serial.setFixedSize(button_width, button_height)
-        graphic_serial.setVisible(False) 
+        #graphic_serial.setVisible(False) 
 
         monitor_serial = QPushButton("Monitor Serial")
         monitor_serial.setIcon(QIcon("icons/monitor_serial.png"))
@@ -522,8 +517,10 @@ class WebViewer(QMainWindow):
         self.console.setReadOnly(True)
         self.centralWidget().layout().addWidget(self.console)
                 
-        monitor_serial.clicked.connect(self.show_monitor_serial)
-        action31.triggered.connect(self.show_monitor_serial)
+        monitor_serial.clicked.connect(lambda: self.show_monitor_serial(False))
+        graphic_serial.clicked.connect(lambda: self.show_monitor_serial(True))
+        action31.triggered.connect(lambda: self.show_monitor_serial(False))
+        action32.triggered.connect(lambda: self.show_monitor_serial(True))
 
     def show_preferences_dialog(self):
         self.preferences_dialog = PreferencesDialog(self)
@@ -673,18 +670,15 @@ class WebViewer(QMainWindow):
             self.combo_puertos.setEnabled(False)
     
     def update_progress(self):
-         # Obtener el valor actual de la barra de progreso
         current_value = 0
 
-        # Aumentar gradualmente hasta el 80%
         target_value = 80
-        step = 40  # Aumentar en pasos de 5
+        step = 40
 
         if current_value < target_value:
             new_value = current_value + step
             self.progress_bar.setValue(new_value)
         else:
-            # Detener el temporizador cuando alcanza el 80%
             self.timer.stop()
     
     def write_to_console(self, message):
@@ -695,10 +689,9 @@ class WebViewer(QMainWindow):
         self.update_progress()
         
         if hasattr(self, 'runner') and self.runner.isRunning():
-            self.runner.terminate()  # Detener el hilo anterior si está corriendo
+            self.runner.terminate()
             self.runner.wait()
         
-        # Obtener la ubicación del compilador guardada en la configuración
         arduinoDev = config_manager.get_value('compiler_location')
         arduinoDev_folder = os.path.dirname(arduinoDev)
         folder_actual = os.getcwd()
@@ -716,10 +709,8 @@ class WebViewer(QMainWindow):
         arduinoDev = config_manager.get_value('compiler_location')
         arduinoDev_folder = os.path.dirname(arduinoDev)
         folder_actual = os.getcwd()
-        # Obtener la placa seleccionada
         selected_board = self.combo.currentText()
 
-        # Obtener el puerto serial seleccionado
         selected_port = self.combo_puertos.currentText()
 
         cpu_mapping = {
@@ -735,8 +726,6 @@ class WebViewer(QMainWindow):
         TEXT_CPU = board_info['TEXT_CPU']
         PROCESSOR = board_info['PROCESSOR']
         BAUD = board_info['BAUD']
-
-        #command = f'''{arduinoDev_folder}/hardware/tools/avr/bin/avrdude -C{arduinoDev_folder}/hardware/tools/avr/etc/avrdude.conf -v -patmega328p -carduino -PCOM3 -b115200 -D -Uflash:w:{folder_actual}/build/extracted_code.ino.hex:i'''
 
         command = f'''{arduinoDev_folder}/hardware/tools/avr/bin/avrdude -C{arduinoDev_folder}/hardware/tools/avr/etc/avrdude.conf -v -p{TEXT_CPU} -c{PROCESSOR} -P{selected_port} -b115200 -D -Uflash:w:{folder_actual}/build/extracted_code.ino.hex:i'''
         
@@ -776,9 +765,10 @@ class WebViewer(QMainWindow):
                 self.runner.wait()
         event.accept()
     
-    def show_monitor_serial(self):
+    def show_monitor_serial(self,show_graph_state):
         self.monitor_window = MainWindow()
         self.monitor_window.show()
+        self.monitor_window.toggle_graph(show_graph_state)
     
     def save_file_as(self):
         
