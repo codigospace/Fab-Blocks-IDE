@@ -16,17 +16,17 @@
 - [x] Eliminar conjuntos de bloques a no utilizar
 
 ## Importante y Urgente 1
-- [ ] Añadir el grafico serial
-- [ ] Demo para grafico serial
+- [x] Añadir el grafico serial
+- [x] Demo para grafico serial
 - [ ] Revisión de por que no se puede subir y verificar al mismo tiempo
+- [ ] Cambio de iconos de inicio de aplicacion y icono de la aplicacion
 
 ## Importante pero no Urgente 2
-- [ ] Ventana propia del programa de monitor serie y no emergente como se planea para esta versión
-- [ ] Uso de alguna libreria en JavaScript para el grafico serial, esto para una migración posterior a la web
 - [ ] Mejorar la interfaz de los botones
 - [ ] Revisión de todo el codigo para esclarecer variables pendientes idioma y codificacion de diferentes lenguajes
-- [ ] Mejorar la interactividad con la consola
+- [ ] Mejorar la interactividad con la consola y que no sea estatico
 - [ ] Revisión de texto de bloques
+- [x] Guardar imagen o datos del monitor/grafico serie
 - [ ] Posibilidad de interrruptir la subida cuando se usa un puerto COM, cuando no se sube a Arduino
 
 ## Urgente pero no Importante 3
@@ -34,14 +34,18 @@
 - [ ] Links para agregar en la sección de ayuda
 
 ## No Importante ni Urgente 4
-- [ ] Busqueda de proyectos similares para el uso de modulos Bluetooth con Arduino
+- [x] Busqueda de proyectos similares para el uso de modulos Bluetooth con Arduino
 - [ ] Poder abrir links de archivos .bly de internet, para la agilización de extraer ejemplos de una web o repositorio
 - [ ] Revisión de pseudo-lenguajes
 - [ ] Revisión de ShadowBlocks
 - [ ] Revisión de Field depedent dropdown
+- [ ] Uso de alguna libreria en JavaScript para el grafico serial, esto para una migración posterior a la web
 
 ### Proximo Proyecto de Migración a Web:
 - [ ] Investigar sobre MQTT
 - [ ] Comparar uso de MQTT contra HTPP
 - [ ] Demo en JS para conectarse a servidores HTTP o MQTT
 - [ ] Posibilidad de mejorar la estructura del proyecto, por medio de modulos
+
+### Descartados:
+- [ ] Ventana propia del programa de monitor serie y no emergente como se planea para esta versión
