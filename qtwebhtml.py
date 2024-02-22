@@ -357,6 +357,9 @@ class WebViewer(QMainWindow):
 
         # Agregar el menú de puertos COM
         self.ports_menu = QMenu("Puertos COM:", self)
+        
+        action26 = QAction("Mostrar Consola", self)
+        action27 = QAction("Ocultar Consola", self)
 
         # Agregar el menú de herramientas al menú principal
         menu3.addAction(action31)
@@ -364,6 +367,12 @@ class WebViewer(QMainWindow):
         menu3.addSeparator()
         menu3.addMenu(self.placas_menu)
         menu3.addMenu(self.ports_menu)
+        menu3.addSeparator()
+        menu3.addAction(action26)
+        menu3.addAction(action27)
+
+        action26.triggered.connect(self.show_console)
+        action27.triggered.connect(self.hide_console)
 
         # Crear un nuevo menú
         menu4 = self.menuBar().addMenu("Ayuda")
@@ -526,12 +535,21 @@ class WebViewer(QMainWindow):
         self.preferences_dialog = PreferencesDialog(self)
         self.preferences_dialog.exec_()
 
-
     def loadLocalFile(self, filename):
-        script_dir = os.path.dirname(os.path.abspath(__file__))
+        # Obtener el directorio en el que se encuentra el script
+        script_dir = os.path.dirname(os.path.realpath(__file__))
+
+        # Construir la ruta al archivo HTML
         filepath = os.path.join(script_dir, "html", filename)
+
+        # Cargar el archivo HTML
         url = QUrl.fromLocalFile(filepath)
+        
         self.webview.load(url)
+        # exe_dir = os.path.dirname(sys.executable)
+        # filepath = os.path.join(exe_dir, "html", filename)
+        # url = QUrl.fromLocalFile(filepath)
+        # self.webview.load(url)
 
     def write_to_ino(self, info):
         if isinstance(info, list):
@@ -541,13 +559,8 @@ class WebViewer(QMainWindow):
         else:
             print("La información extraída no es válida.")
 
-    def action1_triggered(self):
-        print("Opción 1 seleccionada")
-
-    def action2_triggered(self):
-        print("Opción 2 seleccionada")
-
     def compilar_clicked(self):
+        self.console.clear()
         self.write_to_console("Compilar:")
         
         # Obtener la información del combo box
@@ -573,7 +586,7 @@ class WebViewer(QMainWindow):
         self.runCommandCompile()
 
     def subir_clicked(self):
-        self.write_to_console("Subir:")
+        self.console.clear()
         # Ejecutar JavaScript para extraer información de la clase
         self.webview.page().runJavaScript('''
             var elements = document.getElementsByClassName('hljs cpp'); // Clase para el código C++
@@ -582,15 +595,20 @@ class WebViewer(QMainWindow):
                 info.push(elements[i].innerText);
             }
             info;
-        ''', self.extract_info_from_class)
-        # Compilar antes de subir
-        #compile_sketch(URI, FILE, CPUc)
-        # Subir
-        #upload_sketch(URI, FILE, CPUu, PORT)
-        print("1ERO COMPILAR")
-        #self.runCommandCompile()
+        ''', self.extract_info_from_html)
+
+    def compile_finished(self):
         print("2DO SUBIR")
         self.runCommandUpload()
+
+    def extract_info_from_html(self, info):
+        # Compilar antes de subir
+        self.extract_info_from_class(info)
+        print("1ERO COMPILAR")
+        self.runCommandCompile()
+        # Conectar la señal de compilación terminada a la función de subida
+        self.runner_com.finished.connect(self.compile_finished)
+
 
     def current_text_changed(self, s):
         print("Current text: ", s)
@@ -685,7 +703,6 @@ class WebViewer(QMainWindow):
         self.console.append(message)
     
     def runCommandCompile(self):
-        self.console.clear()
         self.update_progress()
         
         if hasattr(self, 'runner') and self.runner.isRunning():
@@ -952,6 +969,11 @@ class WebViewer(QMainWindow):
         else:
             print(f"El archivo del ejemplo en la ruta {example_path} no existe.")
 
+    def show_console(self):
+        self.console.show()
+
+    def hide_console(self):
+        self.console.hide()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

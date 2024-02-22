@@ -2,7 +2,7 @@
 # 2 "D:\\Proyectos\\fab2\\extracted_code.ino" 2
 
 /***   Global variables   ***/
-digitalOutput name(3);
+digitalOutput name(0);
 
 /***   Function declaration   ***/
 

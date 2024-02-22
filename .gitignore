@@ -2,5 +2,6 @@ build/*
 cache/*
 Temp/*
 dist/*
+dist_2/*
 __pycache__/*
 qtwebhtml.spec

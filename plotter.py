@@ -1,68 +1,38 @@
-import sys
-import serial
-from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
-from PyQt5.QtCore import QTimer
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.figure import Figure
-import matplotlib.pyplot as plt
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QPushButton, QVBoxLayout, QWidget, QAction
+from PyQt5.QtCore import Qt
 
-class SerialPlotter(QMainWindow):
-    def __init__(self, port):
+class ConsoleWindow(QMainWindow):
+    def __init__(self):
         super().__init__()
+        self.setWindowTitle('Consola')
+        self.resize(400, 300)
 
-        self.setWindowTitle("Serial Plotter")
-        self.setGeometry(100, 100, 800, 600)
+        # QTextEdit para mostrar la salida de la consola
+        self.text_edit = QTextEdit()
+        self.text_edit.setReadOnly(True)
 
-        self.port = port
-        self.serial_connection = serial.Serial(port, 9600)
+        # Botón para cerrar la consola
+        self.close_button = QPushButton('Cerrar')
+        self.close_button.clicked.connect(self.close_console)
 
-        self.setup_ui()
+        # Layout vertical para organizar los widgets
+        layout = QVBoxLayout()
+        layout.addWidget(self.text_edit)
+        layout.addWidget(self.close_button, alignment=Qt.AlignRight)
 
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.update_plot)
-        self.timer.start(1000)  # Actualiza el gráfico cada segundo
+        # Widget contenedor para el layout
+        container = QWidget()
+        container.setLayout(layout)
 
-    def setup_ui(self):
-        self.central_widget = QWidget()
-        self.setCentralWidget(self.central_widget)
+        # Establecer el widget contenedor como widget central de la ventana
+        self.setCentralWidget(container)
 
-        self.layout = QVBoxLayout(self.central_widget)
+    # Método para cerrar la consola
+    def close_console(self):
+        self.hide()
 
-        self.figure = Figure()
-        self.canvas = FigureCanvas(self.figure)
-        self.layout.addWidget(self.canvas)
-
-        self.ax = self.figure.add_subplot(111)
-        self.ax.set_xlabel("Time")
-        self.ax.set_ylabel("Value")
-        self.ax.set_title("Serial Plotter")
-
-    def update_plot(self):
-        x_data = []
-        y_data = []
-
-        while self.serial_connection.in_waiting:
-            line = self.serial_connection.readline().decode().strip()
-            data = line.split(',')
-            if len(data) == 2:
-                x, y = map(float, data)
-                x_data.append(x)
-                y_data.append(y)
-
-        if x_data and y_data:
-            self.ax.clear()
-            self.ax.plot(x_data, y_data)
-            self.ax.set_xlabel("Time")
-            self.ax.set_ylabel("Value")
-            self.ax.set_title("Serial Plotter")
-            self.canvas.draw()
-
-    def closeEvent(self, event):
-        self.serial_connection.close()
-        event.accept()
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = SerialPlotter("COM3")  # Replace "COM3" with your serial port
+if __name__ == '__main__':
+    app = QApplication([])
+    window = ConsoleWindow()
     window.show()
-    sys.exit(app.exec_())
+    app.exec_()

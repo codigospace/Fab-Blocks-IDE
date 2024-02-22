@@ -1076,7 +1076,7 @@
                     ['A4', 'A4'],
                     ['A5', 'A5']
                 ],
-                serial: 9600,
+                serial: 115200,
             },
             'arduino_mega': {
                 description: 'Mega-compatible board',
@@ -3120,10 +3120,10 @@
              */
             init: function() {
                 this.setColour(RoboBlocks.LANG_COLOUR_MODULAR);
-                this.appendDummyInput().appendField(new Blockly.FieldImage('media/DELCARARMODULAR.png', 90, 90, "*"))
+                this.appendDummyInput().appendField(new Blockly.FieldImage('media/DELCARARMODULAR.png', 30, 30, "*"))
                 .appendField('Declarar el modulo')
                 .appendField(new Blockly.FieldTextInput('name'), 'VAR')
-                this.appendDummyInput().appendField('de tipo')
+                .appendField('de tipo')
                 .setAlign(Blockly.ALIGN_RIGHT)
                 .appendField(new Blockly.FieldDropdown([
                     ['Sensor Potenciometro', '0'],
@@ -3141,8 +3141,8 @@
                     ['Actuador OLED', '12'],
                     ['Modulo Bluetooth', '13'],
                     ['Modulo Wifi', '14'],
-                ]), "MOD");
-                this.appendDummyInput().appendField('en el puerto')
+                ]), "MOD")
+                .appendField('en el puerto')
                 .setAlign(Blockly.ALIGN_RIGHT)
                 .appendField(new Blockly.FieldDropdown([
                     ['0', '0'],
@@ -3271,7 +3271,8 @@
              */
             init: function() {
                 this.setColour(RoboBlocks.LANG_COLOUR_ADVANCED);
-                this.appendDummyInput().appendField(new Blockly.FieldImage('media/LEERMODULAR.png', 40, 40, "*"))
+                this.appendDummyInput().appendField(new Blockly.FieldImage('media/LEERMODULAR.png', 20, 20, "*"))
+                    .appendField('Leer el estado de ')
                     .appendField(new Blockly.FieldVariable(' '), 'VAR');
                 this.setOutput(true);
                 this.setOutput(true, Boolean);
@@ -3379,7 +3380,7 @@
              */
             init: function() {
                 this.setColour('#E5BE01');
-                this.appendDummyInput().appendField(new Blockly.FieldImage('media/ESCRIBIRMODULAR.png', 40, 40, "*"));
+                this.appendDummyInput().appendField(new Blockly.FieldImage('media/ESCRIBIRMODULAR.png', 20, 20, "*"));
                 this.appendDummyInput('DUMMY').appendField('Escribir en el actuador')
                     //.appendField(new Blockly.FieldDropdown(this.getVariables()), 'VAR');
                     .appendField(new Blockly.FieldVariable(' '), 'VAR');
@@ -3461,7 +3462,7 @@
              */
             init: function() {
                 this.setColour('#E5BE01');
-                this.appendDummyInput().appendField(new Blockly.FieldImage('media/ESCRIBIRMODULAR.png', 40, 40, "*"));
+                this.appendDummyInput().appendField(new Blockly.FieldImage('media/ESCRIBIRMODULAR.png', 20, 20, "*"));
                 this.appendDummyInput('DUMMY').appendField('Escribir en el actuador')
                     //.appendField(new Blockly.FieldDropdown(this.getVariables()), 'VAR');
                     .appendField(new Blockly.FieldVariable(' '), 'VAR');
@@ -3555,7 +3556,7 @@
              */
             init: function() {
                 this.setColour(RoboBlocks.LANG_COLOUR_ADVANCED);
-                this.appendDummyInput().appendField(new Blockly.FieldImage('media/ESCRIBIRMODULAR.png', 40, 40, "*"));
+                this.appendDummyInput().appendField(new Blockly.FieldImage('media/ESCRIBIRMODULAR.png', 20, 20, "*"));
                 this.appendDummyInput('DUMMY').appendField('Escribir en el motor de pasos')
                     //.appendField(new Blockly.FieldDropdown(this.getVariables()), 'VAR');
                     .appendField(new Blockly.FieldVariable(' '), 'VAR');
@@ -3669,7 +3670,7 @@
              */
             init: function() {
                 this.setColour(RoboBlocks.LANG_COLOUR_ADVANCED);
-                this.appendDummyInput().appendField(new Blockly.FieldImage('media/ESCRIBIRMODULAR.png', 40, 40, "*"));
+                this.appendDummyInput().appendField(new Blockly.FieldImage('media/ESCRIBIRMODULAR.png', 20, 20, "*"));
                 this.appendDummyInput('DUMMY').appendField('Escribir en el display 7 segmentos')
                     //.appendField(new Blockly.FieldDropdown(this.getVariables()), 'VAR');
                     .appendField(new Blockly.FieldVariable(' '), 'VAR');
@@ -3784,7 +3785,7 @@
              */
             init: function() {
                 this.setColour('#FF8000');
-                this.appendDummyInput().appendField(new Blockly.FieldImage('media/ESCRIBIRMODULAR.png', 40, 40, "*"));
+                this.appendDummyInput().appendField(new Blockly.FieldImage('media/ESCRIBIRMODULAR.png', 20, 20, "*"));
                 this.appendDummyInput('DUMMY').appendField('Escribir en el servo motor')
                     //.appendField(new Blockly.FieldDropdown(this.getVariables()), 'VAR');
                     .appendField(new Blockly.FieldVariable(' '), 'VAR');
@@ -3900,7 +3901,7 @@
              */
             init: function() {
                 this.setColour('#666666');
-                this.appendDummyInput().appendField(new Blockly.FieldImage('media/ESCRIBIRMODULAR.png', 40, 40, "*"));
+                this.appendDummyInput().appendField(new Blockly.FieldImage('media/ESCRIBIRMODULAR.png', 20, 20, "*"));
                 this.appendDummyInput('DUMMY').appendField('Escribir en el motor de corriente continua')
                     //.appendField(new Blockly.FieldDropdown(this.getVariables()), 'VAR');
                     .appendField(new Blockly.FieldVariable(' '), 'VAR');
@@ -4016,7 +4017,7 @@
              */
             init: function() {
                 this.setColour(RoboBlocks.LANG_COLOUR_ADVANCED);
-                this.appendDummyInput().appendField(new Blockly.FieldImage('media/ESCRIBIRMODULAR.png', 40, 40, "*"));
+                this.appendDummyInput().appendField(new Blockly.FieldImage('media/ESCRIBIRMODULAR.png', 20, 20, "*"));
                 this.appendDummyInput('DUMMY').appendField('Escribir en la pantalla')
                     //.appendField(new Blockly.FieldDropdown(this.getVariables()), 'VAR');
                     .appendField(new Blockly.FieldVariable(' '), 'VAR');
@@ -4115,7 +4116,7 @@
              */
             init: function() {
                 this.setColour(RoboBlocks.LANG_COLOUR_ADVANCED);
-                this.appendDummyInput().appendField(new Blockly.FieldImage('media/ESCRIBIRMODULAR.png', 40, 40, "*"))
+                this.appendDummyInput().appendField(new Blockly.FieldImage('media/ESCRIBIRMODULAR.png', 20, 20, "*"))
                     .appendField(new Blockly.FieldDropdown([
                         ['ADELANTE', 'HIGH'],
                         ['ATRAS', 'LOW']
@@ -4156,7 +4157,7 @@
              */
             init: function() {
                 this.setColour(RoboBlocks.LANG_COLOUR_BETTO);
-                this.appendDummyInput().appendField(new Blockly.FieldImage('media/otto.jpg', 50, 50, "*"))
+                this.appendDummyInput().appendField(new Blockly.FieldImage('media/otto.jpg', 30, 30, "*"))
                 .appendField('Declarar Betto')
                 this.setPreviousStatement(true);
                 this.setNextStatement(true);
@@ -5108,36 +5109,27 @@
         Blockly.Blocks.carlitto_def_variables = {
             category: RoboBlocks.locales.getKey('LANG_CATEGORY_CARLITTO'),
             tags: ['Carlitto'],
-            helpUrl: '',
             init: function() {
                 this.setColour(RoboBlocks.LANG_COLOUR_CARLITTO);
-                this.appendDummyInput().appendField(new Blockly.FieldImage('media/DECLARARCARLITO.png', 80, 80, "*"))
-                .appendField('Declarar Carlitto');
-                this.appendDummyInput().appendField("con motor izquierdo:")
+                this.appendDummyInput().appendField(new Blockly.FieldImage('media/DECLARARCARLITO.png', 30, 30, "*"))
+                .appendField('Declarar Carlitto')
+                .appendField("con motor izquierdo:")
                 .setAlign(Blockly.ALIGN_RIGHT)
-                .appendField(new Blockly.FieldDropdown([["0", "0"], ["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"], ["8", "8"], ["9", "9"], ["10", "10"]]), "MOT_LEFT");
-                this.appendDummyInput()
-                    .appendField('potencia izquierda')
-                    .setAlign(Blockly.ALIGN_RIGHT)
-                    .appendField(new Blockly.FieldTextInput('0', Blockly.Blocks.math_integer_dc.validator), 'POT_LEFT');
-                this.appendDummyInput()
+                .appendField(new Blockly.FieldDropdown([["0", "0"], ["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"], ["8", "8"], ["9", "9"], ["10", "10"]]), "MOT_LEFT")
+                .appendField('potencia izquierda')
+                .appendField(new Blockly.FieldTextInput('0', Blockly.Blocks.math_integer_dc.validator), 'POT_LEFT')
                 .appendField("motor Derecha:")
-                .setAlign(Blockly.ALIGN_RIGHT)
-                .appendField(new Blockly.FieldDropdown([["0", "0"], ["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"], ["8", "8"], ["9", "9"], ["10", "10"]]), "MOT_RIGHT");
-                this.appendDummyInput()
-                    .appendField('potencia derecha')
-                    .setAlign(Blockly.ALIGN_RIGHT)
-                    .appendField(new Blockly.FieldTextInput('0', Blockly.Blocks.math_integer_dc.validator), 'POT_RIGHT');
-                this.appendDummyInput()
+                .appendField(new Blockly.FieldDropdown([["0", "0"], ["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"], ["8", "8"], ["9", "9"], ["10", "10"]]), "MOT_RIGHT")
+                .appendField('potencia derecha')
+                .appendField(new Blockly.FieldTextInput('0', Blockly.Blocks.math_integer_dc.validator), 'POT_RIGHT')
                 .appendField("potenciómetro:")
-                .setAlign(Blockly.ALIGN_RIGHT)
-                        .appendField(new Blockly.FieldDropdown([["0", "0"], ["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"], ["8", "8"], ["9", "9"], ["10", "10"]]),"POT");
+                .appendField(new Blockly.FieldDropdown([["0", "0"], ["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"], ["8", "8"], ["9", "9"], ["10", "10"]]),"POT");
             this.setPreviousStatement(true);
             this.setNextStatement(true);
             this.setTooltip(RoboBlocks.locales.getKey('LANG_VARIABLES_GLOBAL_TOOLTIP'));
-        },
+            },
         };
-
+        
         // Copia de digital Write 1 argumento true-false para BETTO
         // Source: src/blocks/inout_digital_write/inout_digital_write.js
         /* global Blockly, JST, RoboBlocks */
@@ -5162,12 +5154,11 @@
              */
             init: function() {
                 this.setColour(RoboBlocks.LANG_COLOUR_CARLITTO);
-                this.appendDummyInput().appendField(new Blockly.FieldImage('media/PARARCARLITO.png', 40, 40, "*"))
+                this.appendDummyInput().appendField(new Blockly.FieldImage('media/PARARCARLITO.png', 20, 20, "*"))
                 .appendField('Detener Carlitto');
                 this.setPreviousStatement(true, null);
                 this.setInputsInline(true);
                 this.setNextStatement(true, null);
-                this.setTooltip(RoboBlocks.locales.getKey('LANG_ADVANCED_INOUT_DIGITAL_WRITE_TOOLTIP'));
             }
         };
 
@@ -5200,7 +5191,7 @@
              */
             init: function() {
                 this.setColour(RoboBlocks.LANG_COLOUR_CARLITTO);
-                this.appendDummyInput().appendField(new Blockly.FieldImage('media/MOVIMIENTOCARLITO.png', 30, 30, "*"))
+                this.appendDummyInput().appendField(new Blockly.FieldImage('media/MOVIMIENTOCARLITO.png', 20, 20, "*"))
                 .appendField("Movimiento en ")
                 .appendField(new Blockly.FieldDropdown([
                     ["ADELANTE", "ADELANTE"],

@@ -18,13 +18,13 @@
 ## Importante y Urgente 1
 - [x] Añadir el grafico serial
 - [x] Demo para grafico serial
-- [ ] Revisión de por que no se puede subir y verificar al mismo tiempo
+- [x] Revisión de por que no se puede subir y verificar al mismo tiempo
 - [ ] Cambio de iconos de inicio de aplicacion y icono de la aplicacion
 
 ## Importante pero no Urgente 2
 - [ ] Mejorar la interfaz de los botones
 - [ ] Revisión de todo el codigo para esclarecer variables pendientes idioma y codificacion de diferentes lenguajes
-- [ ] Mejorar la interactividad con la consola y que no sea estatico
+- [-] Mejorar la interactividad con la consola y que no sea estatico
 - [ ] Revisión de texto de bloques
 - [x] Guardar imagen o datos del monitor/grafico serie
 - [ ] Posibilidad de interrruptir la subida cuando se usa un puerto COM, cuando no se sube a Arduino
