@@ -1,27 +1,27 @@
 #include <Arduino.h>
 #line 1 "D:\\Proyectos\\fab2\\extracted_code.ino"
-#include <Modular.h>
-
 /***   Global variables   ***/
-digitalOutput name(0);
+String text="A";
 
 /***   Function declaration   ***/
 
-#line 8 "D:\\Proyectos\\fab2\\extracted_code.ino"
+#line 6 "D:\\Proyectos\\fab2\\extracted_code.ino"
 void setup();
 #line 15 "D:\\Proyectos\\fab2\\extracted_code.ino"
 void loop();
-#line 8 "D:\\Proyectos\\fab2\\extracted_code.ino"
+#line 6 "D:\\Proyectos\\fab2\\extracted_code.ino"
 void setup()
 {
-    name.init();
+
+    text += String("A");
+  int l=text.length();
 
 }
 
 
 void loop()
 {
-    name.write(HIGH);
+
 
 }
 

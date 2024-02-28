@@ -1,21 +1,21 @@
 # 1 "D:\\Proyectos\\fab2\\extracted_code.ino"
-# 2 "D:\\Proyectos\\fab2\\extracted_code.ino" 2
-
 /***   Global variables   ***/
-digitalOutput name(0);
+String text="A";
 
 /***   Function declaration   ***/
 
 void setup()
 {
-    name.init();
+
+    text += String("A");
+  int l=text.length();
 
 }
 
 
 void loop()
 {
-    name.write(0x1);
+
 
 }
 
