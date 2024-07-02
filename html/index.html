@@ -29,8 +29,8 @@
             }
 
             RoboBlocks.load({
-                zoom: 0.5
-            });
+                zoom: 0.5,
+            }, 'cpp');
 
             // New workspace for each test case
             var el = document.getElementById('blockly');
@@ -102,7 +102,6 @@
                 Blockly.Xml.domToWorkspace(Blockly.getMainWorkspace(),
                     document.getElementById('startBlocks'));
             }
-
     </script>
 </body>
 </html>

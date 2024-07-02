@@ -17,7 +17,6 @@
     "*.map",
     "CNAME",
     "index.html",
-    "favicon.ico",
     "CONTRIBUTING.md"
   ],
   "homepage": "https://github.com/jashkenas/underscore",

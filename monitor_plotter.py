@@ -75,11 +75,15 @@ class MainWindow(QMainWindow):
         self.send_button = QPushButton('Enviar', self)
         self.send_button.clicked.connect(self.send_data)
 
+        self.clear_button = QPushButton('Limpiar', self)
+        self.clear_button.clicked.connect(self.clear_data)
+
         layout = QVBoxLayout()
 
         send_layout = QHBoxLayout()
         send_layout.addWidget(self.send_text)
         send_layout.addWidget(self.send_button)
+        send_layout.addWidget(self.clear_button)
 
         layout.addLayout(send_layout)
 
@@ -152,13 +156,24 @@ class MainWindow(QMainWindow):
             self.start_button.setText('Conectar')
             self.console_text.append(f'Conexión cerrada: {port_name}')
         else:
-            if self.serial_monitor.open_port(port_name, baudrate):
-                self.start_button.setText('Desconectar')
-                self.start_time = time.time()
-                self.last_update_time = self.start_time
-                self.console_text.append(f'Conexión abierta: {port_name}')
-            else:
-                self.console_text.append(f'Error al abrir conexión: {port_name}')
+            try:
+                if self.serial_monitor.open_port(port_name, baudrate):
+                    self.start_button.setText('Desconectar')
+                    self.start_time = time.time()
+                    self.last_update_time = self.start_time
+                    self.console_text.append(f'Conexión abierta: {port_name}')
+                else:
+                    self.console_text.append(f'Error al abrir conexión: {port_name}')
+            except serial.SerialException as e:
+                error_message = str(e)
+                if "PermissionError" in error_message:
+                    self.console_text.append(f"Error al abrir {port_name}: El puerto está en uso por otra aplicación.")
+                elif "FileNotFoundError" in error_message:
+                    self.console_text.append(f"Error al abrir {port_name}: El puerto no existe o ha sido desconectado.")
+                else:
+                    self.console_text.append(f"Error al abrir {port_name}: {error_message}")
+            except Exception as e:
+                self.console_text.append(f"Error inesperado al abrir {port_name}: {str(e)}")
 
     def send_data(self):
         if self.serial_monitor.serial.isOpen():
@@ -279,6 +294,21 @@ class MainWindow(QMainWindow):
     def save_option(self):
         index = self.save_option_combo.currentIndex()
         self.handle_save_option(index)
+    
+    def clear_data(self):
+        self.text_edit.clear()
+        self.console_text.clear()
+        self.plot.clear()
+        self.dataX.clear()
+        self.dataY.clear()
+        self.curves.clear()
+        self.variable_indices.clear()
+        self.plot.addLegend(colCount=5)
+
+    def closeEvent(self, event):
+        if self.serial_monitor.serial.isOpen():
+            self.serial_monitor.close_port()
+        event.accept()
 
 def run_serial_monitor_app(show_graph=False):
     if not QApplication.instance():

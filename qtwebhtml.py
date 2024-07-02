@@ -1,7 +1,7 @@
 import sys
 import os
 import serial.tools.list_ports
-from PyQt5.QtCore import QThread, QUrl, pyqtSlot, QSize, QTimer, QObject, pyqtSignal, Qt
+from PyQt5.QtCore import QThread, QUrl, QSize, QTimer, QObject, pyqtSignal, Qt
 from PyQt5.QtWidgets import QMainWindow, QAction, QApplication, QHBoxLayout, QPushButton, QComboBox, QVBoxLayout, QProgressBar, QMenu, QLabel, QTextEdit
 from PyQt5.QtWidgets import QDialog, QLineEdit, QFileDialog, QCheckBox, QMessageBox
 from PyQt5.QtGui import QIcon, QTextCursor, QKeySequence
@@ -12,6 +12,7 @@ import time
 import subprocess
 import json
 import webbrowser
+import serial
 
 from monitor_plotter import MainWindow
 iconSize = 32
@@ -19,23 +20,22 @@ iconSize = 32
 if getattr(sys, 'frozen', False):
     import pyi_splash
 
-class ForumDialog(QDialog):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-
-        self.setWindowTitle("Visualino Issues")
-        self.setGeometry(100, 100, 800, 600)
-
-        layout = QVBoxLayout()
-        web_view = QWebEngineView()
-        web_view.load(QUrl("https://github.com/Ultimaker/Cura/issues"))
-
-        layout.addWidget(web_view)
-
-        central_widget = QWidget()
-        central_widget.setLayout(layout)
-        self.setLayout(layout)
+def release_all_serial_ports():
+    # Obtener una lista de todos los puertos COM disponibles
+    ports = list(serial.tools.list_ports.comports())
     
+    for port in ports:
+        try:
+            # Intentar abrir el puerto
+            ser = serial.Serial(port.device)
+            # Si se abre con éxito, cerrarlo inmediatamente
+            ser.close()
+            print(f"Puerto {port.device} liberado con éxito.")
+        except serial.SerialException:
+            print(f"No se pudo liberar el puerto {port.device}. Puede que ya esté cerrado o en uso por otra aplicación.")
+        except Exception as e:
+            print(f"Error al intentar liberar el puerto {port.device}: {str(e)}")
+   
 # Clase para manejar la configuración
 class ConfigManager:
     def __init__(self, filename='config.json'):
@@ -192,19 +192,17 @@ class WebViewer(QMainWindow):
     def __init__(self):
         super().__init__()
         self.initUI()
+        self.monitor_window = None
 
     def initUI(self):
         self.setWindowTitle('Fab Blocks IDE')
         self.setGeometry(0, 0, 1024, 720)
         self.setWindowIcon(QIcon("icons/codigo.ico"))
-
         # Crear el webview
         self.webview = QWebEngineView()
         self.setCentralWidget(self.webview)
-
         # Crear un nuevo menú
         menu = self.menuBar().addMenu("Archivo")
-
 
         # Agregar acciones al menú
         action1 = QAction(QIcon("icons/opcion1.png"), "Nuevo", self)
@@ -213,30 +211,29 @@ class WebViewer(QMainWindow):
         action5 = QAction(QIcon("icons/opcion2.png"), "Guardar Como", self)
         action7 = QAction(QIcon("icons/opcion2.png"), "Preferencias", self)
         action8 = QAction(QIcon("icons/opcion2.png"), "Salir", self)
-
         
         action1.triggered.connect(self.open_new_file_window)
         action2.triggered.connect(self.open_file)
         action4.triggered.connect(self.save_file_as)
         action7.triggered.connect(self.show_preferences_dialog)
         action8.triggered.connect(self.exit_application)
-
         self.menu_export = QMenu("Exportar Como", self)
         self.menu_examples = QMenu("Ejemplos",self)
-
+        self.menu_proyectos = QMenu("Proyectos",self)
         
         # Agregar acciones al menú de exportación como
         self.action61 = QAction(".ino")
         self.action62 = QAction(".py")
         self.action63 = QAction(".ps")
-
         # SubMenu
         submenu_arduino = QMenu("Arduino", self)
         submenu_modular_v1 = QMenu("Modular", self)
         submenu_robot_betto = QMenu("Robot Betto", self)
         submenu_carlitto = QMenu("Robot Carlitto", self)
         submenu_blass = QMenu("Robot Blass", self)
-
+        submenu_robotica = QMenu("Robotica", self)
+        submenu_steam = QMenu("STEAM", self)
+        submenu_control = QMenu("Control", self)
         # Ejemplos
         action_arduino_example1 = QAction("Variables", self)
         action_arduino_example2 = QAction("Variables de texto", self)
@@ -258,7 +255,6 @@ class WebViewer(QMainWindow):
         submenu_arduino.addAction(action_arduino_example8)
         submenu_arduino.addAction(action_arduino_example9)
         submenu_arduino.addAction(action_arduino_example10)
-
         action_arduino_example1.triggered.connect(lambda: self.open_example("Arduino/01-variables.fab"))
         action_arduino_example2.triggered.connect(lambda: self.open_example("Arduino/02-variables-text.fab"))
         action_arduino_example3.triggered.connect(lambda: self.open_example("Arduino/03-variables-serial.fab"))
@@ -270,39 +266,44 @@ class WebViewer(QMainWindow):
         action_arduino_example9.triggered.connect(lambda: self.open_example("Arduino/09-serial-counter.fab"))
         action_arduino_example10.triggered.connect(lambda: self.open_example("Arduino/10-serial-led-switch.fab"))
 
-
         action_modular_v1_example1 = QAction("Parpadeo Led", self)
         submenu_modular_v1.addAction(action_modular_v1_example1)
         action_modular_v1_example1.triggered.connect(lambda: self.open_example("Modular/blink.fab"))
-
         action_robot_betto_example1 = QAction("Por añadir", self)
         submenu_robot_betto.addAction(action_robot_betto_example1)
         action_robot_betto_example1.setEnabled(False)
-
         action_carlitto_example1 = QAction("Por añadir", self)
         submenu_carlitto.addAction(action_carlitto_example1)
         action_carlitto_example1.setEnabled(False)
-
         action_blass_example1 = QAction("Por añadir", self)
         submenu_blass.addAction(action_blass_example1)
         action_blass_example1.setEnabled(False)
-
+        action_blass_project_1 = QAction("Por añadir", self)
+        submenu_robotica.addAction(action_blass_project_1)
+        action_blass_project_1.setEnabled(False)
+        action_blass_project_2 = QAction("Por añadir", self)
+        submenu_steam.addAction(action_blass_project_2)
+        action_blass_project_2.setEnabled(False)
+        action_blass_project_3 = QAction("Por añadir", self)
+        submenu_control.addAction(action_blass_project_3)
+        action_blass_project_3.setEnabled(False)
         self.menu_examples.addMenu(submenu_arduino)
         self.menu_examples.addMenu(submenu_modular_v1)
         self.menu_examples.addMenu(submenu_robot_betto)
         self.menu_examples.addMenu(submenu_carlitto)
         self.menu_examples.addMenu(submenu_blass)
-
+        self.menu_proyectos.addMenu(submenu_robotica)
+        self.menu_proyectos.addMenu(submenu_steam)
+        self.menu_proyectos.addMenu(submenu_control)
         self.menu_export.addAction(self.action61)
         self.menu_export.addAction(self.action62)
         self.menu_export.addAction(self.action63)
-
         self.action62.setEnabled(False)
         self.action63.setEnabled(False)
-
         menu.addAction(action1)
         menu.addAction(action2)
         menu.addMenu(self.menu_examples)
+        menu.addMenu(self.menu_proyectos)
         menu.addAction(action4)
         menu.addAction(action5)
         menu.addMenu(self.menu_export)
@@ -310,57 +311,46 @@ class WebViewer(QMainWindow):
         menu.addAction(action7)
         menu.addSeparator()
         menu.addAction(action8)
-
         action5.setVisible(False)
-
         # Crear un nuevo menú
         menu2 = self.menuBar().addMenu("Programa")
-
         # Agregar acciones al menú
         action21 = QAction("Verificar", self)
         action22 = QAction("Subir", self)
         action24 = QAction("Mostrar Codigo", self)
         action25 = QAction("Ocultar Codigo", self)
-
         menu2.addAction(action21)
         menu2.addAction(action22)
         menu2.addSeparator()
         menu2.addAction(action24)
         menu2.addAction(action25)
-
         # Conectar acciones a funciones
         action21.triggered.connect(self.compilar_clicked)
         action22.triggered.connect(self.subir_clicked)
         action24.triggered.connect(self.show_code)
         action25.triggered.connect(self.hide_code)
-
         # Crear un nuevo menú
         menu3 = self.menuBar().addMenu("Herramientas")
-
         # Agregar acciones al menú
         action31 = QAction("Monitor Serie", self)
         action32 = QAction("Grafico Serie", self)
         
         # Agregar el menú de placas
         self.placas_menu = QMenu("Placa:", self)
-
         # Agregar opciones de placa al menú
         self.option1 = QAction("Arduino Uno", self)
         self.option2 = QAction("Arduino Nano", self)
         self.option3 = QAction("Arduino Mega", self)
         self.option4 = QAction("Modular", self)
-
         self.placas_menu.addAction(self.option1)
         self.placas_menu.addAction(self.option2)
         self.placas_menu.addAction(self.option3)
         self.placas_menu.addAction(self.option4)
-
         # Agregar el menú de puertos COM
         self.ports_menu = QMenu("Puertos COM:", self)
         
         action26 = QAction("Mostrar Consola", self)
         action27 = QAction("Ocultar Consola", self)
-
         # Agregar el menú de herramientas al menú principal
         menu3.addAction(action31)
         menu3.addAction(action32)
@@ -370,13 +360,10 @@ class WebViewer(QMainWindow):
         menu3.addSeparator()
         menu3.addAction(action26)
         menu3.addAction(action27)
-
         action26.triggered.connect(self.show_console)
         action27.triggered.connect(self.hide_console)
-
         # Crear un nuevo menú
         menu4 = self.menuBar().addMenu("Ayuda")
-
         # Agregar acciones al menú
         action41 = QAction("Primeros Pasos", self)
         action42 = QAction("Tutoriales", self)
@@ -384,14 +371,13 @@ class WebViewer(QMainWindow):
         action46 = QAction("Foro", self)
         action44 = QAction("Contactenos", self)
         action45 = QAction("Acerca de", self)
-
         # Conectar las acciones a las funciones correspondientes
-        action41.triggered.connect(lambda: self.open_link("https://www.ejemplo.com/primeros_pasos"))
-        action42.triggered.connect(lambda: self.open_link("https://www.ejemplo.com/tutoriales"))
-        action43.triggered.connect(lambda: self.open_link("https://www.ejemplo.com/faq"))
+        action41.triggered.connect(lambda: self.open_link("https://codigo.space/primerospasos/"))
+        action42.triggered.connect(lambda: self.open_link("https://codigo.space/tutorialeside/"))
+        action43.triggered.connect(lambda: self.open_link("https://codigo.space/faq/"))
         action44.triggered.connect(lambda: self.open_link("https://wa.me/+51984425782"))
         action45.triggered.connect(self.show_about_dialog)
-        action46.triggered.connect(self.show_forum_dialog)
+        action46.triggered.connect(lambda: self.open_link("https://github.com/codigospace/Fab-Blocks-IDE/issues"))
         
         # Agregar el menú de herramientas al menú principal
         menu4.addAction(action41)
@@ -402,47 +388,38 @@ class WebViewer(QMainWindow):
         menu4.addAction(action46)
         menu4.addSeparator()
         menu4.addAction(action45)
-
         # Crear una fila adicional para botones con iconos
         button_layout = QHBoxLayout()
         self.centralWidget().layout().addLayout(button_layout)
-
         # Establecer el tamaño deseado para los botones
         button_width = 120
         button_height = 40
-
         # Agregar botones con iconos
         button_compile = QPushButton("Verificar")
         button_compile.setIcon(QIcon("icons/compile.png"))
         button_compile.setIconSize(QSize(iconSize, iconSize))
         button_compile.setFixedSize(button_width, button_height)
-
         button_upload = QPushButton("Subir")
         button_upload.setIcon(QIcon("icons/upload.png"))
         button_upload.setIconSize(QSize(iconSize, iconSize))
         button_upload.setFixedSize(button_width, button_height)
-
         new_upload = QPushButton("Nuevo")
         new_upload.setIcon(QIcon("icons/new.png"))
         new_upload.setIconSize(QSize(iconSize, iconSize))
         new_upload.setFixedSize(button_width, button_height)
-
         open_upload = QPushButton("Abrir")
         open_upload.setIcon(QIcon("icons/open.png"))
         open_upload.setIconSize(QSize(iconSize, iconSize))
         open_upload.setFixedSize(button_width, button_height)
-
         save_file_button = QPushButton("Guardar")
         save_file_button.setIcon(QIcon("icons/save.png"))
         save_file_button.setIconSize(QSize(iconSize, iconSize))
         save_file_button.setFixedSize(button_width, button_height)
-
         graphic_serial = QPushButton("Grafico Serial")
         graphic_serial.setIcon(QIcon("icons/graphic.png"))
         graphic_serial.setIconSize(QSize(iconSize, iconSize))
         graphic_serial.setFixedSize(button_width, button_height)
         #graphic_serial.setVisible(False) 
-
         monitor_serial = QPushButton("Monitor Serial")
         monitor_serial.setIcon(QIcon("icons/monitor_serial.png"))
         monitor_serial.setIconSize(QSize(iconSize, iconSize))
@@ -458,16 +435,13 @@ class WebViewer(QMainWindow):
         
         layout = QVBoxLayout()
         layout.addWidget(self.combo)
-
         self.progress_bar = QProgressBar()
         self.progress_bar.setRange(0, 100)
-
         label_placas = QLabel("Placas:")
         label_puertos = QLabel("Puerto:")
     
         self.combo_puertos = QComboBox(self)
         self.combo_puertos.setFixedSize(button_width, button_height)
-
         button_layout.addWidget(button_compile)
         button_layout.addWidget(button_upload)
         button_layout.addWidget(new_upload)
@@ -482,45 +456,35 @@ class WebViewer(QMainWindow):
         button_layout.addWidget(monitor_serial)
         
         button_layout.addStretch()
-
         # Cargar un archivo local desde la carpeta html
         self.loadLocalFile("index.html")
-
         # Conectar botones a funciones
         button_compile.clicked.connect(self.compilar_clicked)
         button_upload.clicked.connect(self.subir_clicked)
         open_upload.clicked.connect(self.open_file)
         new_upload.clicked.connect(self.open_new_file_window)
-
         self.ports_menu.aboutToShow.connect(self.update_ports_menu)
-
         #Guardado de archivos
         save_file_button.clicked.connect(self.save_file_as)
         self.action61.triggered.connect(self.export_as_ino)
-
         # Conectar la señal currentIndexChanged del QComboBox a la función de actualización de menús
         self.combo.currentIndexChanged.connect(self.update_menus)
         self.combo_puertos.currentIndexChanged.connect(self.update_menus)
-
         # Conectar las acciones del menú de placas a la función de actualización del combobox
         self.option1.triggered.connect(lambda: self.combo.setCurrentIndex(0))
         self.option2.triggered.connect(lambda: self.combo.setCurrentIndex(1))
         self.option3.triggered.connect(lambda: self.combo.setCurrentIndex(2))
         self.option4.triggered.connect(lambda: self.combo.setCurrentIndex(3))
-
         # Conectar las acciones del menú de puertos a la función de actualización del ComboBox de puertos
         self.ports_menu.triggered.connect(lambda action: self.combo_puertos.setCurrentText(action.text()))
-
         self.progress_timer = QTimer(self)
         self.progress_timer.timeout.connect(self.update_progress)
-
         # Crear e iniciar el monitor de puertos en un hilo
         self.port_monitor = PortMonitor()
         self.port_monitor_thread = threading.Thread(target=self.port_monitor.run)
         self.port_monitor_thread.daemon = True
         self.port_monitor.portChanged.connect(self.update_ports_menu)
         self.port_monitor_thread.start()
-
         self.console = QTextEdit()
         self.console.setMaximumHeight(200)
         self.console.setReadOnly(True)
@@ -560,6 +524,7 @@ class WebViewer(QMainWindow):
             print("La información extraída no es válida.")
 
     def compilar_clicked(self):
+        release_all_serial_ports()
         self.console.clear()
         self.write_to_console("Compilar:")
         
@@ -586,6 +551,7 @@ class WebViewer(QMainWindow):
         self.runCommandCompile()
 
     def subir_clicked(self):
+        release_all_serial_ports()
         self.console.clear()
         # Ejecutar JavaScript para extraer información de la clase
         self.webview.page().runJavaScript('''
@@ -704,7 +670,19 @@ class WebViewer(QMainWindow):
     
     def runCommandCompile(self):
         self.update_progress()
+        selected_board = self.combo.currentText()
         
+        cpu_mapping = {
+            'Arduino Uno': {'TEXT_CPU': 'arduino:avr:uno'},
+            'Arduino Nano': {'TEXT_CPU': 'arduino:avr:nano'},
+            'Modular': {'TEXT_CPU': 'arduino:avr:nano'},
+            'Robot Betto': {'TEXT_CPU': 'arduino:avr:nano'},
+            'Arduino Mega': {'TEXT_CPU': 'arduino:avr:mega'}
+        }
+
+        board_info = cpu_mapping.get(selected_board)
+        TEXT_CPU = board_info['TEXT_CPU']
+
         if hasattr(self, 'runner') and self.runner.isRunning():
             self.runner.terminate()
             self.runner.wait()
@@ -713,7 +691,7 @@ class WebViewer(QMainWindow):
         arduinoDev_folder = os.path.dirname(arduinoDev)
         folder_actual = os.getcwd()
 
-        command = f'''{arduinoDev_folder}/arduino-builder -compile -logger=machine -hardware {arduinoDev_folder}/hardware -tools {arduinoDev_folder}/tools-builder -tools {arduinoDev_folder}/hardware/tools/avr -built-in-libraries {arduinoDev_folder}/libraries -fqbn arduino:avr:uno -vid-pid 1A86_7523 -ide-version=10815 -build-path {folder_actual}/build -warnings=none -build-cache {folder_actual}/Temp/arduino_cache_914083 -prefs=build.warn_data_percentage=75 -prefs=runtime.tools.arduinoOTA.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.arduinoOTA-1.3.0.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avrdude.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avrdude-6.3.0-arduino17.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avr-gcc.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avr-gcc-7.3.0-atmel3.6.1-arduino7.path={arduinoDev_folder}/hardware/tools/avr -verbose {folder_actual}/extracted_code.ino'''
+        command = f'''{arduinoDev_folder}/arduino-builder -compile -logger=machine -hardware {arduinoDev_folder}/hardware -tools {arduinoDev_folder}/tools-builder -tools {arduinoDev_folder}/hardware/tools/avr -built-in-libraries {arduinoDev_folder}/libraries -fqbn {TEXT_CPU} -vid-pid 1A86_7523 -ide-version=10815 -build-path {folder_actual}/build -warnings=none -build-cache {folder_actual}/Temp/arduino_cache_914083 -prefs=build.warn_data_percentage=75 -prefs=runtime.tools.arduinoOTA.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.arduinoOTA-1.3.0.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avrdude.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avrdude-6.3.0-arduino17.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avr-gcc.path={arduinoDev_folder}/hardware/tools/avr -prefs=runtime.tools.avr-gcc-7.3.0-atmel3.6.1-arduino7.path={arduinoDev_folder}/hardware/tools/avr -verbose {folder_actual}/extracted_code.ino'''
         self.runner_com = CommandRunner(command)
         self.runner_com.output_received.connect(self.updateOutput)
         self.runner_com.start()
@@ -782,10 +760,22 @@ class WebViewer(QMainWindow):
                 self.runner.wait()
         event.accept()
     
-    def show_monitor_serial(self,show_graph_state):
-        self.monitor_window = MainWindow()
-        self.monitor_window.show()
-        self.monitor_window.toggle_graph(show_graph_state)
+    def is_graph_visible(self):
+        return self.isVisible()
+    
+    def show_monitor_serial(self, show_graph_state):
+        if self.monitor_window is None or not self.monitor_window.isVisible():
+            # Si no existe una ventana o no es visible, crea una nueva
+            print("if")
+            self.monitor_window = MainWindow()
+            self.monitor_window.show()
+            self.monitor_window.toggle_graph(show_graph_state)
+        else:
+            # Si ya existe una ventana visible, actívala y cambia el estado del gráfico si es necesario
+            print("else")
+            self.monitor_window.activateWindow()
+            self.monitor_window.raise_()
+            self.monitor_window.toggle_graph(show_graph_state)
     
     def save_file_as(self):
         
@@ -905,17 +895,16 @@ class WebViewer(QMainWindow):
 
         # Texto con formato HTML
         about_text = ("<p style='font-size: 14px; text-align: center;'>"
-              "<img src='icons/codigo.ico' width='64' height='64' /><br>"
-              "<b>Fab Blocks IDE</b><br>"
-              "<br>Versión: 0.3<br>"
-              "Fecha de lanzamiento: 28 de febrero de 2024<br>"
-              "Desarrollado por: Codigo SAC<br><br>"
-              "En Fab Blocks IDE se pueden configurar módulos, que son dispositivos que permiten la programación de Arduino con actuadores y sensores mediante Modular, nuestra propia interfaz de programación<br><br>"
-              "Sitio web: <a href='https://fablab.pe/cursos'>https://fablab.pe/cursos</a><br><br>"
-              "Soporte: <a href='mailto:coaquiraleonardo19@gmail.com'>coaquiraleonardo19@gmail.com</a><br>"
-              "Programador: <a href='https://www.linkedin.com/in/leonardo-coaquira-b3490a25a/'>Leonardo Coaquira</a><br>"
-              "</p>"
-              )
+            "<img src='icons/codigo.ico' width='64' height='64' /><br>"
+            "<b>Desarrollado por:</b> Programación y Automatización Codigo S.A.C.<br><br>"
+            "Fab Blocks IDE es una plataforma de programación para las tarjetas de desarrollo Modular V1 y Arduino, que permite el rápido y fácil prototipado de proyectos electrónicos utilizando la programación por bloques de Google Blockly.<br><br>"
+            "Aprende cómo iniciar en <a href='https://codigo.space/primerospasos/'>https://codigo.space/primerospasos/</a><br>"
+            "Compra el kit Modular V1 y sus módulos en <a href='https://codigo.space/tienda/'>https://codigo.space/tienda/</a><br>"
+            "Aprende con nuestros cursos en <a href='https://fablab.pe/cursos/'>https://fablab.pe/cursos/</a><br><br>"
+            "<b>Diseñado por:</b> Ulises Gordillo <a href='https://www.linkedin.com/in/ulisesgordillozapana/'>https://www.linkedin.com/in/ulisesgordillozapana/</a> - <a href='mailto:ulises.gordillo@gmail.com'>ulises.gordillo@gmail.com</a><br>"
+            "<b>Programado por:</b> Leonardo Coaquira <a href='https://www.linkedin.com/in/leonardo-coaquira/'>https://www.linkedin.com/in/leonardo-coaquira/</a> - <a href='mailto:coaquiraleonardo19@gmail.com'>coaquiraleonardo19@gmail.com</a><br>"
+            "</p>"
+        )
 
         about_dialog.setText(about_text)
         about_dialog.setTextFormat(Qt.RichText)

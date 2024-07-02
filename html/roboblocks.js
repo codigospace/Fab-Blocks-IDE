@@ -9,7 +9,7 @@
         factory(_, window.Blockly, window.Blocks);
     }
 }(function(_, Blockly, Blocks) {
-    var load = function(options) {
+    var load = function(options, programmingLanguage) {
         // Source: src/lang.js
         /* global RoboBlocks, options */
         RoboBlocks.locales = {
@@ -53,6 +53,8 @@
             this.setDefaultLang(lang);
             return this;
         };
+        
+        console.log(programmingLanguage);
 
         // Source: lang/en-GB.js
         (function() {
@@ -2614,12 +2616,17 @@
             return __p
         };
 
+        // Modular
         this["JST"]["bq_test_def_definitions"] = function(obj) {
             obj || (obj = {});
             var __t, __p = '',
                 __e = _.escape;
             with(obj) {
-                __p += '#include <Modular.h>\n';
+                if (programmingLanguage === 'cpp') {
+                    __p += '#include <Modular.h>\n';
+                } else if (programmingLanguage === 'python') {
+                    __p += 'import ModularPython\n';
+                }
 
             }
             return __p
@@ -9931,7 +9938,7 @@
             varValue = a['pin'];
 
             Blockly.Arduino.definitions_['declare_var' + varName] = varType + ' ' + varName + ';\n';
-            Blockly.Arduino.setups_['define_var' + varName] = varName + '=' + varValue + ';\n';
+            Blockly.Arduino.setups_['define_var' + varName] = varName + '= = ' + varValue + ';\n';
 
             RoboBlocks.variables[varName] = [varType, 'global'];
             RoboBlocks.variables['analogRead(' + varName + ')'] = [varType, 'global'];
@@ -10272,6 +10279,7 @@
         };
         return Blockly.Blocks;
     }
+
     var RoboBlocks = {
         load: load
     };
