@@ -7,10 +7,60 @@
   {
     "Sourcefile": null,
     "Include": "",
-    "Includepath": "D:\\Proyectos\\modulinoDev\\arduinoDev\\hardware\\arduino\\avr\\variants\\standard"
+    "Includepath": "D:\\Proyectos\\modulinoDev\\arduinoDev\\hardware\\arduino\\avr\\variants\\eightanaloginputs"
   },
   {
     "Sourcefile": "D:\\Proyectos\\fab2\\build\\sketch\\extracted_code.ino.cpp",
+    "Include": "Modular.h",
+    "Includepath": "D:\\Proyectos\\modulinoDev\\arduinoDev\\libraries\\Modular"
+  },
+  {
+    "Sourcefile": "D:\\Proyectos\\fab2\\build\\sketch\\extracted_code.ino.cpp",
+    "Include": "Servo.h",
+    "Includepath": "D:\\Proyectos\\modulinoDev\\arduinoDev\\libraries\\Servo\\src"
+  },
+  {
+    "Sourcefile": "D:\\Proyectos\\fab2\\build\\sketch\\extracted_code.ino.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "D:\\Proyectos\\modulinoDev\\arduinoDev\\libraries\\Modular\\Modular.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "D:\\Proyectos\\modulinoDev\\arduinoDev\\libraries\\Servo\\src\\avr\\Servo.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "D:\\Proyectos\\modulinoDev\\arduinoDev\\libraries\\Servo\\src\\mbed\\Servo.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "D:\\Proyectos\\modulinoDev\\arduinoDev\\libraries\\Servo\\src\\megaavr\\Servo.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "D:\\Proyectos\\modulinoDev\\arduinoDev\\libraries\\Servo\\src\\nrf52\\Servo.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "D:\\Proyectos\\modulinoDev\\arduinoDev\\libraries\\Servo\\src\\sam\\Servo.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "D:\\Proyectos\\modulinoDev\\arduinoDev\\libraries\\Servo\\src\\samd\\Servo.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "D:\\Proyectos\\modulinoDev\\arduinoDev\\libraries\\Servo\\src\\stm32f4\\Servo.cpp",
     "Include": "",
     "Includepath": null
   }

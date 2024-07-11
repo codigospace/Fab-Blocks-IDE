@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QPushButton, QVBoxLayout, QWidget, QComboBox, QLabel, QHBoxLayout, QLineEdit
-from PyQt5.QtCore import QTimer, QObject, pyqtSignal
+from PyQt5.QtCore import QTimer, QObject, pyqtSignal, QThread
 import pyqtgraph as pg
 from collections import deque
 import time
@@ -8,6 +8,22 @@ import serial.tools.list_ports
 from PyQt5.QtSerialPort import QSerialPort
 import os
 import pyqtgraph.exporters
+
+class SerialReaderThread(QThread):
+    data_received = pyqtSignal(str)
+
+    def __init__(self, serial_port):
+        super().__init__()
+        self.serial = serial_port
+        self.running = True
+
+    def run(self):
+        while self.running:
+            if self.serial.waitForReadyRead(100):  # Esperar hasta 100 ms para datos
+                data = self.serial.readLine().data().decode('utf-8', errors='ignore').strip()
+                if data:
+                    self.data_received.emit(data)
+            self.msleep(100)  # Pausar 100 ms para evitar sobrecarga
 
 class SerialMonitor(QObject):
     data_received = pyqtSignal(str)
@@ -17,27 +33,27 @@ class SerialMonitor(QObject):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.serial = QSerialPort()
-        self.serial.readyRead.connect(self.read_serial)
+        self.thread = None
 
     def open_port(self, port_name, baudrate):
         self.serial.setPortName(port_name)
         self.serial.setBaudRate(baudrate)
         if self.serial.open(QSerialPort.ReadWrite):
+            self.thread = SerialReaderThread(self.serial)
+            self.thread.data_received.connect(self.data_received.emit)
+            self.thread.start()
             self.port_opened.emit()
             return True
         else:
             return False
 
     def close_port(self):
+        if self.thread:
+            self.thread.running = False
+            self.thread.wait()
+            self.thread = None
         self.serial.close()
         self.port_closed.emit()
-
-    def read_serial(self):
-        while self.serial.canReadLine():
-            data = self.serial.readLine().data().decode('ascii').strip()
-            if data:
-                self.data_received.emit(data)
-
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -95,9 +111,13 @@ class MainWindow(QMainWindow):
         self.save_option_combo = QComboBox(self)
         self.save_option_combo.addItems(["Texto", "Imagen", "Ambos"])
 
-        # Agregar botón de guardar
         self.save_button = QPushButton('Guardar', self)
-        self.save_button.clicked.connect(self.save_option)
+        self.save_button.setEnabled(False)
+        self.save_button.clicked.connect(self.handle_save_option)
+
+        self.folder_name_edit = QLineEdit(self)
+        self.folder_name_edit.setVisible(False)
+        self.folder_name_edit.setPlaceholderText('Nombre de la carpeta')
 
         button_layout = QHBoxLayout()
         button_layout.addWidget(port_label)
@@ -109,6 +129,7 @@ class MainWindow(QMainWindow):
         button_layout.addWidget(save_label)
         button_layout.addWidget(self.save_option_combo)
         button_layout.addWidget(self.save_button)
+        button_layout.addWidget(self.folder_name_edit)  # Nuevo: Agregar el campo para el nombre de la carpeta
 
         layout.addLayout(button_layout)
         layout.addWidget(self.console_label)
@@ -147,6 +168,7 @@ class MainWindow(QMainWindow):
     def populate_baud_combo(self):
         baudrates = ['9600', '19200', '38400', '57600', '115200']
         self.baud_combo.addItems(baudrates)
+        self.baud_combo.setCurrentText('115200')
 
     def toggle_connection(self):
         port_name = self.port_combo.currentText()
@@ -183,6 +205,7 @@ class MainWindow(QMainWindow):
             self.send_text.clear()
 
     def display_data(self, data):
+        self.console_text.append(f'Datos recibidos: {data}')
         self.text_edit.append(data)
 
         current_time = time.time()
@@ -198,7 +221,6 @@ class MainWindow(QMainWindow):
                     break
 
             if has_named_variables:
-                # Procesar datos con nombres de variables
                 for variable in variables:
                     name, value = variable.split(':')
                     name = name.strip()
@@ -207,20 +229,16 @@ class MainWindow(QMainWindow):
                         self.variable_indices[name] = len(self.dataY)
                         self.dataY.append(deque(maxlen=300))
                         self.curves.append(self.plot.plot(pen=self.colors[len(self.dataY) - 1]))
-                        self.plot.plotItem.legend.addItem(self.curves[-1], name=name)  # Agregar la línea a la leyenda
+                        self.plot.plotItem.legend.addItem(self.curves[-1], name=name)
                     self.dataY[self.variable_indices[name]].append(value)
             else:
-                # Procesar datos numéricos
                 valores = [float(valor) for valor in variables]
                 num_valores = len(valores)
                 if num_valores > 0:
-                    # Agregar series de datos si es necesario
                     while len(self.dataY) < num_valores:
                         self.dataY.append(deque(maxlen=300))
                         self.curves.append(self.plot.plot(pen=self.colors[len(self.dataY) - 1]))
-                        self.plot.plotItem.legend.addItem(self.curves[-1], name=f'Línea {len(self.dataY)}')  # Agregar la línea a la leyenda con un nombre único
-
-                    # Actualizar los datos de cada serie
+                        self.plot.plotItem.legend.addItem(self.curves[-1], name=f'Línea {len(self.dataY)}')
                     for i, valor in enumerate(valores):
                         self.dataY[i].append(valor)
 
@@ -259,11 +277,6 @@ class MainWindow(QMainWindow):
         self.graph_button.clicked.connect(lambda: self.toggle_graph(True))
     
     def get_data_folder(self):
-        # current_date = time.strftime("%Y-%m-%d")
-        # folder_name = f"data_{current_date}"
-        # if not os.path.exists(folder_name):
-        #     os.makedirs(folder_name)
-        # return folder_name
         folder_name = "data_serial"
         if not os.path.exists(folder_name):
             os.makedirs(folder_name)
@@ -273,28 +286,67 @@ class MainWindow(QMainWindow):
         with open(filename, 'w') as file:
             file.write(self.text_edit.toPlainText())
 
-    def save_plot_as_image(self, filename):
-        exporter = pg.exporters.ImageExporter(self.plot.plotItem)
-        exporter.export(filename)
+    def save_plot_as_image(self, filename, width=1920, height=1080):
+        try:
+            exporter = pg.exporters.ImageExporter(self.plot.plotItem)
+            exporter.params['width'] = width
 
-    def handle_save_option(self, index):
-        option = self.save_option_combo.itemText(index)
+            # Ajustar el rango de visualización antes de exportar
+            self.plot.setXRange(0, 20)  # 20 segundos en el eje X
+            
+            if self.dataY and any(len(data) > 0 for data in self.dataY):
+                min_value = min([min(data) for data in self.dataY if len(data) > 0])
+                max_value = max([max(data) for data in self.dataY if len(data) > 0])
+                self.plot.setYRange(min=min_value, max=max_value)
+            else:
+                # Establecer un rango de altura predeterminado si no hay datos
+                self.plot.setYRange(0, 10)  # Puedes ajustar estos valores según sea necesario
+
+            # Ajustar el tamaño de fuente de las etiquetas
+            font = pg.QtGui.QFont()
+            font.setPointSize(10)  # Ajusta el tamaño según sea necesario
+            self.plot.getAxis('bottom').setTickFont(font)
+            self.plot.getAxis('left').setTickFont(font)
+            
+            # Ajustar el ancho de línea y el tamaño de los puntos
+            for curve in self.curves:
+                curve.setPen(width=2)
+                curve.setSymbolSize(5)
+            
+            exporter.export(filename)
+            self.console_text.append(f'Gráfico guardado en: {filename} con resolución {width}x{height}')
+        except Exception as e:
+            self.console_text.append(f'Error al guardar gráfico: {str(e)}')
+
+    def handle_save_option(self):
+        option = self.save_option_combo.currentText()
+        folder_name = self.folder_name_edit.text().strip()
+
+        if not folder_name:
+            self.console_text.append('Por favor, ingresa un nombre para la carpeta.')
+            return
+
+        folder_path = os.path.join(self.data_folder, folder_name)
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+
+        width = 1920  # Ancho deseado para la imagen
+        height = 1080  # Altura deseada para la imagen
+
         if option == "Texto":
-            file_path = os.path.join(self.data_folder, 'contenido.csv')
+            file_path = os.path.join(folder_path, 'contenido.txt')
             self.save_text_edit_content(file_path)
         elif option == "Imagen":
-            file_path = os.path.join(self.data_folder, 'grafico.png')
-            self.save_plot_as_image(file_path)
+            file_path = os.path.join(folder_path, 'grafico.png')
+            self.save_plot_as_image(file_path, width, height)
         elif option == "Ambos":
-            text_file_path = os.path.join(self.data_folder, 'contenido.csv')
+            text_file_path = os.path.join(folder_path, 'contenido.txt')
             self.save_text_edit_content(text_file_path)
-            image_file_path = os.path.join(self.data_folder, 'grafico.png')
-            self.save_plot_as_image(image_file_path)
-    
-    def save_option(self):
-        index = self.save_option_combo.currentIndex()
-        self.handle_save_option(index)
-    
+            image_file_path = os.path.join(folder_path, 'grafico.png')
+            self.save_plot_as_image(image_file_path, width, height)
+
+        self.console_text.append(f'Datos guardados en: {folder_path}')
+
     def clear_data(self):
         self.text_edit.clear()
         self.console_text.clear()
@@ -311,16 +363,11 @@ class MainWindow(QMainWindow):
         event.accept()
 
 def run_serial_monitor_app(show_graph=False):
-    if not QApplication.instance():
-        app = QApplication(sys.argv)
-    else:
-        app = QApplication.instance()
-
+    app = QApplication(sys.argv)
     window = MainWindow()
     window.show()
     window.toggle_graph(show_graph)
     sys.exit(app.exec_())
-
 
 if __name__ == '__main__':
     run_serial_monitor_app()

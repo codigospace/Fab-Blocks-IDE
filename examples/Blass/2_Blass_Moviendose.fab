@@ -1,0 +1,24 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <block type="controls_setupLoop" id="2" x="-87" y="-71">
+    <statement name="SETUP">
+      <block type="bq_led_2" id="3">
+        <field name="VAR">name</field>
+        <field name="MOD">0</field>
+        <field name="PORT">0</field>
+      </block>
+    </statement>
+    <statement name="LOOP">
+      <block type="inout_digital_write" id="4" inline="true">
+        <field name="STAT">HIGH</field>
+        <value name="PIN">
+          <block type="math_number" id="5">
+            <field name="NUM">12</field>
+          </block>
+        </value>
+        <next>
+          <block type="test_inout_digital_write" id="6"></block>
+        </next>
+      </block>
+    </statement>
+  </block>
+</xml>

@@ -266,18 +266,86 @@ class WebViewer(QMainWindow):
         action_arduino_example9.triggered.connect(lambda: self.open_example("Arduino/09-serial-counter.fab"))
         action_arduino_example10.triggered.connect(lambda: self.open_example("Arduino/10-serial-led-switch.fab"))
 
-        action_modular_v1_example1 = QAction("Parpadeo Led", self)
+        action_modular_v1_example1 = QAction("Comunicacion Serial", self)
         submenu_modular_v1.addAction(action_modular_v1_example1)
-        action_modular_v1_example1.triggered.connect(lambda: self.open_example("Modular/blink.fab"))
-        action_robot_betto_example1 = QAction("Por añadir", self)
+        action_modular_v1_example1.triggered.connect(lambda: self.open_example("Modular/1_Comunicación_Serial.fab"))
+        
+        action_modular_v1_example2 = QAction("Actuador Digital", self)
+        submenu_modular_v1.addAction(action_modular_v1_example2)
+        action_modular_v1_example2.triggered.connect(lambda: self.open_example("Modular/2_Actuador_Digital.fab"))
+
+        action_modular_v1_example3 = QAction("Sensor Digital", self)
+        submenu_modular_v1.addAction(action_modular_v1_example3)
+        action_modular_v1_example3.triggered.connect(lambda: self.open_example("Modular/3_Sensor_Digital.fab"))
+        
+        action_modular_v1_example4 = QAction("Sensor Analogico", self)
+        submenu_modular_v1.addAction(action_modular_v1_example4)
+        action_modular_v1_example4.triggered.connect(lambda: self.open_example("Modular/4_Sensor_Analogico.fab"))
+        
+        action_modular_v1_example5 = QAction("Actuador Servomotor", self)
+        submenu_modular_v1.addAction(action_modular_v1_example5)
+        action_modular_v1_example5.triggered.connect(lambda: self.open_example("Modular/5_Actuador_Servomotor.fab"))
+        
+        action_modular_v1_example6 = QAction("Sensor Ultrasonido", self)
+        submenu_modular_v1.addAction(action_modular_v1_example6)
+        action_modular_v1_example6.triggered.connect(lambda: self.open_example("Modular/6_Sensor_Ultrasonido.fab"))
+        
+        action_modular_v1_example7 = QAction("Actuador Motor DC", self)
+        submenu_modular_v1.addAction(action_modular_v1_example7)
+        action_modular_v1_example7.triggered.connect(lambda: self.open_example("Modular/7_Actuador_Motor_DC.fab"))
+        
+        action_robot_betto_example1 = QAction("Betto Caminando", self)
         submenu_robot_betto.addAction(action_robot_betto_example1)
-        action_robot_betto_example1.setEnabled(False)
-        action_carlitto_example1 = QAction("Por añadir", self)
+        action_robot_betto_example1.triggered.connect(lambda: self.open_example("Betto/1_Betto_Caminando.fab"))
+
+        action_robot_betto_example2 = QAction("Betto Bailando", self)
+        submenu_robot_betto.addAction(action_robot_betto_example2)
+        action_robot_betto_example2.triggered.connect(lambda: self.open_example("Betto/2_Betto_Bailando.fab"))
+
+        action_robot_betto_example3 = QAction("Betto Cantando", self)
+        submenu_robot_betto.addAction(action_robot_betto_example3)
+        action_robot_betto_example3.triggered.connect(lambda: self.open_example("Betto/3_Betto_Cantando.fab"))
+
+        action_robot_betto_example4 = QAction("Betto Evitando", self)
+        submenu_robot_betto.addAction(action_robot_betto_example4)
+        action_robot_betto_example4.triggered.connect(lambda: self.open_example("Betto/4_Betto_Evitando.fab"))
+
+        action_robot_betto_example5 = QAction("Betto IoT", self)
+        submenu_robot_betto.addAction(action_robot_betto_example5)
+        action_robot_betto_example5.triggered.connect(lambda: self.open_example("Betto/5_Betto_IoT.fab"))
+
+        action_carlitto_example1 = QAction("Carlitto Motor", self)
         submenu_carlitto.addAction(action_carlitto_example1)
-        action_carlitto_example1.setEnabled(False)
-        action_blass_example1 = QAction("Por añadir", self)
+        action_carlitto_example1.triggered.connect(lambda: self.open_example("Carlitto/1_Carlitto_Motor.fab"))
+
+        action_carlitto_example2 = QAction("Carlitto Moviendose", self)
+        submenu_carlitto.addAction(action_carlitto_example2)
+        action_carlitto_example2.triggered.connect(lambda: self.open_example("Carlitto/2_Carlitto_Moviendose.fab"))
+        
+        action_carlitto_example3 = QAction("Carlitto Bluetooth", self)
+        submenu_carlitto.addAction(action_carlitto_example3)
+        action_carlitto_example3.triggered.connect(lambda: self.open_example("Carlitto/3_Carlitto_Bluetooth.fab"))
+
+        action_carlitto_example4 = QAction("Carlitto IoT", self)
+        submenu_carlitto.addAction(action_carlitto_example4)
+        action_carlitto_example4.triggered.connect(lambda: self.open_example("Carlitto/4_Carlitto_IoT.fab"))
+        
+        action_blass_example1 = QAction("Blass Servo", self)
         submenu_blass.addAction(action_blass_example1)
-        action_blass_example1.setEnabled(False)
+        action_blass_example1.triggered.connect(lambda: self.open_example("Blass/1_Blass_Servo.fab"))
+
+        action_blass_example2 = QAction("Blass Moviendose", self)
+        submenu_blass.addAction(action_blass_example2)
+        action_blass_example2.triggered.connect(lambda: self.open_example("Blass/2_Blass_Moviendose.fab"))
+
+        action_blass_example3 = QAction("Blass Bluetooth", self)
+        submenu_blass.addAction(action_blass_example3)
+        action_blass_example3.triggered.connect(lambda: self.open_example("Blass/3_Blass_Bluetooth.fab"))
+
+        action_blass_example4 = QAction("Blass IoT", self)
+        submenu_blass.addAction(action_blass_example4)
+        action_blass_example4.triggered.connect(lambda: self.open_example("Blass/4_Blass_IoT.fab"))
+
         action_blass_project_1 = QAction("Por añadir", self)
         submenu_robotica.addAction(action_blass_project_1)
         action_blass_project_1.setEnabled(False)
@@ -765,14 +833,10 @@ class WebViewer(QMainWindow):
     
     def show_monitor_serial(self, show_graph_state):
         if self.monitor_window is None or not self.monitor_window.isVisible():
-            # Si no existe una ventana o no es visible, crea una nueva
-            print("if")
             self.monitor_window = MainWindow()
             self.monitor_window.show()
             self.monitor_window.toggle_graph(show_graph_state)
         else:
-            # Si ya existe una ventana visible, actívala y cambia el estado del gráfico si es necesario
-            print("else")
             self.monitor_window.activateWindow()
             self.monitor_window.raise_()
             self.monitor_window.toggle_graph(show_graph_state)
@@ -875,8 +939,9 @@ class WebViewer(QMainWindow):
             # Obtener la ubicación y el nombre del archivo seleccionado por el usuario
             selected_file = file_dialog.selectedFiles()[0]
             self.webview.page().runJavaScript('''
-            var xml = Blockly.Xml.domToPrettyText(Blockly.Xml.workspaceToDom(Blockly.getMainWorkspace()));
-            xml;''', lambda result: self.save_to_ino(result, selected_file))
+            var workspace = Blockly.getMainWorkspace();
+            var arduinoCode = Blockly.Arduino.workspaceToCode(workspace);
+            arduinoCode;''', lambda result: self.save_to_ino(result, selected_file))
         else:
             # El usuario canceló el diálogo
             QMessageBox.warning(self, "Guardar Cancelado", "La operación de guardar como INO fue cancelada.")

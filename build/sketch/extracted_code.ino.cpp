@@ -1,17 +1,20 @@
 #include <Arduino.h>
 #line 1 "D:\\Proyectos\\fab2\\extracted_code.ino"
+#include <Modular.h>
+
 /***   Global variables   ***/
+analogInput name(2);
 
 /***   Function declaration   ***/
 
-#line 5 "D:\\Proyectos\\fab2\\extracted_code.ino"
+#line 8 "D:\\Proyectos\\fab2\\extracted_code.ino"
 void setup();
-#line 14 "D:\\Proyectos\\fab2\\extracted_code.ino"
+#line 17 "D:\\Proyectos\\fab2\\extracted_code.ino"
 void loop();
-#line 5 "D:\\Proyectos\\fab2\\extracted_code.ino"
+#line 8 "D:\\Proyectos\\fab2\\extracted_code.ino"
 void setup()
 {
-
+    name.init();
 
   Serial.begin(115200);
 
@@ -20,7 +23,7 @@ void setup()
 
 void loop()
 {
-    Serial.println("ddd");
+    Serial.println(name.read());
     delay(300);
 
 }
