@@ -771,22 +771,22 @@
                 LANG_ADVANCED_CONVERSION_BINARY: 'Binario',
                 LANG_ADVANCED_CONVERSION_VALUE: 'valor',
                 LANG_ADVANCED_CONVERSION_TOOLTIP: 'Convertir la base de un número.',
-                LANG_ADVANCED_INOUT_ANALOG_READ: 'Leer el pin analógico PIN#',
+                LANG_ADVANCED_INOUT_ANALOG_READ: 'Leer en pin analógico',
                 LANG_ADVANCED_INOUT_ANALOG_READ_TOOLTIP: 'Lee el valor de un pin analógico específico.',
-                LANG_ADVANCED_INOUT_ANALOG_WRITE: 'Escribir en PIN digital',
-                LANG_ADVANCED_INOUT_ANALOG_WRITE_VALUE: 'el valor analógico',
+                LANG_ADVANCED_INOUT_ANALOG_WRITE: 'Escribir en pin analogico',
+                LANG_ADVANCED_INOUT_ANALOG_WRITE_VALUE: 'el valor',
                 LANG_ADVANCED_INOUT_ANALOG_WRITE_TOOLTIP: 'Escribe un valor entre 0 y 255 en un PIN analógico específico.',
-                LANG_ADVANCED_BUILTIN_LED: 'LED EN LA PLACA',
+                LANG_ADVANCED_BUILTIN_LED: 'Escribir en led embebido el estado',
                 LANG_ADVANCED_BUILTIN_LED_STATE: 'estado',
                 LANG_ADVANCED_BUILTIN_LED_ON: 'ENCENDIDO',
                 LANG_ADVANCED_BUILTIN_LED_OFF: 'APAGADO',
                 LANG_ADVANCED_BUILTIN_LED_TOOLTIP: 'LED integrado en la placa que está internamente conectado al PIN 13.',
-                LANG_ADVANCED_INOUT_DIGITAL_READ: 'Leer el pin digital PIN#',
+                LANG_ADVANCED_INOUT_DIGITAL_READ: 'Leer en pin digital',
                 LANG_ADVANCED_INOUT_DIGITAL_READ_TOOLTIP: 'Lee el valor desde un pin digital específico.',
-                LANG_ADVANCED_INOUT_DIGITAL_WRITE: 'Escribir en el pin digital',
+                LANG_ADVANCED_INOUT_DIGITAL_WRITE: 'Escribir en pin digital',
                 LANG_ADVANCED_INOUT_DIGITAL_WRITE_GET_VAR: 'el valor',
                 LANG_ADVANCED_INOUT_DIGITAL_WRITE_PIN: 'PIN#',
-                LANG_ADVANCED_INOUT_DIGITAL_WRITE_STATE: 'estado',
+                LANG_ADVANCED_INOUT_DIGITAL_WRITE_STATE: 'el estado',
                 LANG_ADVANCED_INOUT_DIGITAL_WRITE_HIGH: 'ALTO',
                 LANG_ADVANCED_INOUT_DIGITAL_WRITE_LOW: 'BAJO',
                 LANG_ADVANCED_INOUT_DIGITAL_WRITE_TOOLTIP: 'Escribe un valor en el pin digital específico.',
@@ -3936,27 +3936,6 @@
                 return dropdown;
             },
             onchange: function() {
-                // if (!this.workspace) {
-                //     // Block has been deleted.
-                //     return;
-                // }
-                // this.last_variable=this.getFieldValue('VAR');
-                // if (!this.last_variables){
-                //     this.last_variables=Blockly.Variables.allVariables();
-                // }
-                // var variables=Blockly.Variables.allVariables();
-                // for (var i in variables){
-                //     if (Blockly.Variables.allVariables()[i]!==this.last_variables[i]){
-                //         try{
-                //             this.removeInput('DUMMY');
-                //         }catch(e){}
-                //         this.appendDummyInput('DUMMY')
-                //             .appendField(RoboBlocks.locales.getKey('LANG_VARIABLES_GET'))
-                //             .appendField(new Blockly.FieldDropdown(this.getVariables()), 'VAR');
-                //         this.setFieldValue(this.last_variable, 'VAR');
-                //         this.last_variables=Blockly.Variables.allVariables();
-                //     }
-                // }
                 try {
                     if (!this.exists()) {
                         this.setWarningText(RoboBlocks.locales.getKey('LANG_VARIABLES_CALL_WITHOUT_DEFINITION'));
@@ -3968,6 +3947,86 @@
             renameVar: function(oldName, newName) {
                 if (Blockly.Names.equals(oldName, this.getFieldValue('VAR'))) {
                     this.setTitleValue(newName, 'VAR');
+                }
+            },
+            exists: function() {
+                for (var i in Blockly.Variables.allVariables()) {
+                    if (Blockly.Variables.allVariables()[i] === this.getFieldValue('VAR')) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        };
+
+        // bloque nuevo con valores por defecto
+        Blockly.Arduino.test_inout_digital_write_number_dc_2 = function() {
+            var dropdown_pin = this.getFieldValue('VAR');
+            var dropdown_stat = this.getFieldValue('STAT');
+            var dropdown_num = this.getFieldValue('NUM');
+        
+            var code = '';
+            var a = RoboBlocks.findPinMode(dropdown_pin);
+            code += a['code'];
+            dropdown_pin = a['pin'];
+            code += JST['test_motor_dc']({
+                'dropdown_pin': dropdown_pin,
+                'dropdown_velo': dropdown_stat,
+                'dropdown_dir': dropdown_num
+            });
+            return code;
+        };
+        
+        Blockly.Blocks.test_inout_digital_write_number_dc_2 = {
+            category: RoboBlocks.locales.getKey('LANG_CATEGORY_MODULAR'),
+            helpUrl: RoboBlocks.URL_PIN_FUNC,
+            init: function() {
+                this.setColour('#666666');
+                this.appendDummyInput()
+                    .appendField(new Blockly.FieldImage('media/ESCRIBIRMODULAR.png', 20, 20, "*"))
+                    .appendField('Escribir en el motor de corriente continua')
+                    .appendField(new Blockly.FieldVariable(' '), 'VAR');
+                                
+                this.appendDummyInput()
+                    .appendField('la potencia ')
+                    .appendField(new Blockly.FieldTextInput('0', Blockly.Blocks.math_array.validator_0_255), 'NUM');
+                
+                    this.appendDummyInput()
+                    .appendField('y la dirección')
+                    .appendField(new Blockly.FieldDropdown([
+                        ['Horario', 'true'],
+                        ['Antihorario', 'false']
+                    ]), 'STAT');
+                
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setInputsInline(true);
+                this.setTooltip(RoboBlocks.locales.getKey('LANG_ADVANCED_INOUT_DIGITAL_WRITE_TOOLTIP'));
+            },
+            getVariables: function() {
+                var variables = Blockly.Variables.allVariables();
+                var dropdown = [];
+                if (variables.length > 0) {
+                    for (var i in variables) {
+                        dropdown.push([variables[i], variables[i]]);
+                    }
+                } else {
+                    dropdown.push(['', '']);
+                }
+                return dropdown;
+            },
+            onchange: function() {
+                try {
+                    if (!this.exists()) {
+                        this.setWarningText(RoboBlocks.locales.getKey('LANG_VARIABLES_CALL_WITHOUT_DEFINITION'));
+                    } else {
+                        this.setWarningText(null);
+                    }
+                } catch (e) {}
+            },
+            renameVar: function(oldName, newName) {
+                if (Blockly.Names.equals(oldName, this.getFieldValue('VAR'))) {
+                    this.setFieldValue(newName, 'VAR');
                 }
             },
             exists: function() {
@@ -6624,7 +6683,7 @@
             init: function() {
                 this.setColour(RoboBlocks.LANG_COLOUR_ADVANCED);
                 this.appendValueInput('PIN').appendField(RoboBlocks.locales.getKey('LANG_ADVANCED_INOUT_ANALOG_WRITE'));
-                this.appendValueInput('NUM', Number).appendField(RoboBlocks.locales.getKey('LANG_ADVANCED_INOUT_ANALOG_WRITE_VALUE')).setCheck(Number);
+                this.appendValueInput('NUM').appendField(RoboBlocks.locales.getKey('LANG_ADVANCED_INOUT_ANALOG_WRITE_VALUE')).setCheck(Boolean);
                 this.setInputsInline(true);
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
@@ -6666,7 +6725,6 @@
                 this.setColour(RoboBlocks.LANG_COLOUR_ADVANCED);
                 this.appendDummyInput('')
                     .appendField(RoboBlocks.locales.getKey('LANG_ADVANCED_BUILTIN_LED'))
-                    .appendField(RoboBlocks.locales.getKey('LANG_ADVANCED_BUILTIN_LED_STATE'))
                     .appendField(new Blockly.FieldDropdown([
                         [RoboBlocks.locales.getKey('LANG_ADVANCED_BUILTIN_LED_ON') || 'ON', 'HIGH'],
                         [RoboBlocks.locales.getKey('LANG_ADVANCED_BUILTIN_LED_OFF') || 'OFF', 'LOW']
@@ -6731,7 +6789,8 @@
          */
         Blockly.Arduino.inout_digital_write = function() {
             var dropdown_pin = Blockly.Arduino.valueToCode(this, 'PIN', Blockly.Arduino.ORDER_ATOMIC);
-            var dropdown_stat = this.getFieldValue('STAT');
+            var dropdown_stat =  Blockly.Arduino.valueToCode(this, 'STAT', Blockly.Arduino.ORDER_ATOMIC);
+            console.log(dropdown_stat);
             var code = '';
             var a = RoboBlocks.findPinMode(dropdown_pin);
             code += a['code'];
@@ -6765,16 +6824,18 @@
              */
             init: function() {
                 this.setColour(RoboBlocks.LANG_COLOUR_ADVANCED);
-                this.appendValueInput('PIN').appendField(RoboBlocks.locales.getKey('LANG_ADVANCED_INOUT_DIGITAL_WRITE')).appendField(RoboBlocks.locales.getKey('LANG_ADVANCED_INOUT_DIGITAL_WRITE_PIN'));
-                this.appendDummyInput().appendField(RoboBlocks.locales.getKey('LANG_ADVANCED_INOUT_DIGITAL_WRITE_STATE')).appendField(new Blockly.FieldDropdown([
-                    [RoboBlocks.locales.getKey('LANG_ADVANCED_INOUT_DIGITAL_WRITE_HIGH') || 'HIGH', 'HIGH'],
-                    [RoboBlocks.locales.getKey('LANG_ADVANCED_INOUT_DIGITAL_WRITE_LOW') || 'LOW', 'LOW']
-                ]), 'STAT');
+                this.appendValueInput('PIN')
+                    .appendField(RoboBlocks.locales.getKey('LANG_ADVANCED_INOUT_DIGITAL_WRITE'));
+                
+                this.appendValueInput('STAT')
+                    .setCheck(Boolean)
+                    .appendField(RoboBlocks.locales.getKey('LANG_ADVANCED_INOUT_DIGITAL_WRITE_STATE'));
+                
                 this.setPreviousStatement(true, null);
                 this.setInputsInline(true);
                 this.setNextStatement(true, null);
                 this.setTooltip(RoboBlocks.locales.getKey('LANG_ADVANCED_INOUT_DIGITAL_WRITE_TOOLTIP'));
-            }
+            }            
         };
         // Source: src/blocks/inout_highlow/inout_highlow.js
         /* global Blockly, JST, RoboBlocks */
@@ -7405,6 +7466,16 @@
             var n = window.parseFloat(text || 0);
             return window.isNaN(n) ? null : String(n);
         };
+
+        // validador de valores entre 0 y 255
+        Blockly.Blocks.math_array.validator_0_255 = function(text) {
+            var n = window.parseFloat(text || 0);
+            if (window.isNaN(n) || n < 0 || n > 255) {
+                return null;
+            }
+            return String(Math.floor(n)); // Asegura un número entero dentro del rango
+        };
+        
         // Source: src/blocks/math_modulo/math_modulo.js
         /* global Blockly, JST, RoboBlocks */
         /* jshint sub:true */
