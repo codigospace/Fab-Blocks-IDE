@@ -18,221 +18,24 @@ import socketserver
 import functools
 
 from monitor_plotter import MainWindow
-iconSize = 32
+
+# New imports from refactored modules
+from config_manager import ConfigManager
+from preferences_dialog import PreferencesDialog
+from command_runner import CommandRunner
+from server import LocalHTTPServer
+from utils import release_all_serial_ports, ConsoleOutput
+from port_monitor import PortMonitor
 
 if getattr(sys, 'frozen', False):
     import pyi_splash
 
-def release_all_serial_ports():
-    # Obtener una lista de todos los puertos COM disponibles
-    ports = list(serial.tools.list_ports.comports())
-    
-    for port in ports:
-        try:
-            # Intentar abrir el puerto
-            ser = serial.Serial(port.device)
-            # Si se abre con éxito, cerrarlo inmediatamente
-            ser.close()
-            print(f"Puerto {port.device} liberado con éxito.")
-        except serial.SerialException:
-            print(f"No se pudo liberar el puerto {port.device}. Puede que ya esté cerrado o en uso por otra aplicación.")
-        except Exception as e:
-            print(f"Error al intentar liberar el puerto {port.device}: {str(e)}")
-   
-# Clase para manejar la configuración
-class ConfigManager:
-    def __init__(self, filename='config.json'):
-        self.filename = filename
-        self.data = {}
-        self.load_config()
-
-    # Cargar la configuración desde el archivo JSON
-    def load_config(self):
-        try:
-            with open(self.filename, 'r') as file:
-                self.data = json.load(file)
-        except FileNotFoundError:
-            pass
-
-    # Guardar la configuración en el archivo JSON
-    def save_config(self):
-        with open(self.filename, 'w') as file:
-            json.dump(self.data, file)
-
-    # Obtener el valor de una clave de configuración
-    def get_value(self, key):
-        return self.data.get(key, None)
-
-    # Establecer el valor de una clave de configuración
-    def set_value(self, key, value):
-        self.data[key] = value
-        self.save_config()
-
-class PreferencesDialog(QDialog):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setWindowTitle("Preferencias")
-        self.layout = QVBoxLayout()
-        self.setLayout(self.layout)
-        self.initUI()
-
-    def initUI(self):
-        # Campo de entrada para la ubicación del compilador
-        self.compiler_location_edit = QLineEdit()
-        self.layout.addWidget(QLabel("Ubicación del compilador:"))
-        self.layout.addWidget(self.compiler_location_edit)
-
-        # Obtener la ubicación del compilador guardada en la configuración
-        compiler_location = config_manager.get_value('compiler_location')
-        if compiler_location:
-            self.compiler_location_edit.setText(compiler_location)
-
-        # Checkbox para habilitar la verbosidad
-        self.verbosity_checkbox = QCheckBox("Habilitar Verbosidad")
-        self.layout.addWidget(self.verbosity_checkbox)
-
-        # Obtener el estado de la verbosidad guardado en la configuración
-        verbosity_enabled = config_manager.get_value('verbosity_enabled')
-        if verbosity_enabled:
-            self.verbosity_checkbox.setChecked(True)
-        else:
-            self.verbosity_checkbox.setChecked(False)
-
-        # ComboBox para seleccionar el idioma
-        self.language_combo = QComboBox()
-        self.language_combo.addItem("Spanish")
-        self.language_combo.addItem("English")
-        self.layout.addWidget(QLabel("Idioma:"))
-        self.layout.addWidget(self.language_combo)
-
-        # Obtener el idioma guardado en la configuración
-        language = config_manager.get_value('language')
-        if language:
-            index = self.language_combo.findText(language)
-            if index != -1:
-                self.language_combo.setCurrentIndex(index)
-
-        # Botón para seleccionar la ubicación del archivo
-        select_file_button = QPushButton("Seleccionar Archivo")
-        select_file_button.clicked.connect(self.select_exe_file)
-        self.layout.addWidget(select_file_button)
-
-        # Botón para guardar la configuración
-        save_button = QPushButton("Guardar")
-        save_button.clicked.connect(self.save_preferences)
-        self.layout.addWidget(save_button)
-
-    # Método para abrir el cuadro de diálogo de selección de archivos .exe
-    def select_exe_file(self):
-        file_dialog = QFileDialog()
-        file_dialog.setNameFilter("Archivos ejecutables (*.exe)")
-        file_dialog.setFileMode(QFileDialog.ExistingFile)
-        if file_dialog.exec_():
-            selected_files = file_dialog.selectedFiles()
-            if selected_files:
-                self.compiler_location_edit.setText(selected_files[0])
-
-    # Método para guardar las preferencias
-    def save_preferences(self):
-        compiler_location = self.compiler_location_edit.text()
-        config_manager.set_value('compiler_location', compiler_location)
-
-        # Verificar si la verbosidad está habilitada
-        verbosity_enabled = self.verbosity_checkbox.isChecked()
-        config_manager.set_value('verbosity_enabled', verbosity_enabled)
-
-        # Obtener el idioma seleccionado
-        language_index = self.language_combo.currentIndex()
-        language = self.language_combo.itemText(language_index)
-        config_manager.set_value('language', language)
-
-        self.close()
-
-class CommandRunner(QThread):
-    output_received = pyqtSignal(str)
-
-    def __init__(self, command):
-        super().__init__()
-        self.command = command
-
-    def run(self):
-        process = subprocess.Popen(self.command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
-        for line in process.stdout:
-            self.output_received.emit(line.strip())
-        process.kill()
-
-# Lightweight internal HTTP server to serve the `html/` directory on localhost.
-class ThreadedHTTPServer(socketserver.ThreadingMixIn, HTTPServer):
-    daemon_threads = True
-    allow_reuse_address = True
-
-class LocalHTTPServer:
-    def __init__(self, directory, host='127.0.0.1', port=0):
-        self.directory = directory
-        self.host = host
-        self.port = port
-        self.server = None
-        self.thread = None
-        self.running = False
-
-    def start(self):
-        if self.running:
-            return
-        handler = functools.partial(SimpleHTTPRequestHandler, directory=self.directory)
-        try:
-            self.server = ThreadedHTTPServer((self.host, self.port), handler)
-            # update port in case port 0 was used
-            self.port = self.server.server_address[1]
-            self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
-            self.thread.start()
-            self.running = True
-        except Exception as e:
-            print(f"Failed to start local HTTP server: {e}")
-            self.running = False
-
-    def stop(self):
-        if self.server and self.running:
-            try:
-                self.server.shutdown()
-                self.server.server_close()
-                if self.thread:
-                    self.thread.join(timeout=1)
-            finally:
-                self.running = False
-
-class ConsoleOutput:
-    def __init__(self, console):
-        self.console = console
-
-    def write(self, message):
-        # Separar la salida de la consola por saltos de línea
-        for line in message.split('\n'):
-            line = line.strip()  # Eliminar espacios en blanco al inicio y al final
-            if line:  # Evitar agregar líneas en blanco innecesarias
-                self.console.moveCursor(QTextCursor.End)
-                self.console.insertPlainText(line + '\n')  # Agregar un salto de línea al final
-
-    def flush(self):
-        pass
-
-class PortMonitor(QObject):
-    portChanged = pyqtSignal()
-
-    def __init__(self):
-        super().__init__()
-
-    def run(self):
-        previous_ports = []
-        while True:
-            current_ports = [port.device for port in serial.tools.list_ports.comports()]
-            if current_ports != previous_ports:
-                self.portChanged.emit()
-                previous_ports = current_ports
-            time.sleep(1)
+iconSize = 32
 
 class WebViewer(QMainWindow):
-    def __init__(self):
+    def __init__(self, config_manager):
         super().__init__()
+        self.config_manager = config_manager
         # Buffer para mensajes de consola que ocurran antes de que el widget exista
         self._console_buffer = []
         # Flag para indicar si esta instancia es la propietaria del servidor HTTP local
@@ -600,7 +403,7 @@ class WebViewer(QMainWindow):
         self.port_monitor.portChanged.connect(self.update_ports_menu)
         self.port_monitor_thread.start()
         self.console = QTextEdit()
-        self.console.setMaximumHeight(200)
+        self.console.setMaximumHeight(180)
         self.console.setReadOnly(True)
         # Volcar mensajes en buffer (si los hubo) al crear el widget
         if hasattr(self, '_console_buffer') and self._console_buffer:
@@ -615,7 +418,7 @@ class WebViewer(QMainWindow):
         action32.triggered.connect(lambda: self.show_monitor_serial(True))
 
     def show_preferences_dialog(self):
-        self.preferences_dialog = PreferencesDialog(self)
+        self.preferences_dialog = PreferencesDialog(self.config_manager, self)
         self.preferences_dialog.exec_()
 
     def loadLocalFile(self, filename):
@@ -777,7 +580,7 @@ class WebViewer(QMainWindow):
 
     def open_new_file_window(self):
         # Crear una nueva instancia de la ventana para el nuevo archivo
-        self.new_file_window = WebViewer()
+        self.new_file_window = WebViewer(self.config_manager)
         # Si tenemos un servidor HTTP local corriendo, pasar la misma instancia a la ventana hija
         if hasattr(self, 'local_http_server') and getattr(self.local_http_server, 'running', False):
             self.new_file_window.local_http_server = self.local_http_server
@@ -848,7 +651,7 @@ class WebViewer(QMainWindow):
             self.runner.terminate()
             self.runner.wait()
         
-        arduinoDev = config_manager.get_value('compiler_location')
+        arduinoDev = self.config_manager.get_value('compiler_location')
         arduinoDev_folder = os.path.dirname(arduinoDev)
         folder_actual = os.getcwd()
 
@@ -862,7 +665,7 @@ class WebViewer(QMainWindow):
 
     def runCommandUpload(self):
         self.update_progress()
-        arduinoDev = config_manager.get_value('compiler_location')
+        arduinoDev = self.config_manager.get_value('compiler_location')
         arduinoDev_folder = os.path.dirname(arduinoDev)
         folder_actual = os.getcwd()
         selected_board = self.combo.currentText()
@@ -1006,7 +809,7 @@ class WebViewer(QMainWindow):
 
     def open_new_file_window_content(self, content):
         # Crear una nueva instancia de la ventana para el nuevo archivo
-        self.new_file_window = WebViewer()
+        self.new_file_window = WebViewer(self.config_manager)
         # Reusar servidor HTTP local si ya existe
         if hasattr(self, 'local_http_server') and getattr(self.local_http_server, 'running', False):
             self.new_file_window.local_http_server = self.local_http_server
@@ -1014,7 +817,7 @@ class WebViewer(QMainWindow):
         self.new_file_window.loadLocalFile('index.html')
         self.new_file_window.show()
         self.new_file_window.webview.loadFinished.connect(lambda ok: self.run_javascript_after_load(ok, content))
-
+    
     def run_javascript_after_load(self, ok, content):
         if ok:
             self.new_file_window.webview.page().runJavaScript(f'''
@@ -1129,7 +932,7 @@ class WebViewer(QMainWindow):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     config_manager = ConfigManager()
-    viewer = WebViewer()
+    viewer = WebViewer(config_manager)
     if getattr(sys, 'frozen', False):
         pyi_splash.close()
     viewer.show()
