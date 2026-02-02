@@ -7,3 +7,6 @@ __pycache__/*
 qtwebhtml.spec
 FabBlockIDE.spec
 FabBlocksIDE*.spec
+venv/*
+.env
+.gitignore
