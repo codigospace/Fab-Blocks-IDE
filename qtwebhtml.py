@@ -13,6 +13,9 @@ import subprocess
 import json
 import webbrowser
 import serial
+from http.server import SimpleHTTPRequestHandler, HTTPServer
+import socketserver
+import functools
 
 from monitor_plotter import MainWindow
 iconSize = 32
@@ -158,6 +161,45 @@ class CommandRunner(QThread):
             self.output_received.emit(line.strip())
         process.kill()
 
+# Lightweight internal HTTP server to serve the `html/` directory on localhost.
+class ThreadedHTTPServer(socketserver.ThreadingMixIn, HTTPServer):
+    daemon_threads = True
+    allow_reuse_address = True
+
+class LocalHTTPServer:
+    def __init__(self, directory, host='127.0.0.1', port=0):
+        self.directory = directory
+        self.host = host
+        self.port = port
+        self.server = None
+        self.thread = None
+        self.running = False
+
+    def start(self):
+        if self.running:
+            return
+        handler = functools.partial(SimpleHTTPRequestHandler, directory=self.directory)
+        try:
+            self.server = ThreadedHTTPServer((self.host, self.port), handler)
+            # update port in case port 0 was used
+            self.port = self.server.server_address[1]
+            self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
+            self.thread.start()
+            self.running = True
+        except Exception as e:
+            print(f"Failed to start local HTTP server: {e}")
+            self.running = False
+
+    def stop(self):
+        if self.server and self.running:
+            try:
+                self.server.shutdown()
+                self.server.server_close()
+                if self.thread:
+                    self.thread.join(timeout=1)
+            finally:
+                self.running = False
+
 class ConsoleOutput:
     def __init__(self, console):
         self.console = console
@@ -191,6 +233,10 @@ class PortMonitor(QObject):
 class WebViewer(QMainWindow):
     def __init__(self):
         super().__init__()
+        # Buffer para mensajes de consola que ocurran antes de que el widget exista
+        self._console_buffer = []
+        # Flag para indicar si esta instancia es la propietaria del servidor HTTP local
+        self._local_http_server_owner = False
         self.initUI()
         self.monitor_window = None
 
@@ -556,6 +602,11 @@ class WebViewer(QMainWindow):
         self.console = QTextEdit()
         self.console.setMaximumHeight(200)
         self.console.setReadOnly(True)
+        # Volcar mensajes en buffer (si los hubo) al crear el widget
+        if hasattr(self, '_console_buffer') and self._console_buffer:
+            for m in self._console_buffer:
+                self.console.append(m)
+            self._console_buffer = []
         self.centralWidget().layout().addWidget(self.console)
                 
         monitor_serial.clicked.connect(lambda: self.show_monitor_serial(False))
@@ -570,18 +621,37 @@ class WebViewer(QMainWindow):
     def loadLocalFile(self, filename):
         # Obtener el directorio en el que se encuentra el script
         script_dir = os.path.dirname(os.path.realpath(__file__))
+        html_dir = os.path.join(script_dir, "html")
 
-        # Construir la ruta al archivo HTML
-        filepath = os.path.join(script_dir, "html", filename)
+        # Intentar iniciar un servidor HTTP local ligero para servir solo dentro de la app
+        if os.path.isdir(html_dir):
+            try:
+                if not hasattr(self, 'local_http_server') or not getattr(self.local_http_server, 'running', False):
+                    self.local_http_server = LocalHTTPServer(directory=html_dir, host='127.0.0.1', port=0)
+                    self.local_http_server.start()
+                    if getattr(self.local_http_server, 'running', False):
+                        # Si iniciamos el servidor local, marcamos ownership para poder detenerlo al salir
+                        self._local_http_server_owner = True
+                        self.write_to_console(f"Servidor HTTP local iniciado en http://127.0.0.1:{self.local_http_server.port}/")
+                    else:
+                        self._local_http_server_owner = False
+                        self.write_to_console("No se pudo iniciar el servidor HTTP local; cargando archivo local.")
+                else:
+                    # Ya existe un servidor corriendo: lo usamos pero no somos propietarios
+                    self._local_http_server_owner = False
+            except Exception as e:
+                self.write_to_console(f"Error al iniciar servidor HTTP local: {e}")
 
-        # Cargar el archivo HTML
-        url = QUrl.fromLocalFile(filepath)
-        
-        self.webview.load(url)
-        # exe_dir = os.path.dirname(sys.executable)
-        # filepath = os.path.join(exe_dir, "html", filename)
-        # url = QUrl.fromLocalFile(filepath)
-        # self.webview.load(url)
+        # Preferir cargar vía HTTP si el servidor local está activo
+        if hasattr(self, 'local_http_server') and getattr(self.local_http_server, 'running', False):
+            url = QUrl(f"http://127.0.0.1:{self.local_http_server.port}/{filename}")
+            self.webview.load(url)
+        else:
+            # Construir la ruta al archivo HTML
+            filepath = os.path.join(script_dir, "html", filename)
+            # Cargar el archivo HTML desde archivo local
+            url = QUrl.fromLocalFile(filepath)
+            self.webview.load(url)
 
     def write_to_ino(self, info):
         if isinstance(info, list):
@@ -696,11 +766,22 @@ class WebViewer(QMainWindow):
     
     def exit_application(self):
         self.write_to_console("Saliendo de la aplicación")
+        # Detener servidor HTTP local solo si esta instancia es la propietaria
+        try:
+            if hasattr(self, 'local_http_server') and getattr(self.local_http_server, 'running', False) and getattr(self, '_local_http_server_owner', False):
+                self.local_http_server.stop()
+                self.write_to_console("Servidor HTTP local detenido.")
+        except Exception as e:
+            print(f"Error deteniendo servidor local: {e}")
         self.close()
 
     def open_new_file_window(self):
         # Crear una nueva instancia de la ventana para el nuevo archivo
         self.new_file_window = WebViewer()
+        # Si tenemos un servidor HTTP local corriendo, pasar la misma instancia a la ventana hija
+        if hasattr(self, 'local_http_server') and getattr(self.local_http_server, 'running', False):
+            self.new_file_window.local_http_server = self.local_http_server
+            self.new_file_window._local_http_server_owner = False
         self.new_file_window.loadLocalFile('index.html')
         self.new_file_window.show()
 
@@ -734,7 +815,19 @@ class WebViewer(QMainWindow):
             self.timer.stop()
     
     def write_to_console(self, message):
-        self.console.append(message)
+        # Si el widget consola existe, mostrar mensaje y vaciar buffer previo
+        if hasattr(self, 'console') and getattr(self, 'console') is not None:
+            if hasattr(self, '_console_buffer') and self._console_buffer:
+                for m in self._console_buffer:
+                    self.console.append(m)
+                self._console_buffer = []
+            self.console.append(message)
+        else:
+            # Fallback: imprimir en stdout y almacenar en buffer para volcar después
+            print(message)
+            if not hasattr(self, '_console_buffer'):
+                self._console_buffer = []
+            self._console_buffer.append(message)
     
     def runCommandCompile(self):
         self.update_progress()
@@ -914,6 +1007,10 @@ class WebViewer(QMainWindow):
     def open_new_file_window_content(self, content):
         # Crear una nueva instancia de la ventana para el nuevo archivo
         self.new_file_window = WebViewer()
+        # Reusar servidor HTTP local si ya existe
+        if hasattr(self, 'local_http_server') and getattr(self.local_http_server, 'running', False):
+            self.new_file_window.local_http_server = self.local_http_server
+            self.new_file_window._local_http_server_owner = False
         self.new_file_window.loadLocalFile('index.html')
         self.new_file_window.show()
         self.new_file_window.webview.loadFinished.connect(lambda ok: self.run_javascript_after_load(ok, content))

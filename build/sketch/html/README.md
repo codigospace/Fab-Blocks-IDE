@@ -1,325 +1,266 @@
 #line 1 "D:\\Proyectos\\fab2\\html\\README.md"
-RoboBlocks
-==========
+# FabBlocks - Engine
 
-[![Build Status](https://secure.travis-ci.org/bq/roboblocks.png?branch=master)](http://travis-ci.org/bq/roboblocks)
+## Descripción general
+Archivo HTML base para FabBlocks. Utiliza Blockly para generar bloques y traducirlos a C++, Python y JavaScript. Soporta perfiles de color, selección de idiomas y gestión de categorías dinámicas según lenguaje.
 
-Blockly blocks repository used in [bitbloq](http://bitbloq.bq.com)
+---
 
-Getting Started
----------------
+## Estructura destacada
 
-This project requires [blockly-bq](https://github.com/bq/blockly) or [blockly](https://developers.google.com/blockly/) to work.
+### ComboBoxes
+- **Selector de colores:** `#colorProfileSelector`
+- **Selector de lenguaje:** `#languageSelector`
+- **Selector de idioma:** `#localeSelector`
 
-### Include Roboblocks in your project
+### Contenedores de bloques
+- **XML de Toolbox:** `<xml id="toolbox">`
+- **Contenedor Blockly:** `<div id="blockly">`
+- **Contenedor de código:** `<div id="code">`
 
-#### **With Bower & RequireJS**
+### Scripts importantes
+- **jQuery**: `https://code.jquery.com/jquery-3.6.0.min.js`
+- **Blockly**: `blockly_compressed.js`
+- **Roboblocks (módulo)**: `/static/roboblocks.js`
+- **Mapeado de traducciones (módulo)**: `/static/src/translationMap.js`
 
-- Install roboblocks
+---
 
-    ```
-    bower install roboblocks --save-dev
-    bower install blocklybq --save-dev
-    ```
+## Funciones JS principales
 
-- Declare in RequireJS
+- **`changeLanguage()`**: Cambia el lenguaje y oculta categorías según la opción seleccionada.
+- **`changeColor()`**: Aplica perfiles de color desde `window.colorProfiles`.
+- **`changeLocale()`**: Actualiza las etiquetas con traducciones desde `translationMap`.
+- **`updateCode()`**: Genera código en C++, Python o JavaScript y lo resalta.
+- **`hideCategoriesForJS()`**: Oculta categorías específicas para JavaScript.
+- **`hideCategoriesForPython()`**: Oculta categorías específicas para Python.
+- **`hideCategoriesForCPP()`**: Oculta categorías específicas para C++.
+- **`resetWorkspace()`**: Limpia el workspace y lo reinicia con bloques predeterminados.
+- **`updateLabels()`**: Actualiza los textos de las etiquetas según el idioma seleccionado.
+z
+---
 
-```html
-<!doctype html>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>RoboBlocks</title>
-</head>
-<body>
-    <script src="bower_components/requirejs/require.js"></script>
-    <script src="scripts/define.js"></script>
-    <script>
-        'use strict';
-        /* global require */
-        require.config({
-            deps: [
-                'main'
-            ],
-            paths: {
-                'blockly': '../bower_components/blockly/blockly_compressed',
-                'blockly.blocks': '../bower_components/blockly/blocks_compressed',
-                'blockly.lang': '../bower_components/blockly/msg/js/en',
-                'blockly.arduino': '../bower_components/blockly/arduino_compressed',
-                roboblocks: '../bower_components/roboblocks/dist/roboblocks'
-            },
-            shim: {
-                blockly: {
-                    exports: 'Blockly'
-                },
-                'blockly.blocks': [
-                    'blockly'
-                ],
-                'blockly.lang': [
-                    'blockly'
-                ],
-                'blockly.arduino': [
-                    'blockly',
-                    'blockly.blocks'
-                ],
-                'roboblocks': [
-                    'blockly',
-                    'blockly.arduino'
-                ]
-            }
-        });
+## Estructura del objeto de traducción
+- **Idiomas soportados:** Español (es-ES), Inglés (en-GB), Francés (fr-FR), Italiano (it-IT), Ruso (ru).
+- **Claves de traducción:** `'functions'`, `'control'`, etc.
 
-        define(['blockly', 'roboblocks'], function(Blockly, RoboBlocks) {
-            // RoboBlocks loader
-            RoboBlocks.load({
-                zoom: 1,
-                otherParameter: true
-            });
-            var target = document.querySelector('.blockly');
-            Blockly.inject(target, {
-                trashcan: true,
-                toolbox: Blockly.createToolbox(),
-                scrollbars: false
-            });
+---
 
-        });
+## **Descripción de las Carpetas y Archivos Relevantes**
 
-    </script>
-</body>
-</html>
-```
+### **Carpeta `static/`**
+- Contiene los archivos CSS y JavaScript esenciales para la interfaz.  
+- Incluye librerías como CodeMirror para resaltar la sintaxis y extensiones personalizadas de Blockly.
 
-#### **Manual**
+### **Carpeta `javascript/`**
+- **`blockly-bq/`**: Maneja los bloques de programación orientados a Arduino, definiendo la estructura del código generado (setup, loop, etc.).
+- **`highlight/`**: Contiene `highlight.pack.js` para resaltar sintaxis en diferentes lenguajes como Python y C++.
+- **`jquery/`** y **`requirejs/`**: Librerías para manejar dependencias y modulares en JavaScript.
+- **`underscore/`**: Herramientas adicionales para manipulación de datos.
 
-- Index example
+### **Carpeta `kit/`**
+- **`blocks/`**: Almacena bloques personalizados como `advanced_map.js`.
+- **`lang/`**: Soporte para otros idiomas como catalán y español.
+- **`tmp/`**: Archivos temporales, como `jst.js`, que definen el comportamiento del código generado según el lenguaje (C++, Python, o JavaScript).
 
-```html
-<!doctype html>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>RoboBlocks</title>
-</head>
-<body>
-    <script type="text/javascript" src="js/bitbloq.js"></script>
-    <script type="text/javascript" src="js/roboblocks.js"></script>
-    <script>
+### **Carpeta `lang/`**
+- Archivos de traducción con estructura común entre idiomas, cambiando solo los valores.  
+  **Ejemplo**:
+  ```javascript
+  // en-ES.js
+  BLOCKLY_MSG_DUPLICATE_BLOCK: 'Duplicar',
+  
+  // en-GB.js
+  BLOCKLY_MSG_DUPLICATE_BLOCK: 'Duplicate',
+  ```
 
-        // RoboBlocks loader
-        RoboBlocks.load({
-            zoom: 1,
-            otherParameter: true
-        });
+### **Carpeta `media/`**
+- Contiene imágenes, GIFs y sonidos para la interfaz.  
+- **Subcarpeta `blocks/`**: Imágenes específicas para bloques modulares.
 
-        var target = document.querySelector('.blockly');
-        Blockly.inject(target, {
-            trashcan: true,
-            toolbox: Blockly.createToolbox(),
-            scrollbars: false
-        });
+### **Carpeta `src/`**
+- **`colorProfiles.js`**: Define paletas de colores para el entorno, con soporte para temas oscuros y claros.
+- **`helpUrls.js`**: Contiene enlaces de ayuda específicos para cada bloque.
+- **`profiles.js`**: Configura los perfiles de conexión, como la velocidad de comunicación para Arduino.
+- **`resources.js`**: Gestiona rutas y dimensiones de las imágenes.
+- **`translationMap.js`**: Vincula los archivos de traducción con la interfaz para cambiar dinámicamente de idioma.
 
-    </script>
-</body>
-</html>
-```
+### **Carpeta `tmp/`**
+- **`jst.js`**: Genera código en varios lenguajes según la configuración.  
+  **Ejemplo**:
+  ```javascript
+    JST["bq_test_def_definitions"] = function (obj, programmingLanguage) {
+        obj = obj || {};
+        let __p = '';
+        
+        if (programmingLanguage === 'cpp') {
+            __p += '#include <Modular.h>\n';
+        } else if (programmingLanguage === 'python') {
+            __p += 'import pymodular\n';
+        } else if (programmingLanguage === 'js') {
+            __p += 'import { Modular } from "modular";\n';
+        }
+        
+        return __p;
+    };
+  ```
 
-## Blockly Extensions
+---
 
-Extensions added to Blockly and located in `src/blockly.extensions.js`.
+## **Archivo `roboblocks.js`**
+- **Define los bloques y su comportamiento.**  
+  **Ejemplo de bloque Arduino:**
+  ```javascript
+  Blockly.Arduino.test_inout_highlow = function () {
+      var bool_value = this.getFieldValue('BOOL');
+      var code = JST['inout_highlow']({ 'bool_value': bool_value }, window.programmingLanguage);
+      return [code, Blockly.Arduino.ORDER_ATOMIC];
+  };
+  ```
 
-### Blockly.createToolbox
+- **Configuración del bloque:**
+  ```javascript
+  Blockly.Blocks.test_inout_highlow = {
+      category: RoboBlocks.locales.getKey('LANG_CATEGORY_MODULAR'),
+      init: function () {
+          this.setColour(RoboBlocks.LANG_COLOUR_MODULAR_ADI_3);
+          this.appendDummyInput()
+              .appendField(new Blockly.FieldImage(resources.images.escribirModular))
+              .appendField(new Blockly.FieldDropdown([
+                  ['HIGH', 'HIGH'],
+                  ['LOW', 'LOW']
+              ]), 'BOOL');
+          this.setOutput(true, Boolean);
+      }
+  };
+  ```
 
-When Blockly has its blocks loaded, this method generates the XML file that defines the Blockly toolbox.
+---
 
+## **Edición de Color del Entorno**
 
+Los colores del entorno se configuran en el archivo `colorProfiles.js`. Este archivo utiliza códigos hexadecimales para definir los colores de fondo y de los bloques.
+Aquí tienes una descripción breve y sencilla de la función `changeColorWorkSpace` y su relación con el objeto `colorProfiles`:
 
-## How to contribute
+---
 
-- Clone project
+### **Descripción de `changeColorWorkSpace`**
 
-    ```
-    git clone http://github.com/bq/roboblock.git
-    ```
+La función `changeColorWorkSpace` se encarga de aplicar una paleta de colores específica al entorno de trabajo. Esta paleta se elige de los perfiles de color definidos en el objeto `colorProfiles`.
 
-- Initialize
+**Cómo Funciona:**
 
-    ```
-    npm install && bower install
-    ```
-- Create blocks (see next point)
+- **Colores de Fondo:** Cambia el color de fondo de la barra de herramientas y del área de trabajo utilizando los colores especificados en el objeto.
+- **Colores de Código:** Ajusta el color de fondo del bloque de código.
+- **Estilos de Sintaxis:** Modifica los colores de distintos elementos de la sintaxis del código (títulos, comentarios, cadenas, literales, palabras clave y números) utilizando las propiedades de color correspondientes.
 
-- Show playground
-
-    ```
-    grunt server:test
-    ```
-
-- Test
-
-    ```
-    grunt server:test
-    ```
-    or
-    ```
-    grunt test
-    ```
-
-- Build
-
-    ```
-    grunt
-    ```
-
-## Creating new blocks
-
-### Block structure
-
-```
-src
-├── blocks                      // blocks folder
-│   └── servo_move             // block name
-│       ├── img                 // block image
-│       │   └── blocks
-│       │       └── *.png
-│       ├── servo_move.c.tpl   // c code template
-│       ├── servo_move.js      // block definition & code generation
-│       └── README.md           // block documentation
-├── profiles.js                 // supported profiles
-└── utils.js                    // some utils and Blockly extensions
-```
-
-### Block implementation
-
-#### **servo_move.js example**
+**Ejemplo de Uso:**
 
 ```javascript
-'use strict';
-/* global Blockly, options, profiles */
-/* jshint sub:true */
-
-/**
- * servo_move code generation
- * @return {String} Code generated with block parameters
- */
-Blockly.Arduino.servo_move = function() {
-    var dropdown_pin = this.getTitleValue('PIN');
-    var value_degree = Blockly.Arduino.valueToCode(this, 'DEGREE', Blockly.Arduino.ORDER_ATOMIC);
-    value_degree = value_degree.replace('(', '').replace(')', '');
-    var delay_time = Blockly.Arduino.valueToCode(this, 'DELAY_TIME', Blockly.Arduino.ORDER_ATOMIC) || '10';
-
-    delay_time = delay_time.replace('(', '').replace(')', '');
-
-    Blockly.Arduino.definitions_['define_servo'] = '#include <Servo.h>\n';
-    Blockly.Arduino.definitions_['var_servo' + dropdown_pin] = 'Servo servo_' + dropdown_pin + ';\n';
-    Blockly.Arduino.setups_['setup_servo_' + dropdown_pin] = 'servo_' + dropdown_pin + '.attach(' + dropdown_pin + ');\n';
-
-    // Code generation with compiled template
-    var code = JST['servo_move']({
-        'dropdown_pin': dropdown_pin,
-        'value_degree': value_degree,
-        'delay_time': delay_time
-    });
-
-    return code;
-};
-
-/**
- * servo_move block definition
- * @type {Object}
- */
-Blockly.Blocks.servo_move = {
-    category: 'Math',
-    helpUrl: 'http://github.com/bq/roboblock/tree/master/src/blocks/servo_move',
-    /**
-     * servo_move initialization
-     */
-    init: function() {
-        this.setColour('25');
-        this.appendDummyInput('')
-            .appendTitle('Servo')
-            .appendTitle(new Blockly.FieldImage('img/blocks/bqservo01.png', 208 * options.zoom, 126 * options.zoom))
-            .appendTitle('PIN#')
-            .appendTitle(new Blockly.FieldDropdown(profiles.default.digital), 'PIN');
-        this.appendValueInput('DEGREE', Number)
-            .setCheck(Number)
-            .setAlign(Blockly.ALIGN_RIGHT)
-            .appendTitle('Degrees (0~180)');
-        this.appendValueInput('DELAY_TIME', Number)
-            .setCheck(Number)
-            .setAlign(Blockly.ALIGN_RIGHT)
-            .appendTitle('Delay');
-        this.setPreviousStatement(true);
-        this.setNextStatement(true);
-        this.setTooltip('Move between 0~180 degree');
-    }
-};
+changeColorWorkSpace(colorProfiles.darkMode);
 ```
 
-#### **Parameters**
+Este ejemplo aplicaría el esquema de colores de **modo oscuro** al entorno de trabajo.
 
-Blocks can be initialized with parameters when loaded with `RoboBlocks.load({...});`, and this parameters are available in `options` variable.
-```javascript
-this.appendDummyInput('')
-    .appendTitle('Servo')
-    .appendTitle(new Blockly.FieldImage(
-        'img/blocks/bqservo01.png',
-        208 * options.zoom,
-        126 * options.zoom)
-    );
-```
+---
 
-#### **Profiles**
 
-Default profiles are available and defined in `src/profiles.js`. This profiles are available in `profiles` variable.
-```javascript
-this.appendDummyInput('')
-    .appendTitle('Servo')
-    .appendTitle('PIN#')
-    .appendTitle(
-        new Blockly.FieldDropdown(profiles.default.digital),
-        'PIN'
-    );
-```
+# Estructura del Proyecto
 
-#### **Block image**
+```bash
+index.html  
+README.md  
+static/  
+│   blockly.extensions.js  
+│   codemirror.min.css  
+│   codemirror.min.js  
+│   constants.js  
+│   COPYING.LESER.md  
+│   COPYING.md  
+│   lang.js  
+│   profiles.js  
+│   README.md  
+│   roboblocks.js  
+│   visualino.css  
 
-Blocks images should be defined like this:
-```javascript
-this.appendDummyInput('')
-    .appendTitle(new Blockly.FieldImage(
-        'img/blocks/bqservo01.png',
-        208 * options.zoom,
-        126 * options.zoom)
-    );
-```
-And its images stored in `src/blocks/[block_name]/img/[filename].png`.
-When the project is compiled, all images are located in `dist/img/blocks/*.png`.
+javascript/  
+├── blockly-bq/  
+│   ├── arduino_compressed.js  
+│   ├── blockly_compressed.js  
+│   ├── blocks_compressed.js  
+│   ├── COPYING  
+│   ├── javascript_compressed.js  
+│   └── README.md  
+├── highlight/  
+│   ├── CHANGES.md  
+│   ├── highlight.pack.js  
+│   ├── LICENSE  
+│   ├── README.md  
+│   ├── README.ru.md  
+│   └── styles/  
+│       └── default.css  
+├── jquery/  
+│   ├── .bower.json  
+│   ├── MIT-LICENSE.txt  
+│   └── dist/  
+│       ├── jquery.min.js  
+│       └── jquery.min.map  
+├── requirejs/  
+│   ├── .bower.json  
+│   └── require.js  
+└── underscore/  
+    ├── .bower.json  
+    ├── .editorconfig  
+    ├── .gitignore  
+    ├── LICENSE  
+    ├── README.md  
+    └── underscore.js  
 
-### Code template
+kit/  
+├── blocks/  
+│   └── advanced_map/  
+│       └── advanced_map.js  
+├── lang/  
+│   ├── ca-ES.js  
+│   └── en-GB.js  
+└── tmp/  
+    └── jst.js  
 
-Blocks code are defined in `*.c.tpl` files as an [underscore](http://underscorejs.org/) templates but with following settings:
-```javascript
-templateSettings: {
-    evaluate:    /\{\{#([\s\S]+?)\}\}/g,        // {{# console.log("blah") }}
-    interpolate : /\{\{\{(\s*\w+?\s*)\}\}\}/g,  // {{ title }}
-    escape : /\{\{(\s*\w+?\s*)\}\}(?!\})/g      // {{{ title }}}
-}
+lang/  
+├── en-ES.js  
+├── en-GB.js  
+├── fr-FR.js  
+├── it-IT.js  
+└── ru.js  
+
+media/  
+├── 1x1.gif  
+├── ADELANTECARLITO.png  
+├── ATRÁSCARLITO.png  
+├── InputOutput.png  
+├── handclosed.cur  
+├── click.mp3  
+├── sensor_noise.png  
+└── blocks/  
+    ├── bqmod01.png  
+    ├── bqmod02.png  
+    └── zum07.png  
+
+src/  
+├── colorProfiles.js  
+├── helpUrls.js  
+├── profiles.js  
+├── resources.js  
+└── translationMap.js  
+
+tmp/  
+├── jst.js  
+└── temp.svg  
+
+underscore/  
+└── underscore-esm.js  
 ```
-With this settings, this template called `servo_move.c.tpl`:
-```
-servo_{{ dropdown_pin }}.write({{ value_degree }});
-delay({{ delay_time }});
-```
-When evaluated like this:
-```javascript
-var code = this.JST['servo_move']({
-    'dropdown_pin': 3,
-    'value_degree': 180,
-    'delay_time': 1000
-});
-```
-Will generate the following code:
-```
-servo_3.write(180);
-delay(1000);
-```
+----
+
+## **Conclusión**
+Este proyecto combina la potencia de Blockly con JavaScript y otros recursos para crear una interfaz de programación visual. Cada carpeta y archivo cumple un rol específico para ofrecer traducciones, estilos personalizados, bloques modulares y soporte para diferentes lenguajes de programación.
