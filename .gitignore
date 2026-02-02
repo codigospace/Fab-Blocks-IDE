@@ -10,7 +10,8 @@ FabBlocksIDE*.spec
 venv/*
 .env
 .gitignore
-build/build.options.json
-build/includes.cache
-build/preproc/ctags_target_for_gcc_minus_e.cpp
-build/sketch/extracted_code.ino.cpp
+build/*
+Temp/*
+dist/*
+cache/*
+__pycache__/*
