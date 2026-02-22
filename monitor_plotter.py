@@ -8,6 +8,7 @@ import serial.tools.list_ports
 from PyQt5.QtSerialPort import QSerialPort
 import os
 import pyqtgraph.exporters
+from i18n import get_text
 
 class SerialReaderThread(QThread):
     data_received = pyqtSignal(str)
@@ -58,7 +59,7 @@ class SerialMonitor(QObject):
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle('Serial Monitor')
+        self.setWindowTitle(get_text('monitor.title'))
         self.setGeometry(100, 100, 800, 600)
 
         self.text_edit = QTextEdit(self)
@@ -68,10 +69,10 @@ class MainWindow(QMainWindow):
         self.plot.hide()
         self.plot.addLegend(colCount=5)
 
-        self.start_button = QPushButton('Conectar', self)
+        self.start_button = QPushButton(get_text('monitor.connect'), self)
         self.start_button.clicked.connect(self.toggle_connection)
 
-        self.graph_button = QPushButton('Gráfico', self)
+        self.graph_button = QPushButton(get_text('monitor.graph'), self)
         self.graph_button.clicked.connect(self.toggle_graph)
 
         self.port_combo = QComboBox(self)
@@ -80,18 +81,18 @@ class MainWindow(QMainWindow):
         self.populate_port_combo()
         self.populate_baud_combo()
 
-        port_label = QLabel('Puerto:')
-        baud_label = QLabel('Baudrate:')
-        self.console_label = QLabel('Consola:')
+        port_label = QLabel(get_text('monitor.port'))
+        baud_label = QLabel(get_text('monitor.baudrate'))
+        self.console_label = QLabel(get_text('monitor.console'))
         self.console_text = QTextEdit(self)
         self.console_text.setReadOnly(True)
         self.console_text.setMaximumHeight(100)
 
         self.send_text = QLineEdit(self)
-        self.send_button = QPushButton('Enviar', self)
+        self.send_button = QPushButton(get_text('monitor.send'), self)
         self.send_button.clicked.connect(self.send_data)
 
-        self.clear_button = QPushButton('Limpiar', self)
+        self.clear_button = QPushButton(get_text('monitor.clear'), self)
         self.clear_button.clicked.connect(self.clear_data)
 
         layout = QVBoxLayout()
@@ -106,12 +107,12 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.text_edit)
         layout.addWidget(self.plot)
 
-        save_label = QLabel('Guardar como:', self)
+        save_label = QLabel(get_text('monitor.save_as'), self)
 
         self.save_option_combo = QComboBox(self)
-        self.save_option_combo.addItems(["Texto", "Imagen", "Ambos"])
+        self.save_option_combo.addItems([get_text('monitor.text'), get_text('monitor.image'), get_text('monitor.both')])
 
-        self.save_button = QPushButton('Guardar', self)
+        self.save_button = QPushButton(get_text('monitor.save'), self)
         self.save_button.setEnabled(False)
         self.save_button.clicked.connect(self.handle_save_option)
 
@@ -159,6 +160,9 @@ class MainWindow(QMainWindow):
         self.last_update_time = None
         
         self.data_folder = self.get_data_folder()
+        
+        # Bandera para rastrear si el gráfico está visible
+        self.graph_visible = False
 
     def populate_port_combo(self):
         ports = [port.device for port in serial.tools.list_ports.comports()]
@@ -175,17 +179,17 @@ class MainWindow(QMainWindow):
         baudrate = int(self.baud_combo.currentText())
         if self.serial_monitor.serial.isOpen():
             self.serial_monitor.close_port()
-            self.start_button.setText('Conectar')
-            self.console_text.append(f'Conexión cerrada: {port_name}')
+            self.start_button.setText(get_text('monitor.connect'))
+            self.console_text.append(get_text('monitor.connection_closed', port=port_name))
         else:
             try:
                 if self.serial_monitor.open_port(port_name, baudrate):
-                    self.start_button.setText('Desconectar')
+                    self.start_button.setText(get_text('monitor.disconnect'))
                     self.start_time = time.time()
                     self.last_update_time = self.start_time
-                    self.console_text.append(f'Conexión abierta: {port_name}')
+                    self.console_text.append(get_text('monitor.connection_opened', port=port_name))
                 else:
-                    self.console_text.append(f'Error al abrir conexión: {port_name}')
+                    self.console_text.append(get_text('monitor.connection_error', port=port_name))
             except serial.SerialException as e:
                 error_message = str(e)
                 if "PermissionError" in error_message:
@@ -265,14 +269,16 @@ class MainWindow(QMainWindow):
     def show_graph(self):
         self.text_edit.hide()
         self.plot.show()
-        self.graph_button.setText('Monitor')
+        self.graph_button.setText(get_text('monitor.show_console'))
+        self.graph_visible = True
         self.graph_button.clicked.disconnect()  # Desconectar el botón del método anterior
         self.graph_button.clicked.connect(lambda: self.toggle_graph(False))  # Conectar el botón al nuevo método
 
     def hide_graph(self):
         self.plot.hide()
         self.text_edit.show()
-        self.graph_button.setText('Gráfico')
+        self.graph_button.setText(get_text('monitor.show_graph'))
+        self.graph_visible = False
         self.graph_button.clicked.disconnect()  # Desconectar el botón del método anterior
         self.graph_button.clicked.connect(lambda: self.toggle_graph(True))
     
@@ -356,6 +362,29 @@ class MainWindow(QMainWindow):
         self.curves.clear()
         self.variable_indices.clear()
         self.plot.addLegend(colCount=5)
+
+    def change_language(self):
+        """
+        Actualiza los textos de la ventana del monitor cuando cambia el idioma.
+        Se llama desde qtwebhtml.py cuando el usuario cambia de idioma.
+        """
+        self.setWindowTitle(get_text('monitor.title'))
+        
+        if self.serial_monitor.serial.isOpen():
+            self.start_button.setText(get_text('monitor.disconnect'))
+        else:
+            self.start_button.setText(get_text('monitor.connect'))
+        
+        # Actualizar botón gráfico según su estado actual
+        if self.graph_visible:
+            self.graph_button.setText(get_text('monitor.show_console'))
+        else:
+            self.graph_button.setText(get_text('monitor.show_graph'))
+        
+        self.send_button.setText(get_text('monitor.send'))
+        self.clear_button.setText(get_text('monitor.clear'))
+        self.save_button.setText(get_text('monitor.save'))
+        self.console_label.setText(get_text('monitor.console'))
 
     def closeEvent(self, event):
         if self.serial_monitor.serial.isOpen():
