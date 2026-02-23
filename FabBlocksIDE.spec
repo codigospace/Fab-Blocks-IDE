@@ -8,6 +8,8 @@ added_files = [
     ('icons', 'icons'),
     ('examples', 'examples'),
     ('data_serial', 'data_serial'),
+    ('bitacoras', 'bitacoras'),
+    ('saves', 'saves'),
 ]
 
 a = Analysis(

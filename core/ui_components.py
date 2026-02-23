@@ -21,6 +21,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QSize
 from core.i18n import get_text
+from core.utils import resource_path
 
 # Constantes de configuración UI
 iconSize = 32
@@ -74,35 +75,35 @@ class ToolbarBuilder:
         buttons = {}
         
         button_compile = QPushButton(get_text('menu.verify'))
-        button_compile.setIcon(QIcon("icons/compile.png"))
+        button_compile.setIcon(QIcon(resource_path("icons/compile.png")))
         button_compile.setIconSize(QSize(iconSize, iconSize))
         button_compile.setFixedSize(BUTTON_WIDTH, BUTTON_HEIGHT)
         button_compile.clicked.connect(self.window.compilar_clicked)
         buttons['compile'] = button_compile
         
         button_upload = QPushButton(get_text('menu.upload'))
-        button_upload.setIcon(QIcon("icons/upload.png"))
+        button_upload.setIcon(QIcon(resource_path("icons/upload.png")))
         button_upload.setIconSize(QSize(iconSize, iconSize))
         button_upload.setFixedSize(BUTTON_WIDTH, BUTTON_HEIGHT)
         button_upload.clicked.connect(self.window.subir_clicked)
         buttons['upload'] = button_upload
         
         button_new = QPushButton(get_text('menu.new'))
-        button_new.setIcon(QIcon("icons/new.png"))
+        button_new.setIcon(QIcon(resource_path("icons/new.png")))
         button_new.setIconSize(QSize(iconSize, iconSize))
         button_new.setFixedSize(BUTTON_WIDTH, BUTTON_HEIGHT)
         button_new.clicked.connect(self.window.open_new_file_window)
         buttons['new'] = button_new
         
         button_open = QPushButton(get_text('menu.open'))
-        button_open.setIcon(QIcon("icons/open.png"))
+        button_open.setIcon(QIcon(resource_path("icons/open.png")))
         button_open.setIconSize(QSize(iconSize, iconSize))
         button_open.setFixedSize(BUTTON_WIDTH, BUTTON_HEIGHT)
         button_open.clicked.connect(self.window.open_file)
         buttons['open'] = button_open
         
         button_save = QPushButton(get_text('menu.save'))
-        button_save.setIcon(QIcon("icons/save.png"))
+        button_save.setIcon(QIcon(resource_path("icons/save.png")))
         button_save.setIconSize(QSize(iconSize, iconSize))
         button_save.setFixedSize(BUTTON_WIDTH, BUTTON_HEIGHT)
         button_save.clicked.connect(self.window.save_file_as)
@@ -112,7 +113,7 @@ class ToolbarBuilder:
     
     def _create_serial_graphic_button(self):
         button = QPushButton(get_text('menu.serial_graph'))
-        button.setIcon(QIcon("icons/graphic.png"))
+        button.setIcon(QIcon(resource_path("icons/graphic.png")))
         button.setIconSize(QSize(iconSize, iconSize))
         button.setFixedSize(BUTTON_WIDTH, BUTTON_HEIGHT)
         button.clicked.connect(lambda: self.window.show_monitor_serial(True))
@@ -120,7 +121,7 @@ class ToolbarBuilder:
     
     def _create_serial_monitor_button(self):
         button = QPushButton(get_text('menu.serial_monitor'))
-        button.setIcon(QIcon("icons/monitor_serial.png"))
+        button.setIcon(QIcon(resource_path("icons/monitor_serial.png")))
         button.setIconSize(QSize(iconSize, iconSize))
         button.setFixedSize(BUTTON_WIDTH, BUTTON_HEIGHT)
         button.clicked.connect(lambda: self.window.show_monitor_serial(False))

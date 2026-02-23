@@ -17,6 +17,7 @@ Licencia: MIT
 import os
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
 from core.i18n import get_text
+from core.utils import resource_path
 
 
 class FileOperations:    
@@ -70,7 +71,7 @@ class FileOperations:
         file_dialog = QFileDialog(self.window)
         file_dialog.setNameFilter("Archivos BLY (*.fab)")
         file_dialog.setFileMode(QFileDialog.ExistingFile)
-        initial_dir_open = os.path.join(os.getcwd(), "examples")
+        initial_dir_open = resource_path("examples")
         file_dialog.setDirectory(initial_dir_open)
         
         if file_dialog.exec_():
@@ -85,7 +86,7 @@ class FileOperations:
                 self.window.open_new_file_window_with_content(content=content)
     
     def open_example_file(self, example_filename):
-        example_path = os.path.join("examples", example_filename)
+        example_path = resource_path(os.path.join("examples", example_filename))
         
         if os.path.exists(example_path):
             with open(example_path, "r") as file:

@@ -42,7 +42,7 @@ from PyQt5.QtWebEngineWidgets import QWebEngineView
 from core.config_manager import ConfigManager
 from core.preferences_dialog import PreferencesDialog
 from core.server import LocalHTTPServer
-from core.utils import release_all_serial_ports
+from core.utils import release_all_serial_ports, resource_path
 from core.port_monitor import PortMonitor
 from core.monitor_plotter import MainWindow as MonitorWindow
 from core.i18n import get_text, set_language
@@ -118,7 +118,7 @@ class WebViewer(QMainWindow):
         """
         self.setWindowTitle('Fab Blocks IDE')
         self.setGeometry(0, 0, 1024, 720)
-        self.setWindowIcon(QIcon("icons/codigo.ico"))
+        self.setWindowIcon(QIcon(resource_path("icons/codigo.ico")))
         
         # Crear widget central contenedor con layout vertical
         central_widget = QWidget()
@@ -235,8 +235,7 @@ class WebViewer(QMainWindow):
         - Se reutiliza entre ventanas
         - Se detiene al cerrar la aplicación principal
         """
-        script_dir = os.path.dirname(os.path.realpath(__file__))
-        html_dir = os.path.join(script_dir, "html")
+        html_dir = resource_path("html")
 
         if os.path.isdir(html_dir):
             try:
@@ -477,11 +476,11 @@ class WebViewer(QMainWindow):
     def show_about_dialog(self):
         about_dialog = QMessageBox()
         about_dialog.setWindowTitle("Acerca de Fab Blocks IDE")
-        about_dialog.setWindowIcon(QIcon("icons/codigo.ico"))
+        about_dialog.setWindowIcon(QIcon(resource_path("icons/codigo.ico")))
 
         about_text = (
             "<p style='font-size: 14px; text-align: center;'>"
-            "<img src='icons/codigo.ico' width='64' height='64' /><br>"
+            f"<img src='{resource_path('icons/codigo.ico')}' width='64' height='64' /><br>"
             "<b>Desarrollado por:</b> Programación y Automatización Codigo S.A.C.<br><br>"
             "Fab Blocks IDE es una plataforma de programación para las tarjetas de desarrollo "
             "Modular V1 y Arduino, que permite el rápido y fácil prototipado de proyectos "

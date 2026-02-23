@@ -1,6 +1,21 @@
+import os
+import sys
 import serial
 import serial.tools.list_ports
 from PyQt5.QtGui import QTextCursor
+
+def resource_path(relative_path):
+    """
+    Obtiene la ruta absoluta necesaria para PyInstaller.
+    Funciona tanto en modo desarrollo como en el ejecutable empaquetado.
+    """
+    try:
+        # PyInstaller crea una carpeta temporal y guarda su ruta en _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 def release_all_serial_ports():
     # Obtener una lista de todos los puertos COM disponibles
