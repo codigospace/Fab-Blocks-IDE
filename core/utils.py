@@ -13,7 +13,8 @@ def resource_path(relative_path):
         # PyInstaller crea una carpeta temporal y guarda su ruta en _MEIPASS
         base_path = sys._MEIPASS
     except Exception:
-        base_path = os.path.abspath(".")
+        # En modo desarrollo, usar el directorio del proyecto (un nivel arriba de core/)
+        base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
     return os.path.join(base_path, relative_path)
 

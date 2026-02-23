@@ -118,7 +118,7 @@ class WebViewer(QMainWindow):
         """
         self.setWindowTitle('Fab Blocks IDE')
         self.setGeometry(0, 0, 1024, 720)
-        self.setWindowIcon(QIcon(resource_path("icons/codigo.ico")))
+        self.setWindowIcon(QIcon(resource_path("icons/codigo.png")))
         
         # Crear widget central contenedor con layout vertical
         central_widget = QWidget()
@@ -476,11 +476,11 @@ class WebViewer(QMainWindow):
     def show_about_dialog(self):
         about_dialog = QMessageBox()
         about_dialog.setWindowTitle("Acerca de Fab Blocks IDE")
-        about_dialog.setWindowIcon(QIcon(resource_path("icons/codigo.ico")))
+        about_dialog.setWindowIcon(QIcon(resource_path("icons/codigo.png")))
 
         about_text = (
             "<p style='font-size: 14px; text-align: center;'>"
-            f"<img src='{resource_path('icons/codigo.ico')}' width='64' height='64' /><br>"
+            f"<img src='{resource_path('icons/codigo.png')}' width='64' height='64' /><br>"
             "<b>Desarrollado por:</b> Programación y Automatización Codigo S.A.C.<br><br>"
             "Fab Blocks IDE es una plataforma de programación para las tarjetas de desarrollo "
             "Modular V1 y Arduino, que permite el rápido y fácil prototipado de proyectos "
@@ -576,7 +576,7 @@ class WebViewer(QMainWindow):
         if not hasattr(self, 'toolbar_buttons'):
             return
         
-        from i18n import get_text
+        from core.i18n import get_text
         
         # Actualizar botones principales
         button_map = {
@@ -628,6 +628,8 @@ class WebViewer(QMainWindow):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    app.setApplicationName("FabBlocksIDE")
+    app.setDesktopFileName("FabBlocksIDE")
     config_manager = ConfigManager()
     viewer = WebViewer(config_manager)
     if getattr(sys, 'frozen', False):
