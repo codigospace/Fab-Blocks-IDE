@@ -25,14 +25,17 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.11'
+        cache: 'pip'
 
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        python -m pip install -r requirements.txt
 
     - name: Run Tests
       # We skip GUI tests in CI if they require a display, but for logic tests it's fine
+      env:
+        PYTHONPATH: .
       run: |
         pytest tests/
 
