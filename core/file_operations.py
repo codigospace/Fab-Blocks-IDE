@@ -16,7 +16,7 @@ Licencia: MIT
 """
 import os
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
-from i18n import get_text
+from core.i18n import get_text
 
 
 class FileOperations:    

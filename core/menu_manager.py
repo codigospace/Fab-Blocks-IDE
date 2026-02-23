@@ -20,7 +20,7 @@ Licencia: MIT
 from PyQt5.QtWidgets import QAction, QMenu
 from PyQt5.QtGui import QIcon
 import webbrowser
-from i18n import get_text
+from core.i18n import get_text
 
 # Opciones de placas soportadas
 BOARD_OPTIONS = [

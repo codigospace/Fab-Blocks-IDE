@@ -25,9 +25,9 @@ Licencia: MIT
 import os
 from PyQt5.QtCore import QTimer
 import serial.tools.list_ports
-from command_runner import CommandRunner
-from utils import release_all_serial_ports
-from i18n import get_text
+from core.command_runner import CommandRunner
+from core.utils import release_all_serial_ports
+from core.i18n import get_text
 
 
 # Mapeo de configuración por placa: especifica CPU, velocidad baudrate, etc.
@@ -118,12 +118,12 @@ class CompilationManager:
     
     def _on_code_extracted_for_compile(self, info):
         """Callback cuando el código es extraído para compilar"""
-        from file_operations import FileOperations
+        from core.file_operations import FileOperations
         FileOperations.save_extracted_code(info)
     
     def _on_code_extracted_for_upload(self, info):
         """Callback cuando el código es extraído para cargar"""
-        from file_operations import FileOperations
+        from core.file_operations import FileOperations
         FileOperations.save_extracted_code(info)
         self.window.write_to_console(get_text('message.compile_first'))
         self._run_compile()

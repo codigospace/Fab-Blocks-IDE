@@ -1,0 +1,47 @@
+name: Build and Release Fab-Blocks IDE
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout
+      with:
+        submodules: recursive
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run Tests
+      # We skip GUI tests in CI if they require a display, but for logic tests it's fine
+      run: |
+        pytest tests/
+
+    - name: Build with PyInstaller
+      run: |
+        pyinstaller FabBlocksIDE.spec
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact
+      with:
+        name: FabBlocksIDE-${{ matrix.os }}
+        path: dist/FabBlocksIDE/

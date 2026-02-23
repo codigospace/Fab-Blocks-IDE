@@ -20,7 +20,7 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QSize
-from i18n import get_text
+from core.i18n import get_text
 
 # Constantes de configuración UI
 iconSize = 32

@@ -8,7 +8,7 @@ import serial.tools.list_ports
 from PyQt5.QtSerialPort import QSerialPort
 import os
 import pyqtgraph.exporters
-from i18n import get_text
+from core.i18n import get_text
 
 class SerialReaderThread(QThread):
     data_received = pyqtSignal(str)

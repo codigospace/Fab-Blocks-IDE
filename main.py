@@ -39,23 +39,23 @@ from PyQt5.QtGui import QIcon, QKeySequence, QTextCursor
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 
 # Importar módulos refactorizados
-from config_manager import ConfigManager
-from preferences_dialog import PreferencesDialog
-from server import LocalHTTPServer
-from utils import release_all_serial_ports
-from port_monitor import PortMonitor
-from monitor_plotter import MainWindow as MonitorWindow
-from i18n import get_text, set_language
-from loading_spinner import SimpleLoadingOverlay
+from core.config_manager import ConfigManager
+from core.preferences_dialog import PreferencesDialog
+from core.server import LocalHTTPServer
+from core.utils import release_all_serial_ports
+from core.port_monitor import PortMonitor
+from core.monitor_plotter import MainWindow as MonitorWindow
+from core.i18n import get_text, set_language
+from core.loading_spinner import SimpleLoadingOverlay
 
 # Gestores de módulos
-from menu_manager import MenuManager
-from ui_components import (
+from core.menu_manager import MenuManager
+from core.ui_components import (
     ToolbarBuilder, ComboBoxFactory, ProgressBarFactory, ConsoleWidget
 )
-from file_operations import FileOperations
-from compilation_manager import CompilationManager
-from javascript_bridge import JavaScriptBridge
+from core.file_operations import FileOperations
+from core.compilation_manager import CompilationManager
+from core.javascript_bridge import JavaScriptBridge
 
 if getattr(sys, 'frozen', False):
     import pyi_splash
