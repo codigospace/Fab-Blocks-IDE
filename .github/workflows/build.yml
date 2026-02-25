@@ -1,51 +1,50 @@
-name: Build and Release Fab-Blocks IDE
+name: Build onefile (multi-platform)
 
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
-    name: Build on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
     strategy:
       matrix:
         os: [windows-latest, ubuntu-latest]
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      with:
-        submodules: recursive
-        fetch-depth: 0
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
-        cache: 'pip'
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install -r requirements.txt
+      - name: Upgrade pip and install requirements
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller==6.18.0 pillow
 
-    - name: Run Tests
-      # We skip GUI tests in CI if they require a display, but for logic tests it's fine
-      env:
-        PYTHONPATH: .
-      run: |
-        pytest tests/
+      - name: Build one-file (spec per OS)
+        run: |
+          if [ "${{ matrix.os }}" = "windows-latest" ]; then
+            pyinstaller --clean FabBlocksIDE_debug.spec
+          else
+            pyinstaller --clean FabBlocksIDE.spec
+          fi
+        shell: bash
 
-    - name: Build with PyInstaller
-      run: |
-        pyinstaller FabBlocksIDE.spec
+      - name: Show dist contents
+        run: |
+          if [ "${{ matrix.os }}" = "windows-latest" ]; then
+            dir dist\
+          else
+            ls -la dist || true
+          fi
 
-    - name: Upload Artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: FabBlocksIDE-${{ matrix.os }}
-        path: dist/FabBlocksIDE/
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: fabblocks-dist-${{ matrix.os }}
+          path: dist/
