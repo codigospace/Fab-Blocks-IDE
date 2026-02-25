@@ -239,6 +239,8 @@ class WebViewer(QMainWindow):
         - Se detiene al cerrar la aplicación principal
         """
         html_dir = resource_path("html")
+        print(f"DEBUG: html_dir resolved to: {html_dir}")
+        print(f"DEBUG: html_dir exists? {os.path.isdir(html_dir)}")
 
         if os.path.isdir(html_dir):
             try:
@@ -251,11 +253,11 @@ class WebViewer(QMainWindow):
                         self.write_to_console(f"{get_text('message.http_server_started')} http://127.0.0.1:{self.local_http_server.port}/")
                     else:
                         self._local_http_server_owner = False
-                        self.write_to_console(get_text('error.http_server_failed'))
+                        self.write_to_console(get_text('message.http_server_failed'))
                 else:
                     self._local_http_server_owner = False
             except Exception as e:
-                self.write_to_console(f"{get_text('error.http_server_error')}: {e}")
+                self.write_to_console(f"{get_text('message.http_error')}: {e}")
 
         # Cargar desde servidor HTTP si está disponible, sino como archivo local
         if hasattr(self, 'local_http_server') and getattr(self.local_http_server, 'running', False):
