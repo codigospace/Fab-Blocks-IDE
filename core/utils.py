@@ -7,22 +7,23 @@ from PyQt5.QtGui import QTextCursor
 def resource_path(relative_path):
     """
     Obtiene la ruta absoluta necesaria para PyInstaller.
-    Busca en:
-    1. Directorio temporal de PyInstaller (_MEIPASS)
-    2. Directorio del ejecutable (para recursos externos)
+    Busca con PRIORIDAD EXTERNA:
+    1. Directorio del ejecutable (para recursos externos que prefiere el usuario)
+    2. Directorio temporal de PyInstaller (_MEIPASS)
     3. Directorio del código fuente (desarrollo)
     """
-    # 1. Intentar en _MEIPASS (interno del bundle)
+    # 1. Intentar junto al ejecutable (Prioridad Externa)
+    if getattr(sys, 'frozen', False):
+        exe_dir = os.path.dirname(sys.executable)
+        path = os.path.join(exe_dir, relative_path)
+        if os.path.exists(path):
+            return path
+
+    # 2. Intentar en _MEIPASS (interno del bundle)
     if hasattr(sys, '_MEIPASS'):
         path = os.path.join(sys._MEIPASS, relative_path)
         if os.path.exists(path):
             return path
-
-    # 2. Intentar junto al ejecutable (recurso externo al bundle)
-    exe_dir = os.path.dirname(sys.executable)
-    path = os.path.join(exe_dir, relative_path)
-    if os.path.exists(path):
-        return path
 
     # 3. Intentar en modo desarrollo (relativo a core/utils.py)
     base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
