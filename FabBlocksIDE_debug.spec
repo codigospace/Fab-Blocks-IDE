@@ -1,11 +1,15 @@
 # -*- mode: python ; coding: utf-8 -*-
 
 block_cipher = None
+# Resolve Python DLL dynamically so the spec works on CI (GitHub Actions)
 import os
 import sys
-
-# Resolve Python DLL dynamically so the spec works on CI (GitHub Actions)
 python_dll = os.path.join(sys.base_prefix, f"python{sys.version_info.major}{sys.version_info.minor}.dll")
+# Only include the Windows Python DLL when building on Windows runners
+if sys.platform == 'win32':
+    binaries = [(python_dll, '.')]
+else:
+    binaries = []
 
 # Debug spec: console enabled to capture stdout/stderr for diagnostics
 added_files = [
@@ -21,7 +25,7 @@ a = Analysis(
     ['main.py'],
     pathex=[],
     # Ensure Python DLL is bundled for onefile execution (resolved at build time)
-    binaries=[(python_dll, '.')],
+    binaries=binaries,
     datas=added_files,
     hiddenimports=[
         'PyQt5.QtWebEngineWidgets',
