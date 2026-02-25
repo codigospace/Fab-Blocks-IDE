@@ -58,7 +58,10 @@ from core.compilation_manager import CompilationManager
 from core.javascript_bridge import JavaScriptBridge
 
 if getattr(sys, 'frozen', False):
-    import pyi_splash
+    try:
+        import pyi_splash
+    except ImportError:
+        pyi_splash = None
 
 
 class WebViewer(QMainWindow):
@@ -259,7 +262,8 @@ class WebViewer(QMainWindow):
             url = QUrl(f"http://127.0.0.1:{self.local_http_server.port}/{filename}")
             self.webview.load(url)
         else:
-            filepath = os.path.join(script_dir, "html", filename)
+            # Fallback a archivo local usando resource_path para modo congelado
+            filepath = os.path.join(html_dir, filename)
             url = QUrl.fromLocalFile(filepath)
             self.webview.load(url)
 
@@ -632,7 +636,7 @@ if __name__ == '__main__':
     app.setDesktopFileName("FabBlocksIDE")
     config_manager = ConfigManager()
     viewer = WebViewer(config_manager)
-    if getattr(sys, 'frozen', False):
+    if getattr(sys, 'frozen', False) and pyi_splash:
         pyi_splash.close()
     viewer.show()
 

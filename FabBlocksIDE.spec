@@ -70,7 +70,6 @@ exe = EXE(
     pyz,
     a.scripts,
     splash,
-    splash.binaries,
     [],
     exclude_binaries=False,
     name='FabBlocksIDE',
