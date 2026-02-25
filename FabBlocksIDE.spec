@@ -69,9 +69,8 @@ pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 exe = EXE(
     pyz,
     a.scripts,
-    splash,
     [],
-    exclude_binaries=False,
+    exclude_binaries=True,
     name='FabBlocksIDE',
     debug=False,
     bootloader_ignore_signals=False,
@@ -85,5 +84,15 @@ exe = EXE(
     entitlements_file=None,
     icon='icons/codigo.ico'
 )
-# Note: Building as one-file EXE (all binaries/data embedded). The COLLECT
-# step is omitted so PyInstaller will produce a single-file executable.
+
+coll = COLLECT(
+    exe,
+    a.binaries,
+    a.zipfiles,
+    a.datas,
+    splash.binaries,
+    strip=False,
+    upx=True,
+    upx_exclude=[],
+    name='FabBlocksIDE_Bundle',
+)
