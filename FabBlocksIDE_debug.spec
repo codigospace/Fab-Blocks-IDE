@@ -7,7 +7,7 @@ import sys
 # Resolve Python DLL dynamically so the spec works on CI (GitHub Actions)
 python_dll = os.path.join(sys.base_prefix, f"python{sys.version_info.major}{sys.version_info.minor}.dll")
 
-# Recolectar datos adicionales (carpetas de recursos)
+# Debug spec: console enabled to capture stdout/stderr for diagnostics
 added_files = [
     ('html', 'html'),
     ('icons', 'icons'),
@@ -68,12 +68,13 @@ exe = EXE(
     splash.binaries,
     [],
     exclude_binaries=False,
-    name='FabBlocksIDE',
-    debug=False,
+    name='FabBlocksIDE_debug',
+    debug=True,
+    runtime_tmpdir=r'C:\Temp\FabBlocksIDE_mei',
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
-    console=False,
+    console=True,
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
@@ -81,5 +82,5 @@ exe = EXE(
     entitlements_file=None,
     icon='icons/codigo.ico'
 )
-# Note: Building as one-file EXE (all binaries/data embedded). The COLLECT
-# step is omitted so PyInstaller will produce a single-file executable.
+
+# Debug one-file executable with console enabled for diagnostics
