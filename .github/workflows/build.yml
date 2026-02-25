@@ -26,22 +26,27 @@ jobs:
           pip install -r requirements.txt
           pip install pyinstaller==6.18.0 pillow
 
-      - name: Build one-file (spec per OS)
+      - name: Build one-file (Windows)
+        if: matrix.os == 'windows-latest'
         run: |
-          if [ "${{ matrix.os }}" = "windows-latest" ]; then
-            pyinstaller --clean FabBlocksIDE_debug.spec
-          else
-            pyinstaller --clean FabBlocksIDE.spec
-          fi
+          pyinstaller --clean FabBlocksIDE_debug.spec
+
+      - name: Build one-file (Unix)
+        if: matrix.os != 'windows-latest'
+        run: |
+          pyinstaller --clean FabBlocksIDE.spec
         shell: bash
 
-      - name: Show dist contents
+      - name: Show dist contents (Windows)
+        if: matrix.os == 'windows-latest'
         run: |
-          if [ "${{ matrix.os }}" = "windows-latest" ]; then
-            dir dist\
-          else
-            ls -la dist || true
-          fi
+          dir dist\
+
+      - name: Show dist contents (Unix)
+        if: matrix.os != 'windows-latest'
+        run: |
+          ls -la dist || true
+        shell: bash
 
       - name: Upload dist artifact
         uses: actions/upload-artifact@v4
