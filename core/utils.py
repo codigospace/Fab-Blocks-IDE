@@ -7,15 +7,25 @@ from PyQt5.QtGui import QTextCursor
 def resource_path(relative_path):
     """
     Obtiene la ruta absoluta necesaria para PyInstaller.
-    Funciona tanto en modo desarrollo como en el ejecutable empaquetado.
+    Busca en:
+    1. Directorio temporal de PyInstaller (_MEIPASS)
+    2. Directorio del ejecutable (para recursos externos)
+    3. Directorio del código fuente (desarrollo)
     """
-    try:
-        # PyInstaller crea una carpeta temporal y guarda su ruta en _MEIPASS
-        base_path = sys._MEIPASS
-    except Exception:
-        # En modo desarrollo, usar el directorio del proyecto (un nivel arriba de core/)
-        base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    # 1. Intentar en _MEIPASS (interno del bundle)
+    if hasattr(sys, '_MEIPASS'):
+        path = os.path.join(sys._MEIPASS, relative_path)
+        if os.path.exists(path):
+            return path
 
+    # 2. Intentar junto al ejecutable (recurso externo al bundle)
+    exe_dir = os.path.dirname(sys.executable)
+    path = os.path.join(exe_dir, relative_path)
+    if os.path.exists(path):
+        return path
+
+    # 3. Intentar en modo desarrollo (relativo a core/utils.py)
+    base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     return os.path.join(base_path, relative_path)
 
 def release_all_serial_ports():
