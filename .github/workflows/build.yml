@@ -35,7 +35,7 @@ jobs:
             --add-data "saves;saves" ^
             --hidden-import tkinter ^
             --splash "icons/load_codigo.png" ^
-            qtwebhtml.py
+            main.py
 
       - name: Show dist contents
         run: |
