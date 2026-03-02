@@ -58,7 +58,10 @@ from core.compilation_manager import CompilationManager
 from core.javascript_bridge import JavaScriptBridge
 
 if getattr(sys, 'frozen', False):
-    import pyi_splash
+    try:
+        import pyi_splash
+    except ImportError:
+        pyi_splash = None
 
 
 class WebViewer(QMainWindow):
@@ -236,32 +239,45 @@ class WebViewer(QMainWindow):
         - Se detiene al cerrar la aplicación principal
         """
         html_dir = resource_path("html")
+        print(f"DEBUG: Buscando carpeta HTML en: {html_dir}")
+        print(f"DEBUG: ¿La carpeta existe?: {os.path.isdir(html_dir)}")
 
         if os.path.isdir(html_dir):
             try:
                 # Iniciar servidor HTTP local si aún no está corriendo
                 if not hasattr(self, 'local_http_server') or not getattr(self.local_http_server, 'running', False):
+                    print("DEBUG: Iniciando servidor HTTP local...")
                     self.local_http_server = LocalHTTPServer(directory=html_dir, host='127.0.0.1', port=0)
                     self.local_http_server.start()
                     if getattr(self.local_http_server, 'running', False):
                         self._local_http_server_owner = True
-                        self.write_to_console(f"{get_text('message.http_server_started')} http://127.0.0.1:{self.local_http_server.port}/")
+                        msg = f"{get_text('message.http_server_started')} http://127.0.0.1:{self.local_http_server.port}/"
+                        self.write_to_console(msg)
+                        print(f"DEBUG: {msg}")
                     else:
                         self._local_http_server_owner = False
-                        self.write_to_console(get_text('error.http_server_failed'))
+                        self.write_to_console(get_text('message.http_server_failed'))
                 else:
                     self._local_http_server_owner = False
             except Exception as e:
-                self.write_to_console(f"{get_text('error.http_server_error')}: {e}")
+                self.write_to_console(f"{get_text('message.http_error')}: {e}")
+        else:
+            print(f"CRITICAL: No se encontró la carpeta 'html' en {html_dir}")
 
         # Cargar desde servidor HTTP si está disponible, sino como archivo local
         if hasattr(self, 'local_http_server') and getattr(self.local_http_server, 'running', False):
             url = QUrl(f"http://127.0.0.1:{self.local_http_server.port}/{filename}")
+            print(f"DEBUG: Cargando desde SERVIDOR: {url.toString()}")
             self.webview.load(url)
         else:
-            filepath = os.path.join(script_dir, "html", filename)
+            # Fallback a archivo local
+            filepath = os.path.join(html_dir, filename)
             url = QUrl.fromLocalFile(filepath)
-            self.webview.load(url)
+            print(f"DEBUG: Cargando desde ARCHIVO LOCAL (Fallback): {url.toString()}")
+            if os.path.exists(filepath):
+                self.webview.load(url)
+            else:
+                self.write_to_console(f"ERROR FATAL: No existe {filepath}")
 
     def write_to_console(self, message):
         """
@@ -632,7 +648,7 @@ if __name__ == '__main__':
     app.setDesktopFileName("FabBlocksIDE")
     config_manager = ConfigManager()
     viewer = WebViewer(config_manager)
-    if getattr(sys, 'frozen', False):
+    if getattr(sys, 'frozen', False) and pyi_splash:
         pyi_splash.close()
     viewer.show()
 
