@@ -29,9 +29,11 @@ jobs:
 
       - name: Ensure python DLL at root
         run: |
-          if exist dist\FabBlocksIDE\_internal\python311.dll (
-            copy /Y dist\FabBlocksIDE\_internal\python311.dll dist\FabBlocksIDE\
-          )
+          # use PowerShell syntax rather than CMD-style 'if exist'
+          if (Test-Path "dist\FabBlocksIDE\_internal\python311.dll") {
+            Copy-Item -Path "dist\FabBlocksIDE\_internal\python311.dll" \
+                      -Destination "dist\FabBlocksIDE\" -Force
+          }
 
       - name: Show dist\FabBlocksIDE contents
         run: |
