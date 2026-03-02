@@ -23,23 +23,26 @@ jobs:
           pip install -r requirements.txt
           pip install pyinstaller==6.18.0 pillow
 
-      - name: Build onedir distribution
+      - name: Build onefile distribution
+        # Use cmd shell for caret (^) line continuation and Windows-style add-data
+        shell: cmd
         run: |
-          pyinstaller --clean FabBlocksIDE.spec
+          pyinstaller --clean --onefile --noconsole --name "FabBlocksIDE0.3" ^
+            --add-data "html;html" ^
+            --add-data "icons;icons" ^
+            --add-data "examples;examples" ^
+            --add-data "data_serial;data_serial" ^
+            --add-data "saves;saves" ^
+            --hidden-import tkinter ^
+            --splash "icons/load_codigo.png" ^
+            qtwebhtml.py
 
-      - name: Ensure python DLL at root
+      - name: Show dist contents
         run: |
-          # use PowerShell syntax rather than CMD-style 'if exist'
-          if (Test-Path "dist\FabBlocksIDE\_internal\python311.dll") {
-            Copy-Item -Path "dist\FabBlocksIDE\_internal\python311.dll" -Destination "dist\FabBlocksIDE\" -Force
-          }
+          dir dist\
 
-      - name: Show dist\FabBlocksIDE contents
-        run: |
-          dir dist\FabBlocksIDE\
-
-      - name: Upload dist artifact
+      - name: Upload EXE artifact
         uses: actions/upload-artifact@v4
         with:
-          name: fabblocks-dist-windows
-          path: dist/FabBlocksIDE/
+          name: fabblocks-exe-windows
+          path: dist\FabBlocksIDE0.3.exe
