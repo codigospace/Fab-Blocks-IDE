@@ -1,4 +1,4 @@
-name: Build onefile (multi-platform)
+name: Build onedir for Windows
 
 on:
   push:
@@ -6,11 +6,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [windows-latest, ubuntu-latest]
+  build-windows:
+    runs-on: windows-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -26,30 +23,22 @@ jobs:
           pip install -r requirements.txt
           pip install pyinstaller==6.18.0 pillow
 
-      - name: Build one-file (Windows)
-        if: matrix.os == 'windows-latest'
+      - name: Build onedir distribution
         run: |
           pyinstaller --clean FabBlocksIDE.spec
 
-      - name: Build one-file (Unix)
-        if: matrix.os != 'windows-latest'
+      - name: Ensure python DLL at root
         run: |
-          pyinstaller --clean FabBlocksIDE.spec
-        shell: bash
+          if exist dist\FabBlocksIDE\_internal\python311.dll (
+            copy /Y dist\FabBlocksIDE\_internal\python311.dll dist\FabBlocksIDE\
+          )
 
-      - name: Show dist contents (Windows)
-        if: matrix.os == 'windows-latest'
+      - name: Show dist\FabBlocksIDE contents
         run: |
-          dir dist\
-
-      - name: Show dist contents (Unix)
-        if: matrix.os != 'windows-latest'
-        run: |
-          ls -la dist || true
-        shell: bash
+          dir dist\FabBlocksIDE\
 
       - name: Upload dist artifact
         uses: actions/upload-artifact@v4
         with:
-          name: fabblocks-dist-${{ matrix.os }}
-          path: dist/
+          name: fabblocks-dist-windows
+          path: dist/FabBlocksIDE/

@@ -5,9 +5,32 @@ block_cipher = None
 import os
 import sys
 python_dll = os.path.join(sys.base_prefix, f"python{sys.version_info.major}{sys.version_info.minor}.dll")
+# Try several common locations for the Python DLL and pick the first that exists.
+def find_python_dll():
+    candidates = [
+        python_dll,
+        os.path.join(sys.exec_prefix, f"python{sys.version_info.major}{sys.version_info.minor}.dll"),
+        os.path.join(sys.prefix, f"python{sys.version_info.major}{sys.version_info.minor}.dll"),
+        os.path.join(r"C:\Program Files\Python311", f"python{sys.version_info.major}{sys.version_info.minor}.dll"),
+        os.path.join(r"C:\Program Files (x86)\Python311", f"python{sys.version_info.major}{sys.version_info.minor}.dll"),
+    ]
+    for p in candidates:
+        try:
+            if p and os.path.exists(p):
+                print(f"[spec] Found python DLL: {p}")
+                return p
+        except Exception:
+            continue
+    print("[spec] Warning: Python DLL not found in common locations; build may fail at runtime")
+    return None
+
 # Only include the Windows Python DLL when building on Windows runners
 if sys.platform == 'win32':
-    binaries = [(python_dll, '.')]
+    found = find_python_dll()
+    if found:
+        binaries = [(found, '.')]
+    else:
+        binaries = []
 else:
     binaries = []
 
@@ -52,6 +75,24 @@ a = Analysis(
     cipher=block_cipher,
     noarchive=False,
 )
+
+# Ensure the python DLL is present in the binaries collected by Analysis.
+if sys.platform == 'win32':
+    try:
+        # reuse find_python_dll logic above if available
+        dll_candidates = [
+            os.path.join(sys.base_prefix, f"python{sys.version_info.major}{sys.version_info.minor}.dll"),
+            os.path.join(sys.exec_prefix, f"python{sys.version_info.major}{sys.version_info.minor}.dll"),
+            os.path.join(sys.prefix, f"python{sys.version_info.major}{sys.version_info.minor}.dll"),
+            os.path.join(r"C:\Program Files\Python311", f"python{sys.version_info.major}{sys.version_info.minor}.dll"),
+        ]
+        for c in dll_candidates:
+            if c and os.path.exists(c):
+                if not any(os.path.basename(c) == os.path.basename(b[0]) for b in a.binaries):
+                    a.binaries.append((c, '.'))
+                break
+    except Exception:
+        pass
 
 splash = Splash(
     'icons/load_codigo.png',

@@ -4,22 +4,13 @@ block_cipher = None
 import os
 import sys
 
-# This spec now builds a **one-directory** distribution (not onefile).
-# The CI workflow uses this file to create a folder containing the exe and
-# all supporting data so it can be downloaded and run directly.  The
-# onedir version mimics the behaviour of `py.exe main.py` by preserving the
-# html/, examples/, icons/, etc. directories next to the executable.
-
-# Resolve Python DLL path; we'll also copy it as a data file so the
-# executable can load it without having to extract from _internal.
+# Resolve Python DLL dynamically
 python_dll = os.path.join(sys.base_prefix, f"python{sys.version_info.major}{sys.version_info.minor}.dll")
-
 if sys.platform == 'win32':
     binaries = [(python_dll, '.')]
 else:
     binaries = []
 
-# Recolectar datos adicionales (carpetas de recursos)
 added_files = [
     ('html', 'html'),
     ('icons', 'icons'),
@@ -29,14 +20,19 @@ added_files = [
     ('saves', 'saves'),
 ]
 
-# copy python dll to root as data so it ends up next to the exe
-if sys.platform == 'win32' and python_dll and os.path.exists(python_dll):
-    added_files.append((python_dll, '.'))
+# also copy the python DLL into the root of the distribution so the
+# child process can load it; analysis already bundles it but PyInstaller
+# may place it under _internal unless we treat it as data.
+if sys.platform == 'win32':
+    try:
+        if python_dll and os.path.exists(python_dll):
+            added_files.append((python_dll, '.'))
+    except Exception:
+        pass
 
 a = Analysis(
     ['main.py'],
     pathex=[],
-    # Ensure Python DLL is bundled for onefile execution (resolved at build time)
     binaries=binaries,
     datas=added_files,
     hiddenimports=[
@@ -98,7 +94,6 @@ exe = EXE(
     icon='icons/codigo.ico'
 )
 
-# we are building a one-directory bundle; collect everything into a folder
 coll = COLLECT(
     exe,
     a.binaries,
@@ -108,17 +103,3 @@ coll = COLLECT(
     upx=True,
     name='FabBlocksIDE'
 )
-
-# ensure python DLL is copied into the output directory root, not just
-# under _internal.  PyInstaller may still place it inside the _internal
-# subfolder when collecting binaries; this extra step moves it where the
-# EXE will look without a Python installation.
-if sys.platform == 'win32':
-    import shutil
-    outdir = os.path.abspath(os.path.join(os.getcwd(), 'dist', 'FabBlocksIDE'))
-    if python_dll and os.path.exists(python_dll):
-        try:
-            shutil.copy2(python_dll, os.path.join(outdir, os.path.basename(python_dll)))
-            print(f"[spec] copied python dll to {outdir}")
-        except Exception as e:
-            print(f"[spec] failed to copy python dll: {e}")
