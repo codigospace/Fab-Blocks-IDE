@@ -31,8 +31,7 @@ jobs:
         run: |
           # use PowerShell syntax rather than CMD-style 'if exist'
           if (Test-Path "dist\FabBlocksIDE\_internal\python311.dll") {
-            Copy-Item -Path "dist\FabBlocksIDE\_internal\python311.dll" \
-                      -Destination "dist\FabBlocksIDE\" -Force
+            Copy-Item -Path "dist\FabBlocksIDE\_internal\python311.dll" -Destination "dist\FabBlocksIDE\" -Force
           }
 
       - name: Show dist\FabBlocksIDE contents
