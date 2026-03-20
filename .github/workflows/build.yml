@@ -41,13 +41,3 @@ jobs:
         with:
           name: fabblocks-windows-zip
           path: dist\FabBlocksIDE.zip
-
-      - name: Extract EXE from ZIP and upload (optional)
-        run: |
-          mkdir extracted
-          powershell -Command "Expand-Archive -Path 'dist\FabBlocksIDE.zip' -DestinationPath extracted -Force"
-      - name: Upload EXE artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: fabblocks-exe-windows
-          path: extracted\FabBlocksIDE0.3.exe
