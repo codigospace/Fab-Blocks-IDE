@@ -7,27 +7,41 @@ from PyQt5.QtGui import QTextCursor
 def resource_path(relative_path):
     """
     Obtiene la ruta absoluta necesaria para PyInstaller.
-    Busca con PRIORIDAD EXTERNA:
-    1. Directorio del ejecutable (para recursos externos que prefiere el usuario)
-    2. Directorio temporal de PyInstaller (_MEIPASS)
-    3. Directorio del código fuente (desarrollo)
+    Busca en este orden:
+    1. Directorio del ejecutable (--onedir: carpetas html/, icons/, etc al lado del .exe)
+    2. En carpeta _internal (algunos casos de PyInstaller)
+    3. Directorio temporal de PyInstaller (_MEIPASS)
+    4. Modo desarrollo (relativo a core/utils.py)
     """
-    # 1. Intentar junto al ejecutable (Prioridad Externa)
+    # 1. Si está congelado (compilado), buscar junto al .exe
     if getattr(sys, 'frozen', False):
         exe_dir = os.path.dirname(sys.executable)
+        
+        # Intenta primero encontrarlo directamente al lado del exe
         path = os.path.join(exe_dir, relative_path)
         if os.path.exists(path):
+            print(f"DEBUG resource_path: Encontrado junto al exe: {path}")
+            return path
+        
+        # Intenta en carpeta _internal (algunos casos de onedir)
+        internal_dir = os.path.join(exe_dir, '_internal')
+        path = os.path.join(internal_dir, relative_path)
+        if os.path.exists(path):
+            print(f"DEBUG resource_path: Encontrado en _internal: {path}")
             return path
 
-    # 2. Intentar en _MEIPASS (interno del bundle)
+    # 2. Intentar en _MEIPASS (carpeta temporal de PyInstaller --onefile)
     if hasattr(sys, '_MEIPASS'):
         path = os.path.join(sys._MEIPASS, relative_path)
         if os.path.exists(path):
+            print(f"DEBUG resource_path: Encontrado en _MEIPASS: {path}")
             return path
 
-    # 3. Intentar en modo desarrollo (relativo a core/utils.py)
+    # 3. Modo desarrollo (relativo a core/utils.py)
     base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    return os.path.join(base_path, relative_path)
+    path = os.path.join(base_path, relative_path)
+    print(f"DEBUG resource_path: Fallback a modo desarrollo: {path}")
+    return path
 
 def release_all_serial_ports():
     # Obtener una lista de todos los puertos COM disponibles
