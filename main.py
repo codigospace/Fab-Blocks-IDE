@@ -30,6 +30,7 @@ import sys
 import os
 import threading
 import webbrowser
+import logging
 from PyQt5.QtCore import QUrl, QTimer, Qt
 from PyQt5.QtWidgets import (
     QMainWindow, QApplication, QVBoxLayout, QWidget,
@@ -40,6 +41,41 @@ from PyQt5.QtWebEngineWidgets import QWebEngineView
 
 # Importar módulos refactorizados
 from core.config_manager import ConfigManager
+
+# configure runtime logging to file so double-click users can inspect issues
+if getattr(sys, 'frozen', False):
+    log_dir = os.path.dirname(sys.executable)
+else:
+    log_dir = os.getcwd()
+log_path = os.path.join(log_dir, 'fabblocks.log')
+logging.basicConfig(
+    filename=log_path,
+    level=logging.DEBUG,
+    format='%(asctime)s %(levelname)s: %(message)s'
+)
+
+# redirect print statements to log file as well
+class _StreamToLogger(object):
+    def __init__(self, logger, level):
+        self.logger = logger
+        self.level = level
+    def write(self, message):
+        message = message.strip()
+        if message:
+            self.logger.log(self.level, message)
+    def flush(self):
+        pass
+sys.stdout = _StreamToLogger(logging.getLogger(), logging.DEBUG)
+sys.stderr = _StreamToLogger(logging.getLogger(), logging.ERROR)
+
+# capture uncaught exceptions in log
+orig_excepthook = sys.excepthook
+
+def _log_exceptions(exc_type, exc_value, exc_tb):
+    logging.error('Uncaught exception', exc_info=(exc_type, exc_value, exc_tb))
+    orig_excepthook(exc_type, exc_value, exc_tb)
+
+sys.excepthook = _log_exceptions
 from core.preferences_dialog import PreferencesDialog
 from core.server import LocalHTTPServer
 from core.utils import release_all_serial_ports, resource_path
@@ -60,7 +96,8 @@ from core.javascript_bridge import JavaScriptBridge
 if getattr(sys, 'frozen', False):
     try:
         import pyi_splash
-    except ImportError:
+    except Exception as e:
+        logging.warning("No se pudo cargar pyi_splash: %s", e)
         pyi_splash = None
 
 
@@ -239,30 +276,32 @@ class WebViewer(QMainWindow):
         - Se detiene al cerrar la aplicación principal
         """
         html_dir = resource_path("html")
-        print(f"DEBUG: Buscando carpeta HTML en: {html_dir}")
-        print(f"DEBUG: ¿La carpeta existe?: {os.path.isdir(html_dir)}")
-
-        if os.path.isdir(html_dir):
+        logging.debug(f"Buscando carpeta HTML en: {html_dir}")
+        if not os.path.isdir(html_dir):
+            logging.critical(f"No se encontró la carpeta 'html' en {html_dir}")
+            QMessageBox.critical(self, "Error", f"No se encontró la carpeta html. Esperada en: {html_dir}")
+        else:
             try:
                 # Iniciar servidor HTTP local si aún no está corriendo
                 if not hasattr(self, 'local_http_server') or not getattr(self.local_http_server, 'running', False):
-                    print("DEBUG: Iniciando servidor HTTP local...")
+                    logging.debug("Iniciando servidor HTTP local...")
                     self.local_http_server = LocalHTTPServer(directory=html_dir, host='127.0.0.1', port=0)
                     self.local_http_server.start()
                     if getattr(self.local_http_server, 'running', False):
                         self._local_http_server_owner = True
                         msg = f"{get_text('message.http_server_started')} http://127.0.0.1:{self.local_http_server.port}/"
                         self.write_to_console(msg)
-                        print(f"DEBUG: {msg}")
+                        logging.debug(msg)
                     else:
                         self._local_http_server_owner = False
                         self.write_to_console(get_text('message.http_server_failed'))
+                        QMessageBox.warning(self, "Aviso", get_text('message.http_server_failed'))
                 else:
                     self._local_http_server_owner = False
             except Exception as e:
+                logging.error(f"Error al iniciar servidor HTTP: {e}", exc_info=True)
                 self.write_to_console(f"{get_text('message.http_error')}: {e}")
-        else:
-            print(f"CRITICAL: No se encontró la carpeta 'html' en {html_dir}")
+                QMessageBox.critical(self, "Error", f"Error al iniciar servidor HTTP: {e}")
 
         # Cargar desde servidor HTTP si está disponible, sino como archivo local
         if hasattr(self, 'local_http_server') and getattr(self.local_http_server, 'running', False):
@@ -646,10 +685,24 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     app.setApplicationName("FabBlocksIDE")
     app.setDesktopFileName("FabBlocksIDE")
+
+    # Usamos un Splash Screen nativo de Qt para reemplazar pyi_splash
+    from PyQt5.QtWidgets import QSplashScreen
+    from PyQt5.QtGui import QPixmap
+    from PyQt5.QtCore import Qt
+    splash_pix = QPixmap(resource_path("icons/load_codigo.png"))
+    if not splash_pix.isNull():
+        splash_pix = splash_pix.scaled(760, 312, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        splash = QSplashScreen(splash_pix, Qt.WindowStaysOnTopHint)
+        splash.show()
+        app.processEvents()
+
     config_manager = ConfigManager()
     viewer = WebViewer(config_manager)
-    if getattr(sys, 'frozen', False) and pyi_splash:
-        pyi_splash.close()
+
+    # Cerrar el splash tan pronto se muestre la ventana
+    if 'splash' in locals():
+        splash.finish(viewer)
     viewer.show()
 
     about_shortcut = QShortcut(QKeySequence("Ctrl+H"), viewer)

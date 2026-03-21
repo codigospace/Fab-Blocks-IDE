@@ -65,26 +65,14 @@ a = Analysis(
     noarchive=False,
 )
 
-splash = Splash(
-    'icons/load_codigo.png',
-    binaries=a.binaries,
-    datas=a.datas,
-    text_pos=None,
-    text_size=12,
-    minify_script=True,
-    always_on_top=True,
-)
+# Splash removed to fix onedir boot loop
 
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 
 exe = EXE(
     pyz,
     a.scripts,
-    a.binaries,
-    a.zipfiles,
-    a.datas,
-    splash,
-    splash_binaries=a.binaries,
+    exclude_binaries=True,
     name='FabBlocksIDE0.3.exe',
     debug=False,
     bootloader_ignore_signals=False,

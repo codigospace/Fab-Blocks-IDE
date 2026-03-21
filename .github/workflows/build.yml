@@ -1,53 +1,42 @@
-name: Build onedir for Windows
+name: Windows Build (PyInstaller)
 
 on:
   push:
     branches: [ main ]
+  pull_request:
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
-  build-windows:
+  build:
     runs-on: windows-latest
+
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.11
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
+          cache: 'pip'
 
-      - name: Upgrade pip and install requirements
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pyinstaller==6.18.0 pillow
 
-      - name: Build one-directory distribution (spec)
-        shell: cmd
+      - name: Build with PyInstaller
         run: |
-          pyinstaller --clean "FabBlocksIDE.spec"
-
-      - name: Show build output
+          pyinstaller --clean -y FabBlocksIDE.spec
+          
+      - name: Zip build folder
         run: |
-          dir dist\
+          powershell -Command "Compress-Archive -Path 'dist\FabBlocksIDE\*' -DestinationPath 'dist\FabBlocksIDE_Windows.zip' -Force"
 
-      - name: Zip one-directory bundle
-        run: |
-          powershell -Command "Compress-Archive -Path 'dist\FabBlocksIDE\*' -DestinationPath 'dist\FabBlocksIDE.zip' -Force"
-
-      - name: Upload ZIP artifact
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: fabblocks-windows-zip
-          path: dist\FabBlocksIDE.zip
-
-      - name: Extract EXE from ZIP and upload (optional)
-        run: |
-          mkdir extracted
-          powershell -Command "Expand-Archive -Path 'dist\FabBlocksIDE.zip' -DestinationPath extracted -Force"
-      - name: Upload EXE artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: fabblocks-exe-windows
-          path: extracted\FabBlocksIDE0.3.exe
+          name: FabBlocksIDE-Windows
+          path: dist\FabBlocksIDE_Windows.zip
+          retention-days: 5

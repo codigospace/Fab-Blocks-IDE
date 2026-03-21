@@ -1,0 +1,227 @@
+2026-03-02 22:47:04,395 DEBUG: DEBUG resource_path: Fallback a modo desarrollo: D:\Proyectos\fab2\icons/codigo.png
+2026-03-02 22:47:04,416 DEBUG: DEBUG resource_path: Fallback a modo desarrollo: D:\Proyectos\fab2\icons/compile.png
+2026-03-02 22:47:04,416 DEBUG: DEBUG resource_path: Fallback a modo desarrollo: D:\Proyectos\fab2\icons/upload.png
+2026-03-02 22:47:04,416 DEBUG: DEBUG resource_path: Fallback a modo desarrollo: D:\Proyectos\fab2\icons/new.png
+2026-03-02 22:47:04,416 DEBUG: DEBUG resource_path: Fallback a modo desarrollo: D:\Proyectos\fab2\icons/open.png
+2026-03-02 22:47:04,416 DEBUG: DEBUG resource_path: Fallback a modo desarrollo: D:\Proyectos\fab2\icons/save.png
+2026-03-02 22:47:04,416 DEBUG: DEBUG resource_path: Fallback a modo desarrollo: D:\Proyectos\fab2\icons/graphic.png
+2026-03-02 22:47:04,416 DEBUG: DEBUG resource_path: Fallback a modo desarrollo: D:\Proyectos\fab2\icons/monitor_serial.png
+2026-03-02 22:47:04,416 DEBUG: DEBUG resource_path: Fallback a modo desarrollo: D:\Proyectos\fab2\html
+2026-03-02 22:47:04,416 DEBUG: Buscando carpeta HTML en: D:\Proyectos\fab2\html
+2026-03-02 22:47:04,416 DEBUG: Iniciando servidor HTTP local...
+2026-03-02 22:47:04,428 DEBUG: Servidor HTTP local iniciado en  http://127.0.0.1:58763/
+2026-03-02 22:47:04,428 DEBUG: DEBUG: Cargando desde SERVIDOR: http://127.0.0.1:58763/index.html
+2026-03-02 22:47:06,474 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /index.html HTTP/1.1" 200 -
+2026-03-02 22:47:06,644 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /static/visualino.css HTTP/1.1" 200 -
+2026-03-02 22:47:06,646 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /static/javascript/highlight/styles/default.css HTTP/1.1" 200 -
+2026-03-02 22:47:06,648 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /static/javascript/jquery/dist/jquery.min.js HTTP/1.1" 200 -
+2026-03-02 22:47:06,648 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /static/javascript/underscore/underscore.js HTTP/1.1" 200 -
+2026-03-02 22:47:06,650 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /static/javascript/highlight/highlight.pack.js HTTP/1.1" 200 -
+2026-03-02 22:47:06,652 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /static/javascript/blockly-bq/blockly_compressed.js HTTP/1.1" 200 -
+2026-03-02 22:47:06,653 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /static/javascript/blockly-bq/blocks_compressed.js HTTP/1.1" 200 -
+2026-03-02 22:47:06,657 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /static/javascript/blockly-bq/arduino_compressed.js HTTP/1.1" 200 -
+2026-03-02 22:47:06,658 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /js/app.js HTTP/1.1" 200 -
+2026-03-02 22:47:06,761 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /js/core/workspace.manager.js HTTP/1.1" 200 -
+2026-03-02 22:47:06,763 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /js/ui/language.controller.js HTTP/1.1" 200 -
+2026-03-02 22:47:06,764 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /js/ui/theme.controller.js HTTP/1.1" 200 -
+2026-03-02 22:47:06,764 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /js/ui/locale.controller.js HTTP/1.1" 200 -
+2026-03-02 22:47:06,765 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /js/core/state.store.js HTTP/1.1" 200 -
+2026-03-02 22:47:06,767 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /js/integrations/roboblocks.adapter.js HTTP/1.1" 200 -
+2026-03-02 22:47:06,769 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /static/src/translationMap.js HTTP/1.1" 200 -
+2026-03-02 22:47:06,771 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /js/generators/index.js HTTP/1.1" 200 -
+2026-03-02 22:47:06,819 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /js/integrations/blockly.adapter.js HTTP/1.1" 200 -
+2026-03-02 22:47:06,820 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /js/core/code.generator.js HTTP/1.1" 200 -
+2026-03-02 22:47:06,823 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /js/config.js HTTP/1.1" 200 -
+2026-03-02 22:47:06,827 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /static/roboblocks.js HTTP/1.1" 200 -
+2026-03-02 22:47:06,829 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /static/lang/en-GB.js HTTP/1.1" 200 -
+2026-03-02 22:47:06,831 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /static/lang/en-ES.js HTTP/1.1" 200 -
+2026-03-02 22:47:06,831 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /static/lang/fr-FR.js HTTP/1.1" 200 -
+2026-03-02 22:47:06,833 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /static/lang/it-IT.js HTTP/1.1" 200 -
+2026-03-02 22:47:06,835 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /static/lang/ru.js HTTP/1.1" 200 -
+2026-03-02 22:47:06,842 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /js/generators/languages/cpp.js HTTP/1.1" 200 -
+2026-03-02 22:47:06,843 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /js/generators/registry.js HTTP/1.1" 200 -
+2026-03-02 22:47:06,843 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /js/generators/languages/python.js HTTP/1.1" 200 -
+2026-03-02 22:47:06,848 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /js/generators/languages/javascript.js HTTP/1.1" 200 -
+2026-03-02 22:47:06,927 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /static/tmp/jst.js HTTP/1.1" 200 -
+2026-03-02 22:47:06,927 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /static/src/colorProfiles.js HTTP/1.1" 200 -
+2026-03-02 22:47:06,927 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /static/src/profiles.js HTTP/1.1" 200 -
+2026-03-02 22:47:06,927 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /static/src/resources.js HTTP/1.1" 200 -
+2026-03-02 22:47:06,928 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:06] "GET /static/src/helpUrls.js HTTP/1.1" 200 -
+2026-03-02 22:47:07,040 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:07] "GET /static/media/handopen.cur HTTP/1.1" 200 -
+2026-03-02 22:47:07,051 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:07] "GET /static/media/sprites.png HTTP/1.1" 200 -
+2026-03-02 22:47:07,084 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:07] "GET /static/media/click.mp3 HTTP/1.1" 200 -
+2026-03-02 22:47:07,085 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:07] "GET /static/media/delete.mp3 HTTP/1.1" 200 -
+2026-03-02 22:47:07,205 ERROR: 127.0.0.1 - - [02/Mar/2026 22:47:07] "GET /static/media/codigo.ico HTTP/1.1" 200 -
+2026-03-02 22:47:11,982 DEBUG: DEBUG resource_path: Fallback a modo desarrollo: D:\Proyectos\fab2\examples\Carlitto/3_Carlitto_Bluetooth.fab
+2026-03-02 22:47:11,982 ERROR: Uncaught exception
+Traceback (most recent call last):
+  File "D:\Proyectos\fab2\core\menu_manager.py", line 191, in <lambda>
+    lambda checked, file=example_file: self.window.open_example(file)
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Proyectos\fab2\main.py", line 488, in open_example
+    self.file_operations.open_example_file(example_filename)
+  File "D:\Proyectos\fab2\core\file_operations.py", line 90, in open_example_file
+    logging.debug(f"Abriendo ejemplo: {example_filename} -> {example_path}")
+    ^^^^^^^
+NameError: name 'logging' is not defined
+2026-03-02 22:47:11,985 ERROR: Traceback (most recent call last):
+2026-03-02 22:47:11,985 ERROR: File "D:\Proyectos\fab2\core\menu_manager.py", line 191, in <lambda>
+2026-03-02 22:47:11,986 ERROR: lambda checked, file=example_file: self.window.open_example(file)
+2026-03-02 22:47:11,986 ERROR: ^
+2026-03-02 22:47:11,986 ERROR: ^
+2026-03-02 22:47:11,986 ERROR: ^
+2026-03-02 22:47:11,986 ERROR: ^
+2026-03-02 22:47:11,986 ERROR: ^
+2026-03-02 22:47:11,986 ERROR: ^
+2026-03-02 22:47:11,986 ERROR: ^
+2026-03-02 22:47:11,986 ERROR: ^
+2026-03-02 22:47:11,987 ERROR: ^
+2026-03-02 22:47:11,987 ERROR: ^
+2026-03-02 22:47:11,987 ERROR: ^
+2026-03-02 22:47:11,987 ERROR: ^
+2026-03-02 22:47:11,988 ERROR: ^
+2026-03-02 22:47:11,988 ERROR: ^
+2026-03-02 22:47:11,988 ERROR: ^
+2026-03-02 22:47:11,988 ERROR: ^
+2026-03-02 22:47:11,988 ERROR: ^
+2026-03-02 22:47:11,988 ERROR: ^
+2026-03-02 22:47:11,988 ERROR: ^
+2026-03-02 22:47:11,988 ERROR: ^
+2026-03-02 22:47:11,989 ERROR: ^
+2026-03-02 22:47:11,989 ERROR: ^
+2026-03-02 22:47:11,989 ERROR: ^
+2026-03-02 22:47:11,989 ERROR: ^
+2026-03-02 22:47:11,989 ERROR: ^
+2026-03-02 22:47:11,989 ERROR: ^
+2026-03-02 22:47:11,989 ERROR: ^
+2026-03-02 22:47:11,990 ERROR: ^
+2026-03-02 22:47:11,990 ERROR: ^
+2026-03-02 22:47:11,991 ERROR: ^
+2026-03-02 22:47:11,991 ERROR: File "D:\Proyectos\fab2\main.py", line 488, in open_example
+2026-03-02 22:47:11,994 ERROR: self.file_operations.open_example_file(example_filename)
+2026-03-02 22:47:11,994 ERROR: File "D:\Proyectos\fab2\core\file_operations.py", line 90, in open_example_file
+2026-03-02 22:47:11,994 ERROR: logging.debug(f"Abriendo ejemplo: {example_filename} -> {example_path}")
+2026-03-02 22:47:11,995 ERROR: ^
+2026-03-02 22:47:11,995 ERROR: ^
+2026-03-02 22:47:11,995 ERROR: ^
+2026-03-02 22:47:11,995 ERROR: ^
+2026-03-02 22:47:11,995 ERROR: ^
+2026-03-02 22:47:11,995 ERROR: ^
+2026-03-02 22:47:11,995 ERROR: ^
+2026-03-02 22:47:11,995 ERROR: NameError
+2026-03-02 22:47:11,995 ERROR: :
+2026-03-02 22:47:11,995 ERROR: name 'logging' is not defined
+2026-03-02 22:47:20,548 DEBUG: DEBUG resource_path: Fallback a modo desarrollo: D:\Proyectos\fab2\examples\Arduino/03-variables-serial.fab
+2026-03-02 22:47:20,548 ERROR: Uncaught exception
+Traceback (most recent call last):
+  File "D:\Proyectos\fab2\core\menu_manager.py", line 191, in <lambda>
+    lambda checked, file=example_file: self.window.open_example(file)
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Proyectos\fab2\main.py", line 488, in open_example
+    self.file_operations.open_example_file(example_filename)
+  File "D:\Proyectos\fab2\core\file_operations.py", line 90, in open_example_file
+    logging.debug(f"Abriendo ejemplo: {example_filename} -> {example_path}")
+    ^^^^^^^
+NameError: name 'logging' is not defined
+2026-03-02 22:47:20,548 ERROR: Traceback (most recent call last):
+2026-03-02 22:47:20,548 ERROR: File "D:\Proyectos\fab2\core\menu_manager.py", line 191, in <lambda>
+2026-03-02 22:47:20,548 ERROR: lambda checked, file=example_file: self.window.open_example(file)
+2026-03-02 22:47:20,549 ERROR: ^
+2026-03-02 22:47:20,549 ERROR: ^
+2026-03-02 22:47:20,549 ERROR: ^
+2026-03-02 22:47:20,549 ERROR: ^
+2026-03-02 22:47:20,549 ERROR: ^
+2026-03-02 22:47:20,549 ERROR: ^
+2026-03-02 22:47:20,549 ERROR: ^
+2026-03-02 22:47:20,549 ERROR: ^
+2026-03-02 22:47:20,549 ERROR: ^
+2026-03-02 22:47:20,549 ERROR: ^
+2026-03-02 22:47:20,549 ERROR: ^
+2026-03-02 22:47:20,549 ERROR: ^
+2026-03-02 22:47:20,549 ERROR: ^
+2026-03-02 22:47:20,549 ERROR: ^
+2026-03-02 22:47:20,549 ERROR: ^
+2026-03-02 22:47:20,549 ERROR: ^
+2026-03-02 22:47:20,549 ERROR: ^
+2026-03-02 22:47:20,549 ERROR: ^
+2026-03-02 22:47:20,549 ERROR: ^
+2026-03-02 22:47:20,549 ERROR: ^
+2026-03-02 22:47:20,549 ERROR: ^
+2026-03-02 22:47:20,549 ERROR: ^
+2026-03-02 22:47:20,549 ERROR: ^
+2026-03-02 22:47:20,549 ERROR: ^
+2026-03-02 22:47:20,549 ERROR: ^
+2026-03-02 22:47:20,549 ERROR: ^
+2026-03-02 22:47:20,549 ERROR: ^
+2026-03-02 22:47:20,549 ERROR: ^
+2026-03-02 22:47:20,550 ERROR: ^
+2026-03-02 22:47:20,550 ERROR: ^
+2026-03-02 22:47:20,550 ERROR: File "D:\Proyectos\fab2\main.py", line 488, in open_example
+2026-03-02 22:47:20,550 ERROR: self.file_operations.open_example_file(example_filename)
+2026-03-02 22:47:20,550 ERROR: File "D:\Proyectos\fab2\core\file_operations.py", line 90, in open_example_file
+2026-03-02 22:47:20,551 ERROR: logging.debug(f"Abriendo ejemplo: {example_filename} -> {example_path}")
+2026-03-02 22:47:20,551 ERROR: ^
+2026-03-02 22:47:20,551 ERROR: ^
+2026-03-02 22:47:20,551 ERROR: ^
+2026-03-02 22:47:20,551 ERROR: ^
+2026-03-02 22:47:20,551 ERROR: ^
+2026-03-02 22:47:20,551 ERROR: ^
+2026-03-02 22:47:20,551 ERROR: ^
+2026-03-02 22:47:20,551 ERROR: NameError
+2026-03-02 22:47:20,551 ERROR: :
+2026-03-02 22:47:20,551 ERROR: name 'logging' is not defined
+2026-03-21 07:44:16,285 DEBUG: DEBUG resource_path: Fallback a modo desarrollo: D:\Proyectos\fab2\icons/load_codigo.png
+2026-03-21 07:44:16,396 DEBUG: DEBUG resource_path: Fallback a modo desarrollo: D:\Proyectos\fab2\icons/codigo.png
+2026-03-21 07:44:16,408 DEBUG: DEBUG resource_path: Fallback a modo desarrollo: D:\Proyectos\fab2\icons/compile.png
+2026-03-21 07:44:16,408 DEBUG: DEBUG resource_path: Fallback a modo desarrollo: D:\Proyectos\fab2\icons/upload.png
+2026-03-21 07:44:16,410 DEBUG: DEBUG resource_path: Fallback a modo desarrollo: D:\Proyectos\fab2\icons/new.png
+2026-03-21 07:44:16,410 DEBUG: DEBUG resource_path: Fallback a modo desarrollo: D:\Proyectos\fab2\icons/open.png
+2026-03-21 07:44:16,410 DEBUG: DEBUG resource_path: Fallback a modo desarrollo: D:\Proyectos\fab2\icons/save.png
+2026-03-21 07:44:16,410 DEBUG: DEBUG resource_path: Fallback a modo desarrollo: D:\Proyectos\fab2\icons/graphic.png
+2026-03-21 07:44:16,410 DEBUG: DEBUG resource_path: Fallback a modo desarrollo: D:\Proyectos\fab2\icons/monitor_serial.png
+2026-03-21 07:44:16,410 DEBUG: DEBUG resource_path: Fallback a modo desarrollo: D:\Proyectos\fab2\html
+2026-03-21 07:44:16,410 DEBUG: Buscando carpeta HTML en: D:\Proyectos\fab2\html
+2026-03-21 07:44:16,410 DEBUG: Iniciando servidor HTTP local...
+2026-03-21 07:44:16,420 DEBUG: Servidor HTTP local iniciado en  http://127.0.0.1:60476/
+2026-03-21 07:44:16,420 DEBUG: DEBUG: Cargando desde SERVIDOR: http://127.0.0.1:60476/index.html
+2026-03-21 07:44:17,957 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:17] "GET /index.html HTTP/1.1" 200 -
+2026-03-21 07:44:18,206 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /static/javascript/highlight/highlight.pack.js HTTP/1.1" 200 -
+2026-03-21 07:44:18,206 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /static/visualino.css HTTP/1.1" 200 -
+2026-03-21 07:44:18,206 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /static/javascript/underscore/underscore.js HTTP/1.1" 200 -
+2026-03-21 07:44:18,207 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /static/javascript/highlight/styles/default.css HTTP/1.1" 200 -
+2026-03-21 07:44:18,207 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /static/javascript/jquery/dist/jquery.min.js HTTP/1.1" 200 -
+2026-03-21 07:44:18,208 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /static/javascript/blockly-bq/blockly_compressed.js HTTP/1.1" 200 -
+2026-03-21 07:44:18,213 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /static/javascript/blockly-bq/blocks_compressed.js HTTP/1.1" 200 -
+2026-03-21 07:44:18,222 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /static/javascript/blockly-bq/arduino_compressed.js HTTP/1.1" 200 -
+2026-03-21 07:44:18,223 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /js/app.js HTTP/1.1" 200 -
+2026-03-21 07:44:18,293 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /js/core/workspace.manager.js HTTP/1.1" 200 -
+2026-03-21 07:44:18,294 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /js/ui/theme.controller.js HTTP/1.1" 200 -
+2026-03-21 07:44:18,295 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /js/ui/locale.controller.js HTTP/1.1" 200 -
+2026-03-21 07:44:18,295 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /js/ui/language.controller.js HTTP/1.1" 200 -
+2026-03-21 07:44:18,296 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /js/core/state.store.js HTTP/1.1" 200 -
+2026-03-21 07:44:18,298 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /js/integrations/roboblocks.adapter.js HTTP/1.1" 200 -
+2026-03-21 07:44:18,300 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /static/src/translationMap.js HTTP/1.1" 200 -
+2026-03-21 07:44:18,302 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /js/generators/index.js HTTP/1.1" 200 -
+2026-03-21 07:44:18,303 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /js/integrations/blockly.adapter.js HTTP/1.1" 200 -
+2026-03-21 07:44:18,306 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /js/core/code.generator.js HTTP/1.1" 200 -
+2026-03-21 07:44:18,316 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /js/config.js HTTP/1.1" 200 -
+2026-03-21 07:44:18,316 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /static/lang/en-ES.js HTTP/1.1" 200 -
+2026-03-21 07:44:18,316 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /static/lang/fr-FR.js HTTP/1.1" 200 -
+2026-03-21 07:44:18,316 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /static/roboblocks.js HTTP/1.1" 200 -
+2026-03-21 07:44:18,316 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /static/lang/en-GB.js HTTP/1.1" 200 -
+2026-03-21 07:44:18,317 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /static/lang/it-IT.js HTTP/1.1" 200 -
+2026-03-21 07:44:18,322 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /js/generators/registry.js HTTP/1.1" 200 -
+2026-03-21 07:44:18,322 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /static/lang/ru.js HTTP/1.1" 200 -
+2026-03-21 07:44:18,328 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /js/generators/languages/cpp.js HTTP/1.1" 200 -
+2026-03-21 07:44:18,328 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /js/generators/languages/python.js HTTP/1.1" 200 -
+2026-03-21 07:44:18,329 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /js/generators/languages/javascript.js HTTP/1.1" 200 -
+2026-03-21 07:44:18,343 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /static/tmp/jst.js HTTP/1.1" 200 -
+2026-03-21 07:44:18,358 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /static/src/profiles.js HTTP/1.1" 200 -
+2026-03-21 07:44:18,360 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /static/src/resources.js HTTP/1.1" 200 -
+2026-03-21 07:44:18,363 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /static/src/colorProfiles.js HTTP/1.1" 200 -
+2026-03-21 07:44:18,363 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /static/src/helpUrls.js HTTP/1.1" 200 -
+2026-03-21 07:44:18,426 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /static/media/handopen.cur HTTP/1.1" 200 -
+2026-03-21 07:44:18,437 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /static/media/sprites.png HTTP/1.1" 200 -
+2026-03-21 07:44:18,462 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /static/media/click.mp3 HTTP/1.1" 200 -
+2026-03-21 07:44:18,463 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /static/media/delete.mp3 HTTP/1.1" 200 -
+2026-03-21 07:44:18,482 ERROR: 127.0.0.1 - - [21/Mar/2026 07:44:18] "GET /static/media/codigo.ico HTTP/1.1" 200 -
