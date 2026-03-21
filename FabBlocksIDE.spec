@@ -73,7 +73,7 @@ exe = EXE(
     pyz,
     a.scripts,
     exclude_binaries=True,
-    name='FabBlocksIDE0.3.exe',
+    name='FabBlocksIDE1.0.exe',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -98,7 +98,7 @@ coll = COLLECT(
     strip=False,
     upx=True,
     upx_exclude=[],
-    name='FabBlocksIDE'
+    name='FabBlocksIDE1.0'
 )
 
 # ensure python DLL is copied into the output directory root, not just

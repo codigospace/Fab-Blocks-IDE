@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -30,13 +32,9 @@ jobs:
         run: |
           pyinstaller --clean -y FabBlocksIDE.spec
           
-      - name: Zip build folder
-        run: |
-          powershell -Command "Compress-Archive -Path 'dist\FabBlocksIDE\*' -DestinationPath 'dist\FabBlocksIDE_Windows.zip' -Force"
-
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: FabBlocksIDE-Windows
-          path: dist\FabBlocksIDE_Windows.zip
+          name: FabBlocksIDE-1.0
+          path: dist\FabBlocksIDE1.0
           retention-days: 5
