@@ -23,6 +23,7 @@ Autor: Código Abierto Fab Blocks IDE
 Licencia: MIT
 """
 import os
+import sys
 from PyQt5.QtCore import QTimer
 import serial.tools.list_ports
 from core.command_runner import CommandRunner
@@ -203,7 +204,8 @@ class CompilationManager:
     
     def _build_compile_command(self, arduino_folder, text_cpu, current_folder):
         """Construye el comando de compilación"""
-        return (f'{arduino_folder}/arduino-builder -compile -logger=machine '
+        exe_ext = '.exe' if sys.platform == 'win32' else ''
+        return (f'{arduino_folder}/arduino-builder{exe_ext} -compile -logger=machine '
                 f'-hardware {arduino_folder}/hardware '
                 f'-tools {arduino_folder}/tools-builder '
                 f'-tools {arduino_folder}/hardware/tools/avr '
@@ -223,7 +225,8 @@ class CompilationManager:
     def _build_upload_command(self, arduino_folder, text_cpu, processor, 
                               selected_port, current_folder):
         """Construye el comando de carga"""
-        return (f'{arduino_folder}/hardware/tools/avr/bin/avrdude '
+        exe_ext = '.exe' if sys.platform == 'win32' else ''
+        return (f'{arduino_folder}/hardware/tools/avr/bin/avrdude{exe_ext} '
                 f'-C{arduino_folder}/hardware/tools/avr/etc/avrdude.conf '
                 f'-v -p{text_cpu} -c{processor} -P{selected_port} -b115200 -D '
                 f'-Uflash:w:{current_folder}/build/extracted_code.ino.hex:i')
