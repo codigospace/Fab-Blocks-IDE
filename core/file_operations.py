@@ -15,6 +15,7 @@ Autor: Código Abierto Fab Blocks IDE
 Licencia: MIT
 """
 import os
+import logging
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
 from core.i18n import get_text
 from core.utils import resource_path
@@ -87,13 +88,22 @@ class FileOperations:
     
     def open_example_file(self, example_filename):
         example_path = resource_path(os.path.join("examples", example_filename))
+        logging.debug(f"Abriendo ejemplo: {example_filename} -> {example_path}")
         
         if os.path.exists(example_path):
-            with open(example_path, "r") as file:
-                content = file.read().replace('\n', '')
-            
-            self.window.open_new_file_window_with_content(content=content)
+            try:
+                with open(example_path, "r") as file:
+                    content = file.read().replace('\n', '')
+                self.window.open_new_file_window_with_content(content=content)
+            except Exception as e:
+                logging.error(f"Error leyendo ejemplo {example_path}: {e}", exc_info=True)
+                QMessageBox.critical(
+                    self.window,
+                    get_text('dialog.open_error'),
+                    f"{get_text('dialog.open_error')}: {e}"
+                )
         else:
+            logging.warning(f"Ejemplo no encontrado: {example_path}")
             QMessageBox.warning(
                 self.window,
                 get_text('dialog.file_not_found'),

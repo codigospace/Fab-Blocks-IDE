@@ -1,32 +1,11 @@
 # -*- mode: python ; coding: utf-8 -*-
 
 
-from PyInstaller.utils.hooks import Tree
-
-# When building with --onefile we still need to force PyInstaller to
-# include the static HTML directory (and any other resource folders)
-# so that `resource_path("html")` returns a usable path inside the
-# temporary _MEIPASS folder.  Without this the exe will extract and
-# there will be no html/index.html, which is exactly the error you
-# were seeing.
-
-resource_dirs = [
-    Tree('html', prefix='html'),
-    Tree('icons', prefix='icons'),
-    Tree('examples', prefix='examples'),
-    Tree('data_serial', prefix='data_serial'),
-    Tree('bitacoras', prefix='bitacoras'),
-    Tree('saves', prefix='saves'),
-]
-
-# you can add more folders here as needed
-
-
 a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=resource_dirs,
+    datas=[('html', 'html'), ('icons', 'icons'), ('examples', 'examples'), ('data_serial', 'data_serial')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -36,10 +15,20 @@ a = Analysis(
     optimize=0,
 )
 pyz = PYZ(a.pure)
+splash = Splash(
+    'icons/load_codigo.png',
+    binaries=a.binaries,
+    datas=a.datas,
+    text_pos=None,
+    text_size=12,
+    minify_script=True,
+    always_on_top=True,
+)
 
 exe = EXE(
     pyz,
     a.scripts,
+    splash,
     [],
     exclude_binaries=True,
     name='main',
@@ -47,17 +36,19 @@ exe = EXE(
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
-    console=True,
+    console=False,
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    icon=['icons\\codigo.ico'],
 )
 coll = COLLECT(
     exe,
     a.binaries,
     a.datas,
+    splash.binaries,
     strip=False,
     upx=True,
     upx_exclude=[],
