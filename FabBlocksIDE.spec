@@ -85,7 +85,7 @@ exe = EXE(
     a.datas,
     splash,
     splash_binaries=a.binaries,
-    name='FabBlocksIDE0.3.exe',
+    name='FabBlocksIDE1.0.exe',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
