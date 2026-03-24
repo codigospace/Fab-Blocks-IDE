@@ -2,51 +2,51 @@
 
 <div align="center">
 
-[![Issues](https://img.shields.io/github/issues/codigospace/Fab-Blocks-IDE?style=for-the-badge&color=c34360&logo=github)](https://github.com/codigospace/Fab-Blocks-IDE/issues)
+[![Issues](https://img.shields.io/github/issues/codigospace/Fab-Blocks-IDE?style=for-the-badge&color=e23345&logo=github)](https://github.com/codigospace/Fab-Blocks-IDE/issues)
 [![License](https://img.shields.io/github/license/codigospace/Fab-Blocks-IDE?style=for-the-badge&color=336887&logo=gnu)](LICENSE)
-[![Size](https://img.shields.io/github/repo-size/codigospace/Fab-Blocks-IDE?style=for-the-badge&color=715a97&logo=googleanalytics)](#)
+[![Version](https://img.shields.io/badge/Version-1.0-blue?style=for-the-badge&logo=git)](#)
 
 <br>
 
-<img src="icons/codigo.png" width="150" alt="Fab-Blocks Logo">
+<img src="icons/codigo.png" width="160" alt="Fab-Blocks Logo">
+
+### "Tu aliado en la programación visual para Modular V1 y Arduino"
 
 </div>
 
-## Resumen Ejecutivo
-Fab-Blocks IDE es un entorno de desarrollo para diseño por bloques basado en Google Blockly, enfocado en el prototipado rápido para la plataforma Modular V1 y Arduino.
+---
 
-Este repositorio ha sido reestructurado para separar claramente el **IDE** (Entorno de Desarrollo en Python) del **Core Engine** (Motor de generación de código en JS), permitiendo una arquitectura modular y escalable.
+## 🚀 ¿Qué es Fab Blocks IDE?
+Fab Blocks IDE es un entorno de desarrollo simplificado diseñado para estudiantes y entusiastas que buscan una forma intuitiva de programar. Utilizando bloques visuales de **Google Blockly**, permite generar código real para la plataforma **Modular V1** y múltiples placas **Arduino**.
+
+### ✨ Características Principales
+- **🧩 Programación por Bloques**: Arrastra y suelta bloques para crear lógica compleja sin sintaxis.
+- **⚙️ Motor Core Engine**: Un motor desacoplado que genera código multilenguaje (C++, Python, JS).
+- **📟 Monitor Serial Integrado**: Observa los datos de tu placa en tiempo real con gráficas dinámicas.
+- **🌍 Soporte Multi-placa**: Compatible con Arduino Uno, Nano, Mega y el ecosistema Modular V1.
+- **🎨 Temas Personalizables**: Incluye varios perfiles de color, daltónico y modo oscuro.
 
 ---
 
-## Informe de Reestructuración Técnica y Modularización (v1.0)
+## 🌟 Novedades de la Versión 1.0
+Hemos evolucionado de la beta a una versión de producción estable con:
+- **Arquitectura Modular**: Separación total entre el IDE en Python y el motor de bloques.
+- **Mejor Rendimiento**: Carga más rápida y mayor estabilidad en la comunicación serial.
+- **Git Flow**: Estructura de ramas profesional para un desarrollo continuo.
 
-### 1. Enfoque Arquitectónico
-El proyecto evoluciona hacia una separación estricta de responsabilidades:
-- **Fab-Blocks IDE**: Gestiona proyectos, hardware y flujos de trabajo en Python/PyQt.
-- **Fab-Blocks Core Engine**: Lógica central de bloques y generación de código multilenguaje (C++, Python, JS).
-
-### 2. Etapas Cumplidas
-- **Etapa 1 – Reorganización**: Limpieza de raíz y estructura `/core` para el backend.
-- **Etapa 2 – Integración**: Consumo del Engine a través de su API integrada en el Webview.
-- **Etapa 3 – Pruebas**: Validación del flujo completo (bloques -> código -> hardware).
-- **Etapa 4 – Consolidación**: Desacople completo e independencia técnica de Visualino.
-
-### 3. Conclusión
-El salto a la **Versión 1.0** representa la culminación de la independencia técnica. Al separar el Motor como una entidad multilenguaje y profesionalizar el IDE en Python, el proyecto alcanza su estado de producción final.
+> [!TIP]
+> Puedes consultar el detalle técnico de la reestructuración en [docs/reestructuracion_v1.md](docs/reestructuracion_v1.md).
 
 ---
 
-## Instalación y Uso
-Para ejecutar el IDE desde el código fuente:
-1. Instalar dependencias: `pip install -r requirements.txt`
-2. Ejecutar: `python3 main.py`
-
-Para construir el ejecutable:
-- Usar PyInstaller con `FabBlocksIDE.spec`.
-
-## Licencia
-Este proyecto se distribuye bajo la licencia MIT.
+## 🛠️ Instalación y Uso
+1. **Requisitos**: Tener instalado el IDE de Arduino (o Arduino CLI).
+2. **Descarga**: Clona este repositorio o descarga la última versión desde [Releases](https://github.com/codigospace/Fab-Blocks-IDE/releases).
+3. **Ejecución**: 
+   ```bash
+   pip install -r requirements.txt
+   python3 main.py
+   ```
 
 ---
-**Desarrollado por:** [Programación y Automatización Codigo S.A.C.](https://codigo.space/)
+**Desarrollado con ❤️ por:** [Programación y Automatización Codigo S.A.C.](https://codigo.space/)
