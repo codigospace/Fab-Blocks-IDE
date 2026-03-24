@@ -1,77 +1,52 @@
+# Fab Blocks IDE 1.0
+
+<div align="center">
+
+[![Issues](https://img.shields.io/github/issues/codigospace/Fab-Blocks-IDE?style=for-the-badge&color=c34360&logo=github)](https://github.com/codigospace/Fab-Blocks-IDE/issues)
+[![License](https://img.shields.io/github/license/codigospace/Fab-Blocks-IDE?style=for-the-badge&color=336887&logo=gnu)](LICENSE)
+[![Size](https://img.shields.io/github/repo-size/codigospace/Fab-Blocks-IDE?style=for-the-badge&color=715a97&logo=googleanalytics)](#)
 
 <br>
 
-<div align = center>
+<img src="icons/codigo.png" width="150" alt="Fab-Blocks Logo">
 
-[![Badge Issues]][Issues]   
-[![Badge PullRequests]][PullRequests]
+</div>
 
-[![Badge Size]][#]   
-[![Badge License]][License]
+## Resumen Ejecutivo
+Fab-Blocks IDE es un entorno de desarrollo para diseño por bloques basado en Google Blockly, enfocado en el prototipado rápido para la plataforma Modular V1 y Arduino.
 
-[![Badge Test]][Test]
+Este repositorio ha sido reestructurado para separar claramente el **IDE** (Entorno de Desarrollo en Python) del **Core Engine** (Motor de generación de código en JS), permitiendo una arquitectura modular y escalable.
 
-<br>
-<br>
+---
 
-<img
-    src = 'logo.svg'
-    width = 200
-/>
+## Informe de Reestructuración Técnica y Modularización (v1.0)
 
-# Fab Blocks IDE
+### 1. Enfoque Arquitectónico
+El proyecto evoluciona hacia una separación estricta de responsabilidades:
+- **Fab-Blocks IDE**: Gestiona proyectos, hardware y flujos de trabajo en Python/PyQt.
+- **Fab-Blocks Core Engine**: Lógica central de bloques y generación de código multilenguaje (C++, Python, JS).
 
+### 2. Etapas Cumplidas
+- **Etapa 1 – Reorganización**: Limpieza de raíz y estructura `/core` para el backend.
+- **Etapa 2 – Integración**: Consumo del Engine a través de su API integrada en el Webview.
+- **Etapa 3 – Pruebas**: Validación del flujo completo (bloques -> código -> hardware).
+- **Etapa 4 – Consolidación**: Desacople completo e independencia técnica de Visualino.
 
-*Este proyecto se desarrolló inicialmente utilizando Visualino como una herramienta visual para diseñar bloques de conexión*
+### 3. Conclusión
+El salto a la **Versión 1.0** representa la culminación de la independencia técnica. Al separar el Motor como una entidad multilenguaje y profesionalizar el IDE en Python, el proyecto alcanza su estado de producción final.
 
-<br>
-<br>
+---
 
-[![Button Install]][Install]
-[![Button Internals]][Internals]
+## Instalación y Uso
+Para ejecutar el IDE desde el código fuente:
+1. Instalar dependencias: `pip install -r requirements.txt`
+2. Ejecutar: `python3 main.py`
 
-<br>
-<br>
+Para construir el ejecutable:
+- Usar PyInstaller con `FabBlocksIDE.spec`.
 
+## Licencia
+Este proyecto se distribuye bajo la licencia MIT.
 
-Diseñado en base a Visualino y modificado para su integración con<br>
-**Modular** proyecto parte de **[FabLab]**.
-
-<br>
-
-[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/Ultimaker/CuraEngine/badge)](https://api.securityscorecards.dev/projects/github.com/Ultimaker/CuraEngine)
-
-<br>
-
-<!----------------------------------------------------------------------------->
-
-[Contributors]: https://github.com/Ultimaker/CuraEngine/graphs/contributors
-[PullRequests]: https://github.com/Ultimaker/CuraEngine/pulls
-[Internals]: https://github.com/Ultimaker/CuraEngine/wiki/Internals
-[Install]: https://github.com/Ultimaker/CuraEngine/wiki/Building-CuraEngine-From-Source
-[Closed]: https://github.com/Ultimaker/CuraEngine/issues?q=is%3Aissue+is%3Aclosed
-[Issues]: https://github.com/Ultimaker/CuraEngine/issues
-[Conan]: https://github.com/Ultimaker/CuraEngine/actions/workflows/conan-package.yml
-[Test]: https://github.com/Ultimaker/CuraEngine/actions/workflows/unit-test.yml
-[Cura]: https://github.com/Ultimaker/Cura
-
-[License]: LICENSE
-[#]: #
-
-
-<!---------------------------------[ Badges ]---------------------------------->
-
-[Badge Contributors]: https://img.shields.io/github/contributors/ultimaker/CuraEngine?style=for-the-badge&logoColor=white&labelColor=db5e8a&color=ab4a6c&logo=GitHub
-[Badge PullRequests]: https://img.shields.io/github/issues-pr/ultimaker/CuraEngine?style=for-the-badge&logoColor=white&labelColor=bb9f3e&color=937d31&logo=GitExtensions
-[Badge License]: https://img.shields.io/badge/License-AGPL3-336887.svg?style=for-the-badge&labelColor=458cb5&logoColor=white&logo=GNU
-[Badge Closed]: https://img.shields.io/github/issues-closed/ultimaker/CuraEngine?style=for-the-badge&logoColor=white&labelColor=629944&color=446a30&logo=AddThis
-[Badge Issues]: https://img.shields.io/github/issues/ultimaker/CuraEngine?style=for-the-badge&logoColor=white&labelColor=c34360&color=933349&logo=AdBlock
-[Badge Conan]: https://img.shields.io/github/workflow/status/Ultimaker/CuraEngine/conan-package?style=for-the-badge&logoColor=white&labelColor=6185aa&color=4c6987&logo=Conan&label=Conan%20Package
-[Badge Test]: https://img.shields.io/github/workflow/status/Ultimaker/CuraEngine/unit-test?style=for-the-badge&logoColor=white&labelColor=4a999d&color=346c6e&logo=Codacy&label=Unit%20Test
-[Badge Size]: https://img.shields.io/github/repo-size/ultimaker/CuraEngine?style=for-the-badge&logoColor=white&labelColor=715a97&color=584674&logo=GoogleAnalytics
-
-
-<!---------------------------------[ Buttons ]--------------------------------->
-
-[Button Internals]: https://img.shields.io/badge/Internals-00979D?style=for-the-badge&logoColor=white&logo=CodeReview
-[Button Install]: https://img.shields.io/badge/Installation-e23345?style=for-the-badge&logoColor=white&logo=DocuSign
+---
+**Desarrollado por:** [Programación y Automatización Codigo S.A.C.](https://codigo.space/)
