@@ -65,14 +65,26 @@ a = Analysis(
     noarchive=False,
 )
 
-# Splash removed to fix onedir boot loop
+splash = Splash(
+    'icons/load_codigo.png',
+    binaries=a.binaries,
+    datas=a.datas,
+    text_pos=None,
+    text_size=12,
+    minify_script=True,
+    always_on_top=True,
+)
 
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 
 exe = EXE(
     pyz,
     a.scripts,
-    exclude_binaries=True,
+    a.binaries,
+    a.zipfiles,
+    a.datas,
+    splash,
+    splash_binaries=a.binaries,
     name='FabBlocksIDE1.0.exe',
     debug=False,
     bootloader_ignore_signals=False,
@@ -97,8 +109,7 @@ coll = COLLECT(
     a.datas,
     strip=False,
     upx=True,
-    upx_exclude=[],
-    name='FabBlocksIDE1.0'
+    name='FabBlocksIDE'
 )
 
 # ensure python DLL is copied into the output directory root, not just
